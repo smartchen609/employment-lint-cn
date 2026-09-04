@@ -123,6 +123,62 @@ describe("守卫 A · 规则中的展示文案不含禁止表达", () => {
   );
 });
 
+describe("守卫 A · 面向用户的文档与界面文案", () => {
+  /**
+   * README、PRIVACY、DISCLAIMER 和界面组件里的字，用户同样会读到，
+   * 因此同样受 §6.5 约束。
+   *
+   * CONTRIBUTING.md 不在扫描范围 —— 它必须引用这些禁止表达来解释
+   * 为什么禁止（"如果某句话读起来像『稳了』，那就是 bug"）。
+   */
+  const userFacing = [
+    "README.md",
+    "PRIVACY.md",
+    "DISCLAIMER.md",
+    ...walk(join(ROOT, "src/app"), ".tsx").map((f) => f.replace(ROOT, "")),
+  ];
+
+  /**
+   * 扫描前剥掉两类"不是主张"的文本：
+   *   - Markdown 的行内代码与围栏代码块 —— 反引号里的是样例，不是对用户说的话
+   *   - 源码注释 —— 注释里必须能写"不出现全局 PASS"来说明约束本身
+   * 这与守卫 B 对注释的处理是同一条原则。
+   */
+  function stripNonAssertions(text: string, rel: string): string {
+    if (rel.endsWith(".md")) {
+      return text.replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
+    }
+    return text
+      .split("\n")
+      .filter((l) => {
+        const t = l.trim();
+        return !(t.startsWith("//") || t.startsWith("*") || t.startsWith("/*"));
+      })
+      .join("\n");
+  }
+
+  it.each(userFacing)("%s 不含禁止表达", (rel) => {
+    const text = stripNonAssertions(readFileSync(join(ROOT, rel), "utf8"), rel);
+    for (const word of FORBIDDEN) {
+      expect(text.includes(word), `${rel} 命中禁止表达「${word}」`).toBe(false);
+    }
+    for (const re of LAWFUL_ASSERTIONS) {
+      expect(re.test(text), `${rel} 出现断言式「合法」`).toBe(false);
+    }
+  });
+
+  it("README 明确说明这是 linter 而不是判决器", () => {
+    const readme = readFileSync(join(ROOT, "README.md"), "utf8");
+    expect(readme).toContain("This is a linter, not a verdict.");
+    expect(readme).toContain("判断你一定能赢");
+  });
+
+  it("DISCLAIMER 说明未命中规则不等于没有问题", () => {
+    const d = readFileSync(join(ROOT, "DISCLAIMER.md"), "utf8");
+    expect(d).toContain("未命中规则");
+  });
+});
+
 describe("守卫 A · 不得出现全局通过状态", () => {
   it("没有任何模板宣称整体通过", () => {
     for (const t of allTemplates) {
