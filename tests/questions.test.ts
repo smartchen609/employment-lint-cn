@@ -252,6 +252,12 @@ describe("Case Export", () => {
     }
   });
 
+  it("延长区间按日历月展开，不出现 [object Object]", () => {
+    expect(md).not.toContain("[object Object]");
+    expect(md).toContain("2025-11-30 至 2026-06-30（7 个日历月）");
+    expect(md).toContain("累计 7 个日历月");
+  });
+
   it("不输出任何金额或倍数结论", () => {
     expect(md).not.toMatch(/你(可以|能|将)(拿到|获得)/);
     expect(md).not.toMatch(/\d+\s*个月工资/);

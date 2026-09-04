@@ -59,6 +59,8 @@ npm run dev
 
 `npm run check` 必须全绿才提 PR。
 
+改动依赖或构建配置的，还要跑 `npx vite build && npm run audit:bundle`。
+
 注意：`npm run build` 目前**必然失败**，因为还有 5 条法律来源
 未完成人工核验。这是设计行为。
 

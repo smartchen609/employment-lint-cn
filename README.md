@@ -81,6 +81,7 @@ npm install
 npm run build:content   # YAML → JSON
 npm run dev             # http://localhost:5173
 npm run check           # typecheck + validate + test
+npx vite build && npm run audit:bundle   # 产物隐私审计
 ```
 
 ### 目录
@@ -107,7 +108,10 @@ docs/spec/      规格书（round3 优先于 round2）
 出现 `localStorage`、`fetch(`、`analytics` 等即失败，
 并锁定运行时依赖只能是 react / react-dom。
 
-这两个测试保护的是产品承诺本身 —— 否则某次重构顺手加一个缓存，
+`scripts/audit-bundle.ts` 扫描**打包产物**，因为依赖和构建工具
+可能注入源码里看不到的网络调用。
+
+这些检查保护的是产品承诺本身 —— 否则某次重构顺手加一个缓存，
 整个信任结构就悄悄作废了。
 
 ---

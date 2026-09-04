@@ -7,6 +7,18 @@ export default defineConfig({
     // 纯静态产物，无后端。
     target: "es2022",
     sourcemap: false,
+    /**
+     * 关闭 modulepreload polyfill。
+     *
+     * 该 polyfill 会往产物里注入一处 `fetch(link.href)` 用于预加载自身 chunk。
+     * 它只会请求本站自己的 JS，不涉及用户数据 —— 但产品承诺是
+     * "运行期不得有任何 fetch"，而承诺要经得起用户自己打开 devtools 查。
+     * 本应用是单 bundle、无动态 import，target 为 es2022，
+     * 目标浏览器原生支持 modulepreload，polyfill 本就是死代码。
+     *
+     * 由 scripts/audit-bundle.ts 验证产物中确实没有网络调用。
+     */
+    modulePreload: { polyfill: false },
   },
   test: {
     environment: "node",

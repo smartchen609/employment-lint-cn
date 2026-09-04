@@ -13,6 +13,7 @@
 
 import type { EngineResult } from "../engine/evaluate.js";
 import type { ResolvedResult } from "../findings/resolve.js";
+import { calendarMonthsBetween } from "../engine/calendar.js";
 import { QUESTIONS } from "../questions/tree.js";
 import type { Answers } from "../questions/types.js";
 
@@ -27,10 +28,46 @@ interface ExportInput {
   generatedAt: string;
 }
 
+interface DateRange {
+  from?: string;
+  to?: string;
+}
+
+function isDateRange(v: unknown): v is DateRange {
+  return typeof v === "object" && v !== null && ("from" in v || "to" in v);
+}
+
+/**
+ * 日期区间的呈现。
+ *
+ * 延长区间是深圳规则与全国一年规则的**关键事实**，
+ * 报告里必须能看到每一段的起止和累计月数，
+ * 否则律师拿到报告还得回头问用户"到底延长了多久"。
+ * 累计按日历月算，与规则层同一套算法。
+ */
+function formatRanges(ranges: DateRange[]): string[] {
+  const lines: string[] = [];
+  let total = 0;
+  for (const r of ranges) {
+    if (!r.from || !r.to) {
+      lines.push(`  - ${r.from ?? "（未填）"} 至 ${r.to ?? "（未填）"}`);
+      continue;
+    }
+    const months = calendarMonthsBetween(r.from, r.to);
+    total += months;
+    lines.push(`  - ${r.from} 至 ${r.to}（${months} 个日历月）`);
+  }
+  if (ranges.length > 0) {
+    lines.push(`  - 累计 ${total} 个日历月（按《民法典》第二百零二条的日历月计算）`);
+  }
+  return lines;
+}
+
 function labelOf(questionId: string, value: unknown): string {
   const q = QUESTIONS.find((x) => x.id === questionId);
   if (!q) return String(value);
   if (Array.isArray(value)) {
+    if (value.length === 0) return "（未选择）";
     return value
       .map((v) => q.options?.find((o) => o.value === v)?.label ?? String(v))
       .join("；");
@@ -75,7 +112,13 @@ export function buildCaseExport({
     ...section(
       "1. 你填写的事实",
       answered.flatMap((q) => {
-        const lines = [`- **${q.id}** ${q.prompt}`, `  - ${labelOf(q.id, answers[q.id])}`];
+        const raw = answers[q.id];
+        const lines = [`- **${q.id}** ${q.prompt}`];
+        if (Array.isArray(raw) && raw.some(isDateRange)) {
+          lines.push(...formatRanges(raw as unknown as DateRange[]));
+        } else {
+          lines.push(`  - ${labelOf(q.id, raw)}`);
+        }
         const date = answers[`${q.id}__date`];
         if (typeof date === "string" && date) lines.push(`  - 日期：${date}`);
         return lines;

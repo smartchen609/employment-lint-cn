@@ -22,6 +22,11 @@
 `XMLHttpRequest`、`sendBeacon`、`WebSocket`、`gtag`、`analytics` 等，
 测试直接失败。它同时锁定 `package.json` 的运行时依赖只能是 react 与 react-dom。
 
+`npm run audit:bundle` 扫描的是**打包产物**而不是源码 ——
+依赖或构建工具都可能注入源码里看不到的网络调用。
+（Vite 的 modulepreload polyfill 就往产物里塞过一处 `fetch`，
+虽然只请求本站自己的 JS，仍然已经关掉。）
+
 承诺写在文档里会过期，写成测试才不会。
 
 ## 我们无法承诺的事
