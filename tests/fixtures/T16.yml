@@ -1,0 +1,30 @@
+id: "T16"
+title: "解除通知未写具体理由，公司在仲裁后才首次主张 AI 替岗"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "ARTICLE_40_3"
+    effective_status: "EFFECTIVE"
+    written_notice_exists: true
+    stated_reason_present: false
+    reason_first_appeared_at: "AFTER_ARBITRATION"
+  objective_change:
+    cause_category: "AI_AUTOMATION"
+    original_work_continues: "UNKNOWN"
+    consultation_type: "NONE"
+    concrete_offer_terms_complete: false
+    adverse_changes: "UNKNOWN"
+    employee_response: "NO_OPPORTUNITY"
+    notice_or_one_month_pay: "UNKNOWN"
+expected:
+  primary_endpoint: "C17"
+  findings:
+    - "ARTICLE_40_3_CAUSE_NOT_ESTABLISHED_ALONE"
+    - "ARTICLE_40_3_CONSULTATION_GAP"
+note: >
+  事后补充的理由与解除当时已存在并向劳动者表达的理由，不是同一项事实材料。
+  C17 的证据 warning 由 operation.reason_first_appeared_at 驱动，属 P4 文案层，
+  P3 引擎阶段本用例只断言上述规则层 Finding。
+actual_result: ""

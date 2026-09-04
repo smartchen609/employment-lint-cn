@@ -1,0 +1,42 @@
+id: "T06"
+title: "深圳履行，协商延长 7 个月且延长期满"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "FIXED_TERM_EXPIRY"
+    effective_status: "EFFECTIVE"
+  contract:
+    type: "fixed-term"
+    expired: true
+    fixed_term_count: 1
+    deemed_second_fixed_term: false
+    extension:
+      nature: "NEGOTIATED"
+      period_expired: true
+      cumulative_calendar_months: 7
+    automatic_extension:
+      agreed: false
+      continued_performance: false
+      extended_period_expired: false
+    entity_change:
+      occurred: false
+    avoidance_patterns: "NONE"
+  post_expiry:
+    actual_work_continued: false
+    employer_later_terminated: false
+  renewal:
+    employee_willingness: "WRITTEN"
+    employee_requested_fixed_term: false
+    statutory_exception: "NONE"
+expected:
+  primary_endpoint: "C08"
+  findings:
+    - "SZ_DEEMED_RENEWAL"
+  not_findings:
+    - "DEEMED_SECOND_FIXED_TERM"
+note: >
+  深圳地方规则命中而全国一年规则未命中的区间（6—12 个月）。
+  结果页必须同时说明两条规则的关系，不得用其一覆盖另一。
+actual_result: ""

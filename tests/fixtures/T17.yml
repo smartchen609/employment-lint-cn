@@ -1,0 +1,32 @@
+id: "T17"
+title: "违法解除候选，未申请仲裁，明确希望回原单位继续工作"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "ARTICLE_40_3"
+    effective_status: "EFFECTIVE"
+  objective_change:
+    cause_category: "TEAM_REDUCTION"
+    original_work_continues: "BY_COLLEAGUES"
+    consultation_type: "SEVERANCE_ONLY"
+    concrete_offer_terms_complete: false
+    adverse_changes: "UNKNOWN"
+    employee_response: "NO_OPPORTUNITY"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+  procedure:
+    arbitration_filed: "NOT_FILED"
+    preferred_remedy: "CONTINUE_PERFORMANCE"
+    continued_performance_impossible: false
+    limitation_interruption_events: "NONE"
+expected:
+  primary_endpoint: "R01"
+  findings:
+    - "UNLAWFUL_TERMINATION_CANDIDATE"
+    - "REMEDY_ELECTION_REQUIRED"
+    - "CONTINUE_PERFORMANCE_DIRECTION"
+  not_findings:
+    - "DAMAGES_DIRECTION"
+note: 与 T18 成对，不得删除其一。第四十八条两条路径是替代关系。
+actual_result: ""

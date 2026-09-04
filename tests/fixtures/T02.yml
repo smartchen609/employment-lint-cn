@@ -1,0 +1,38 @@
+id: "T02"
+title: "实际连续两次固定期限并书面要求续订"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "FIXED_TERM_EXPIRY"
+    effective_status: "EFFECTIVE"
+  contract:
+    type: "fixed-term"
+    expired: true
+    fixed_term_count: 2
+    deemed_second_fixed_term: false
+    extension:
+      nature: "NONE"
+      period_expired: false
+    automatic_extension:
+      agreed: false
+      continued_performance: false
+      extended_period_expired: false
+    entity_change:
+      occurred: false
+    avoidance_patterns: "NONE"
+  post_expiry:
+    actual_work_continued: false
+    employer_later_terminated: false
+  renewal:
+    employee_willingness: "WRITTEN"
+    employee_requested_fixed_term: false
+    statutory_exception: "NONE"
+expected:
+  primary_endpoint: "C06"
+  findings:
+    - "INDEFINITE_TERM_OBLIGATION_CANDIDATE"
+    - "UNLAWFUL_TERMINATION_CANDIDATE"
+  uncertainty: "fact-sensitive"
+actual_result: ""

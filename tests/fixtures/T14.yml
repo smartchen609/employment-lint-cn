@@ -1,0 +1,26 @@
+id: "T14"
+title: "提出具体岗位，但工资由 2.5 万降至 1.5 万并降低职级"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "ARTICLE_40_3"
+    effective_status: "EFFECTIVE"
+  objective_change:
+    cause_category: "INTERNAL_EFFICIENCY"
+    original_work_continues: "PARTIALLY_STOPPED"
+    consultation_type: "CONCRETE_POSITION_OFFERED"
+    concrete_offer_terms_complete: true
+    adverse_changes: "SIGNIFICANT_PAY_CUT_AND_DEMOTION"
+    employee_response: "REFUSED_WITH_REASONS"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+expected:
+  primary_endpoint: "C15"
+  findings:
+    - "ARTICLE_40_3_OFFER_REASONABLENESS_DISPUTED"
+    - "ARTICLE_40_3_CAUSE_NOT_ESTABLISHED_ALONE"
+  uncertainty: "judicial-discretion"
+note: >
+  法律没有可机械适用的降薪比例阈值。工具不得把降幅百分比换算成合法或违法。
+actual_result: ""

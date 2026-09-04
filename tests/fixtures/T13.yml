@@ -1,0 +1,29 @@
+id: "T13"
+title: "外部政策导致业务无法继续，提出核心条件相当岗位，真实协商失败并履行通知义务"
+input:
+  scope:
+    principal_place_of_performance: "CN-OTHER"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "ARTICLE_40_3"
+    effective_status: "EFFECTIVE"
+  objective_change:
+    cause_category: "EXTERNAL_POLICY_OR_FORCE"
+    original_work_continues: "FULLY_STOPPED"
+    consultation_type: "CONCRETE_POSITION_OFFERED"
+    concrete_offer_terms_complete: true
+    adverse_changes: "SUBSTANTIALLY_EQUIVALENT"
+    employee_response: "REFUSED_WITH_REASONS"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+expected:
+  primary_endpoint: "C16"
+  findings:
+    - "ARTICLE_40_3_NO_CONFLICT_FOUND_WITHIN_COVERAGE"
+  not_findings:
+    - "UNLAWFUL_TERMINATION_CANDIDATE"
+    - "ARTICLE_40_3_CONSULTATION_GAP"
+  uncertainty: "fact-sensitive"
+note: >
+  **这是全部用例中最危险的一条。** 它必须只输出"在本工具覆盖范围内暂未发现明显冲突"，
+  绝不得渲染为通过、合规或绿色状态。severity 必须是 info。
+actual_result: ""

@@ -1,0 +1,35 @@
+id: "T19"
+title: "解除已超过一年，没有已知书面主张、政府救济或公司同意履行记录"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "ARTICLE_40_3"
+    effective_status: "EFFECTIVE"
+    effective_date: "2025-03-10"
+  objective_change:
+    cause_category: "TEAM_REDUCTION"
+    original_work_continues: "BY_COLLEAGUES"
+    consultation_type: "SEVERANCE_ONLY"
+    concrete_offer_terms_complete: false
+    adverse_changes: "UNKNOWN"
+    employee_response: "NO_OPPORTUNITY"
+    notice_or_one_month_pay: "NONE"
+  procedure:
+    arbitration_filed: "NOT_FILED"
+    preferred_remedy: "UNDECIDED"
+    continued_performance_impossible: false
+    limitation_interruption_events: "NONE"
+    limitation_exceeds_one_calendar_year: true
+expected:
+  primary_endpoint: "R06"
+  findings:
+    - "ARBITRATION_LIMITATION_RISK"
+    - "LIMITATION_NO_KNOWN_INTERRUPTION"
+  uncertainty: "fact-sensitive"
+note: >
+  **不得输出"你的请求已经失效"。** 第二十七条第二、三款的中断与中止
+  使工具不能仅按日期作出失效结论。severity 为 warning，不得升格为 blocker 式的终局判断。
+  一年按日历年计算（民法典第二百零二条），禁止实现为 365 天。
+actual_result: ""

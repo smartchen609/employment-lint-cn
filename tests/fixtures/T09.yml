@@ -1,0 +1,43 @@
+id: "T09"
+title: "非劳动者原因更换签约主体，工作场所岗位管理均持续"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "FIXED_TERM_EXPIRY"
+    effective_status: "EFFECTIVE"
+  contract:
+    type: "fixed-term"
+    expired: true
+    fixed_term_count: 1
+    deemed_second_fixed_term: false
+    extension:
+      nature: "NONE"
+      period_expired: false
+    automatic_extension:
+      agreed: false
+      continued_performance: false
+      extended_period_expired: false
+    entity_change:
+      occurred: true
+      not_at_employee_request: true
+      same_workplace: true
+      same_role: true
+      management_continued: true
+    avoidance_patterns: "NONE"
+  post_expiry:
+    actual_work_continued: false
+    employer_later_terminated: false
+  renewal:
+    employee_willingness: "WRITTEN"
+    employee_requested_fixed_term: false
+    statutory_exception: "NONE"
+expected:
+  primary_endpoint: "C10"
+  findings:
+    - "DEEMED_SECOND_FIXED_TERM"
+    - "ENTITY_CHANGE_DOES_NOT_RESET_COUNT"
+  uncertainty: "fact-sensitive"
+note: 与 T10 成对，不得删除其一。
+actual_result: ""

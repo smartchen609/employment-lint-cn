@@ -1,0 +1,42 @@
+id: "T05"
+title: "非深圳，协商延长累计 11 个月，未达一年"
+input:
+  scope:
+    principal_place_of_performance: "CN-OTHER"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "FIXED_TERM_EXPIRY"
+    effective_status: "EFFECTIVE"
+  contract:
+    type: "fixed-term"
+    expired: true
+    fixed_term_count: 1
+    deemed_second_fixed_term: false
+    extension:
+      nature: "NEGOTIATED"
+      period_expired: true
+      cumulative_calendar_months: 11
+    automatic_extension:
+      agreed: false
+      continued_performance: false
+      extended_period_expired: false
+    entity_change:
+      occurred: false
+    avoidance_patterns: "NONE"
+  post_expiry:
+    actual_work_continued: false
+    employer_later_terminated: false
+  renewal:
+    employee_willingness: "NONE"
+    employee_requested_fixed_term: false
+    statutory_exception: "NONE"
+    employer_offer_same_or_better: false
+expected:
+  primary_endpoint: "C04"
+  not_findings:
+    - "DEEMED_SECOND_FIXED_TERM"
+    - "SZ_DEEMED_RENEWAL"
+note: >
+  边界用例：差一个月未达一年，且非深圳，故深圳六个月规则也不适用。
+  与 T04 成对，不得删除其一。
+actual_result: ""

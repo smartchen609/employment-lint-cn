@@ -1,0 +1,34 @@
+id: "T18"
+title: "违法解除候选，未申请仲裁，明确不希望回原单位"
+input:
+  scope:
+    principal_place_of_performance: "CN-GD-SZ"
+    dispute_category: "TERMINATION_OR_EXPIRY"
+  operation:
+    selected_shape: "ARTICLE_40_3"
+    effective_status: "EFFECTIVE"
+  objective_change:
+    cause_category: "TEAM_REDUCTION"
+    original_work_continues: "BY_COLLEAGUES"
+    consultation_type: "SEVERANCE_ONLY"
+    concrete_offer_terms_complete: false
+    adverse_changes: "UNKNOWN"
+    employee_response: "NO_OPPORTUNITY"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+  procedure:
+    arbitration_filed: "NOT_FILED"
+    preferred_remedy: "DAMAGES"
+    continued_performance_impossible: false
+    limitation_interruption_events: "NONE"
+expected:
+  primary_endpoint: "R02"
+  findings:
+    - "UNLAWFUL_TERMINATION_CANDIDATE"
+    - "REMEDY_ELECTION_REQUIRED"
+    - "DAMAGES_DIRECTION"
+  not_findings:
+    - "CONTINUE_PERFORMANCE_DIRECTION"
+note: >
+  与 T17 成对，不得删除其一。
+  本用例**不得**产生任何金额、倍数或 2N 结论。
+actual_result: ""
