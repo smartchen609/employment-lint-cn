@@ -1,0 +1,131 @@
+# 深圳经济特区和谐劳动关系促进条例第十八条第二款
+# —— 协商延长劳动合同期限累计超过六个月视为续订
+#
+# 数据写法来自 round3 §1，原样保留 instrument_history 与 source_review 结构。
+# 对应输出模板 C08（round2 §7）。
+#
+# ## 两条不得违反的语义
+#
+# 1. provision_effective.from 为 "2008-11-01"，**不得填 "2019-04-24"**。
+#    后者是《关于修改〈深圳经济特区医疗条例〉等二十七项法规的决定》的通过日，
+#    该打包修正**没有修改第十八条第二款**。round3 §0。
+#
+# 2. 深圳规则与全国一年规则**并行展示，不得互相覆盖**（overrides 保持为空）。
+#    6—12 个月区间只命中深圳规则；达到 1 年时两条规则同时命中，
+#    结果页必须同时展示命中的依据。round2 §3.2。
+
+id: "CN-SZ-HARMONIOUS-LABOR-18-2"
+version: "1.0.0"
+status: "active"
+
+title: "深圳协商延长劳动合同期限累计超过六个月视为续订"
+description: >
+  主要劳动合同履行地在深圳，用人单位与劳动者协商延长劳动合同期限
+  累计超过六个月的，视为续订劳动合同。
+
+jurisdiction:
+  country: "CN"
+  province: "GD"
+  city: "SZ"
+  level: "special-economic-zone-regulation"
+
+priority: 100
+overrides: []
+
+provision_effective:
+  from: "2008-11-01"
+  to: null
+
+instrument_history:
+  adopted_at: "2008-09-23"
+  promulgated_at: "2008-10-06"
+  original_effective_from: "2008-11-01"
+  last_amendment_adopted_at: "2019-04-24"
+  last_amendment_promulgated_at: "2019-04-26"
+  provision_changed_by_last_amendment: false
+
+authority_type: "local-regulation"
+uncertainty: "rule-based"
+severity: "warning"
+
+legal_basis:
+  - source_id: "SZ-HARMONIOUS-LABOR-2008"
+    instrument: "深圳经济特区和谐劳动关系促进条例"
+    article: "第十八条第二款"
+    quote: "用人单位与劳动者协商延长劳动合同期限累计超过六个月的，视为续订劳动合同。"
+
+conditions:
+  all:
+    - fact: "scope.principal_place_of_performance"
+      operator: "equals"
+      value: "CN-GD-SZ"
+
+    - fact: "contract.type"
+      operator: "equals"
+      value: "fixed-term"
+
+    - fact: "contract.extension.nature"
+      operator: "equals"
+      value: "negotiated"
+
+    - derived_fact: "contract.extension.cumulative_calendar_months"
+      operator: "greater_than"
+      value: 6
+
+findings:
+  classification_candidates:
+    - "SZ_DEEMED_RENEWAL"
+  headline: "深圳规则命中：协商延长期限可能已被视为续订"
+  explanation: >
+    如果累计延长尚未达到一年，全国司法解释中的一年标准尚未同时命中；
+    但深圳地方规则仍构成一项需要单独提出和审查的依据。
+    "累计超过六个月"属于可计算和规则判断；
+    其最终对违法终止的影响仍需个案审查。
+
+claim_guidance:
+  recommended:
+    - "审查深圳地方规则是否适用于本劳动关系"
+    - "审查续订后是否已经到期"
+    - "审查是否存在无固定期限合同规则的排除情形"
+  do_not_claim:
+    - "不得因为延长不足一年就直接认定不存在第二次合同问题"
+    - "不得用本地方规则悄悄覆盖或替代全国司法解释的判断"
+    - "不得仅凭本规则直接输出违法终止赔偿金"
+  review_required: true
+
+evidence:
+  required:
+    - id: "ORIGINAL_CONTRACT"
+      label: "原固定期限劳动合同"
+    - id: "EXTENSION_AGREEMENTS"
+      label: "每次协商延长的协议或书面记录"
+    - id: "PRINCIPAL_PLACE_OF_PERFORMANCE"
+      label: "主要劳动合同履行地在深圳的材料"
+
+  supporting:
+    - id: "HR_EXTENSION_EMAIL"
+      label: "人事关于延长期限的邮件或企业IM记录"
+
+  contrary:
+    - id: "STATUTORY_EXTENSION"
+      label: "证明属于法定自动续延而非双方协商延长的材料"
+    - id: "PERFORMANCE_PLACE_NOT_SHENZHEN"
+      label: "证明主要履行地不在深圳的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_CONTRACT_WORKFLOW"
+      label: "内部合同审批和续签流程"
+
+exceptions:
+  - id: "EXTENSION_NOT_NEGOTIATED"
+    description: "延长属于医疗期等法定自动续延"
+    effect: "block"
+
+source_review:
+  last_verified_at: "2026-09-03"
+  verified_status: "pending-official-original-check"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T06"

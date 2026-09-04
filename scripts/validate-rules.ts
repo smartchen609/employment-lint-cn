@@ -136,6 +136,7 @@ for (const file of fixtureFiles) {
 
 const ruleFiles = walkYaml(join(ROOT, "rules"));
 const ruleIds = new Set<string>();
+const todoEffectiveDates: string[] = [];
 const referencedSourceIds = new Set<string>();
 
 for (const file of ruleFiles) {
@@ -157,6 +158,14 @@ for (const file of ruleFiles) {
 
   if (ruleIds.has(rule.id)) err(at, `重复的 rule id: ${rule.id}`);
   ruleIds.add(rule.id);
+
+  // provision_effective.from 仍为 TODO_VERIFY 的，登记为待人工补齐
+  if (rule.provision_effective.from === "TODO_VERIFY") {
+    todoEffectiveDates.push(`${rule.id}（${at}）`);
+    if (STRICT) {
+      err(at, `[strict] provision_effective.from 仍为 TODO_VERIFY，不得部署。`);
+    }
+  }
 
   // 4/5. legal_basis → sources.yml
   for (const basis of rule.legal_basis) {
@@ -239,6 +248,10 @@ if (STRICT) {
     if (referencedSourceIds.has(s.id)) continue;
     warn("sources.yml", `来源 ${s.id} 尚未人工核验（尚无规则引用）`);
   }
+}
+
+for (const r of todoEffectiveDates) {
+  warn("rules", `${r} 的 provision_effective.from 仍为 TODO_VERIFY，见 docs/sources-to-verify.md`);
 }
 
 const todoUrls = (registry?.sources ?? []).filter((s) => s.url === "TODO_VERIFY");

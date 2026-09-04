@@ -1,0 +1,127 @@
+# 劳动合同法第四十八条 —— 继续履行与赔偿金的替代性选择
+# 对应输出模板 R01 / R02 / R03（round2 §8）。问题树 P02 / P03。
+#
+# round2 §3.4 第四条护栏：主张选择必须放在结果生成之前。
+# 第四十八条规定的是**两种替代性法律后果**，不是可以累加的两笔给付：
+#   - 要求继续履行
+#   - 不要求继续履行或者已经不能继续履行时，要求赔偿金
+#
+# 因此产品不能把"写申请书"放在前面，而要先问：
+#   你究竟想回去，还是想结束关系并要求赔偿？
+
+id: "CN-NAT-LCL-48-REMEDY-ELECTION"
+version: "1.0.0"
+status: "active"
+
+title: "违法解除或终止后继续履行与赔偿金的替代性选择"
+description: >
+  用人单位违反劳动合同法规定解除或者终止劳动合同，
+  劳动者要求继续履行的，用人单位应当继续履行；
+  劳动者不要求继续履行或者劳动合同已经不能继续履行的，
+  用人单位应当依照第八十七条支付赔偿金。
+  两者是替代关系，不是可以累加的两笔最终给付。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 70
+overrides: []
+
+provision_effective:
+  # 规格书未给出劳动合同法的施行日期，不得由 AI 推测。
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "rule-based"
+severity: "warning"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第四十八条"
+
+conditions:
+  all:
+    - fact: "findings.unlawful_termination_candidate_present"
+      operator: "equals"
+      value: true
+
+findings:
+  base:
+    - "REMEDY_ELECTION_REQUIRED"
+
+  conditional:
+    - when:
+        all:
+          - fact: "procedure.preferred_remedy"
+            operator: "equals"
+            value: "CONTINUE_PERFORMANCE"
+          - fact: "procedure.continued_performance_impossible"
+            operator: "equals"
+            value: false
+      add:
+        - "CONTINUE_PERFORMANCE_DIRECTION"
+
+    - when:
+        fact: "procedure.preferred_remedy"
+        operator: "equals"
+        value: "DAMAGES"
+      add:
+        - "DAMAGES_DIRECTION"
+
+    - when:
+        any:
+          - fact: "procedure.preferred_remedy"
+            operator: "equals"
+            value: "UNDECIDED"
+          - fact: "procedure.continued_performance_impossible"
+            operator: "in"
+            value:
+              - true
+              - "UNKNOWN"
+      add:
+        - "REMEDY_DIRECTION_NOT_YET_FIXED"
+
+claim_guidance:
+  recommended:
+    - "在提交或调整仲裁请求前先确定继续履行还是赔偿金方向"
+  do_not_claim:
+    - "不得把继续履行和赔偿金作为两笔可以同时累加的最终给付"
+    - "不得只主张经济补偿后默认裁审机构会自动改判继续履行"
+    - "不得在主张继续履行的同时制造长期沉默或明确拒绝复工等相反事实"
+    - "不得仅为了先立案而随意填写请求方向"
+  review_required: true
+
+evidence:
+  required:
+    - id: "TERMINATION_OR_EXPIRY_NOTICE"
+      label: "解除或终止通知及送达记录"
+    - id: "EMPLOYEE_STATED_PREFERENCE"
+      label: "本人关于是否希望恢复劳动关系的意思表示"
+
+  supporting:
+    - id: "CONTINUED_WILLINGNESS_TO_WORK"
+      label: "能够证明持续愿意提供劳动的合理行动记录"
+
+  contrary:
+    - id: "NEW_CONFLICTING_EMPLOYMENT"
+      label: "已经建立会严重冲突的新劳动关系的材料"
+    - id: "EMPLOYER_DISSOLVED_OR_BANKRUPT"
+      label: "公司破产、解散等客观不能继续履行的材料"
+
+  at_risk_after_exit:
+    - id: "ARBITRATION_FILING_RECORDS"
+      label: "仲裁申请书、收件回执与庭审记录"
+
+exceptions:
+  - id: "PERFORMANCE_OBJECTIVELY_IMPOSSIBLE"
+    description: "劳动合同已经客观不能继续履行，继续履行方向不再成立"
+    effect: "downgrade"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T17"
+  - "T18"

@@ -1,0 +1,96 @@
+# 《解释二》第十条第四项 —— 其他违反诚信原则规避无固定期限合同的安排
+# 对应输出模板 C11（round2 §7）。问题树 A11。
+#
+# uncertainty 必须是 judicial-discretion：诚信判断没有唯一机械阈值，
+# 本工具不能仅凭"间隔很短"或"主体有关联"就认定存在恶意规避。round2 §7 C11。
+
+id: "CN-NAT-SPC-LABOR-II-10-4"
+version: "1.0.0"
+status: "active"
+
+title: "其他违反诚信原则规避订立无固定期限劳动合同的安排"
+description: >
+  用人单位通过个人辞职后立即重签、形式性短暂中断、
+  反复更换合同名称或主体等安排，
+  使连续用工在文件上呈现为多段关系的，
+  进入违反诚信原则规避行为的审查路径。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 90
+overrides: []
+
+provision_effective:
+  from: "2025-09-01"
+  to: null
+
+authority_type: "judicial-interpretation"
+uncertainty: "judicial-discretion"
+severity: "warning"
+
+legal_basis:
+  - source_id: "SPC-LABOR-II-2025"
+    instrument: "最高人民法院关于审理劳动争议案件适用法律问题的解释（二）"
+    document_no: "法释〔2025〕12号"
+    article: "第十条第四项"
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第十四条第二款第三项"
+
+conditions:
+  all:
+    - fact: "contract.avoidance_patterns"
+      operator: "includes_any"
+      value:
+        - "RESIGN_THEN_IMMEDIATELY_RESIGN_CONTRACT"
+        - "NOMINAL_WORK_INTERRUPTION"
+        - "REPEATED_CONTRACT_OR_ENTITY_RENAMING"
+        - "EMPLOYER_MENTIONED_AVOIDING_INDEFINITE_TERM"
+        - "OTHER"
+
+findings:
+  classification_candidates:
+    - "GOOD_FAITH_AVOIDANCE_CANDIDATE"
+  headline: "存在规避无固定期限合同的候选行为"
+  explanation: >
+    这类情形可能进入"其他违反诚信原则的规避行为"审查。
+    本工具不能仅凭间隔很短或主体存在关联就认定存在恶意规避，
+    诚信判断高度依赖整体事实和裁审评价。
+
+claim_guidance:
+  recommended:
+    - "把前后主体、岗位、管理关系、工作内容、薪酬支付和中断期间的实际工作情况连成完整时间线"
+  do_not_claim:
+    - "不得只保留最终一份劳动合同"
+    - "不得仅凭间隔很短或主体有关联就断言存在恶意规避"
+  review_required: true
+
+evidence:
+  required:
+    - id: "ALL_CONTRACTS_IN_SEQUENCE"
+      label: "前后全部劳动合同，不只是最终一份"
+    - id: "RESIGNATION_AND_RESIGNING_RECORDS"
+      label: "被要求个人辞职及随后重签的记录"
+
+  supporting:
+    - id: "CONTINUOUS_WORK_TIMELINE"
+      label: "中断期间实际工作情况、薪酬支付和管理关系的时间线"
+    - id: "EMPLOYER_STATEMENTS_ON_INDEFINITE_TERM"
+      label: "公司提及避免无固定期限合同的沟通记录"
+
+  contrary:
+    - id: "GENUINE_INTERRUPTION"
+      label: "证明中断期间确实未提供劳动、未受管理的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_HR_AND_PAYROLL_HISTORY"
+      label: "内部人事系统与工资发放历史"
+
+exceptions: []
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T11"

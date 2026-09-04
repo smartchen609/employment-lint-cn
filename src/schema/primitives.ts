@@ -16,6 +16,14 @@ export const IsoDate = z
 
 export const IsoDateOrEmpty = z.union([IsoDate, z.literal("")]);
 
+/**
+ * 规格书未给出的日期，一律写字面量 "TODO_VERIFY"，
+ * 并在 docs/sources-to-verify.md 登记。
+ * **不得由 AI 凭记忆或推测填写生效日期。** CLAUDE.md §L1。
+ * validate-rules 会把这些日期单列出来，构建（--strict）不放行。
+ */
+export const IsoDateOrTodo = z.union([IsoDate, z.literal("TODO_VERIFY")]);
+
 export const SemVer = z
   .string()
   .regex(/^\d+\.\d+\.\d+$/, "version 必须为 x.y.z");

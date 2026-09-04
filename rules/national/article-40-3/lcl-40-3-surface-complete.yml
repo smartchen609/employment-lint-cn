@@ -1,0 +1,132 @@
+# 劳动合同法第四十条第三项 —— 四层条件表面完整
+# 对应输出模板 C16（round2 §7）。
+#
+# ## 这条规则最容易被写错，必须格外小心
+#
+# 命中本规则**不是对解除的合规确认**，也不得渲染成任何形式的绿色通过状态。
+# severity 必须是 info，绝不能产生任何形式的全局 PASS。
+# 唯一允许的表述是：
+#     在本工具当前覆盖的第40条第3项规则内，暂未发现明显冲突。
+# round2 §6.5、§7 C16、§19 第 3 项。
+#
+# 本工具没有审查：公司证据真实性、工会通知、受特殊保护人员、
+# 是否实际属于经济性裁员、公司是否选择性裁减、解除通知的送达和其他程序、
+# 地方裁判差异。
+
+id: "CN-NAT-LCL-40-3-SURFACE-COMPLETE"
+version: "1.0.0"
+status: "active"
+
+title: "第四十条第三项候选条件在覆盖范围内表面完整"
+description: >
+  发生了可能超出公司一般自主经营调整的客观变化，
+  原劳动合同可能已经无法继续履行，
+  公司提出过具体且核心条件基本相当的变更方案，
+  双方进行过真实协商但未达成协议，
+  且公司履行了提前三十日书面通知或额外支付一个月工资的，
+  在本工具覆盖范围内暂未发现明显冲突。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 10
+overrides: []
+
+provision_effective:
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "fact-sensitive"
+severity: "info"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第四十条第三项"
+
+conditions:
+  all:
+    - fact: "operation.selected_shape"
+      operator: "equals"
+      value: "ARTICLE_40_3"
+
+    - fact: "objective_change.cause_category"
+      operator: "in"
+      value:
+        - "EXTERNAL_POLICY_OR_FORCE_MAJEURE"
+
+    - fact: "objective_change.original_work_continues"
+      operator: "equals"
+      value: false
+
+    - fact: "objective_change.concrete_offer_terms_complete"
+      operator: "equals"
+      value: true
+
+    - fact: "objective_change.adverse_changes"
+      operator: "includes_any"
+      value:
+        - "SUBSTANTIALLY_EQUIVALENT"
+
+    - fact: "objective_change.employee_response"
+      operator: "in"
+      value:
+        - "REFUSED_WITH_REASONS"
+        - "REFUSED"
+
+    - fact: "objective_change.notice_or_one_month_pay"
+      operator: "in"
+      value:
+        - "THIRTY_DAYS_WRITTEN_NOTICE"
+        - "ONE_MONTH_PAY_IN_LIEU"
+
+findings:
+  classification_candidates:
+    - "ARTICLE_40_3_NO_CONFLICT_FOUND_WITHIN_COVERAGE"
+  headline: "在本工具当前覆盖的第40条第3项规则内，暂未发现明显冲突"
+  explanation: >
+    这不是对解除的合规确认，也不代表未覆盖事项不存在。
+    本工具没有完整审查公司证据真实性、工会通知、受特殊保护人员、
+    是否实际上属于经济性裁员、公司是否选择性裁减、
+    解除通知的送达和其他程序，以及地方裁判差异。
+
+claim_guidance:
+  recommended:
+    - "就本工具未覆盖的程序与主体事项进行专业复核"
+  do_not_claim:
+    - "不得把本结果理解为解除合法"
+    - "不得把本结果理解为解除不存在问题"
+    - "不得据此放弃对送达、工会程序和特殊保护人员事项的核对"
+  review_required: true
+
+evidence:
+  required:
+    - id: "TERMINATION_NOTICE_ORIGINAL"
+      label: "解除通知原件及全部版本"
+    - id: "OBJECTIVE_CHANGE_EVIDENCE"
+      label: "公司主张的客观情况变化的证明材料"
+    - id: "CONCRETE_ROLE_OFFER"
+      label: "公司提出的具体变更方案"
+    - id: "NOTICE_OR_PAY_IN_LIEU_RECORD"
+      label: "提前三十日书面通知或额外支付一个月工资的凭证"
+
+  supporting: []
+
+  contrary:
+    - id: "ORIGINAL_WORK_STILL_PERFORMED"
+      label: "证明原工作仍由他人继续完成的材料"
+    - id: "STILL_HIRING_SIMILAR_ROLES"
+      label: "变化发生后仍招聘、保留或重新设置相近岗位的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_REORG_RECORDS"
+      label: "内部组织调整与岗位撤销记录"
+
+exceptions: []
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T13"

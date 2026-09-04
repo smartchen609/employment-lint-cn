@@ -1,0 +1,118 @@
+# 《解释二》第十条第三项 —— 变更劳动合同订立主体但继续用工
+# 对应输出模板 C10（round2 §7）。问题树 A09 / A10。
+#
+# 注意 uncertainty：主体名称和日期可以确认，但"继续进行劳动管理"
+# 和岗位是否实质相同属于事实依赖问题。round2 §7 C10。
+
+id: "CN-NAT-SPC-LABOR-II-10-3"
+version: "1.0.0"
+status: "active"
+
+title: "变换劳动合同订立主体但劳动关系实质持续"
+description: >
+  非因劳动者本人原因变更劳动合同订立主体，
+  工作场所、岗位或核心职责基本相同，
+  且实际管理、考核或汇报关系持续的，
+  合同次数不因主体变更而分别清零。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 100
+overrides: []
+
+provision_effective:
+  from: "2025-09-01"
+  to: null
+
+authority_type: "judicial-interpretation"
+uncertainty: "fact-sensitive"
+severity: "warning"
+
+legal_basis:
+  - source_id: "SPC-LABOR-II-2025"
+    instrument: "最高人民法院关于审理劳动争议案件适用法律问题的解释（二）"
+    document_no: "法释〔2025〕12号"
+    article: "第十条第三项"
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第十四条第二款第三项"
+
+conditions:
+  all:
+    - fact: "contract.entity_change.occurred"
+      operator: "equals"
+      value: true
+
+    - fact: "contract.entity_change.not_at_employee_request"
+      operator: "equals"
+      value: true
+
+    - fact: "contract.entity_change.same_workplace"
+      operator: "equals"
+      value: true
+
+    - fact: "contract.entity_change.same_role"
+      operator: "equals"
+      value: true
+
+    - fact: "contract.entity_change.management_continued"
+      operator: "equals"
+      value: true
+
+findings:
+  classification_candidates:
+    - "DEEMED_SECOND_FIXED_TERM"
+    - "ENTITY_CHANGE_DOES_NOT_RESET_COUNT"
+  headline: "变更签约主体可能不阻断合同次数"
+  explanation: >
+    这可能被认定为用人单位通过变换劳动合同订立主体而继续用工，
+    合同次数不能仅按每个主体分别清零。
+    主体名称和日期可以确认，但是否"继续进行劳动管理"
+    以及岗位是否实质相同，属于事实依赖问题。
+
+claim_guidance:
+  recommended:
+    - "按连续实际用工关系核对合同次数"
+    - "继续审查无固定期限劳动合同订立义务"
+  do_not_claim:
+    - "不得只按营业执照上的公司名称分别计算合同"
+    - "不得仅凭本规则直接输出违法终止赔偿金"
+  review_required: false
+
+evidence:
+  required:
+    - id: "ENTITY_CHANGE_NOTICE"
+      label: "变更签约主体的通知、协议和原因说明"
+    - id: "CONTRACTS_BEFORE_AND_AFTER_CHANGE"
+      label: "主体变更前后的全部劳动合同"
+
+  supporting:
+    - id: "WORKPLACE_AND_ROLE_CONTINUITY"
+      label: "工作地点和岗位连续的材料"
+    - id: "MANAGEMENT_CONTINUITY"
+      label: "汇报、考核、薪酬审批或业务管理持续的材料"
+    - id: "NO_WORK_INTERRUPTION"
+      label: "变更前后工作没有实质中断的材料"
+
+  contrary:
+    - id: "EMPLOYEE_INITIATED_TRANSFER"
+      label: "证明主体变更由劳动者本人申请的材料"
+    - id: "ROLE_MATERIALLY_CHANGED"
+      label: "证明岗位或管理关系发生实质变化的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_APPROVAL_AND_PAYROLL_FLOW"
+      label: "变更前后实际管理、考核、工资审批流程"
+
+exceptions:
+  - id: "CHANGE_AT_EMPLOYEE_REQUEST"
+    description: "主体变更系劳动者主动申请，且岗位与管理关系明显变化"
+    effect: "block"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T09"
+  - "T10"

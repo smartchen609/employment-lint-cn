@@ -1,0 +1,132 @@
+# 《解释二》第十一条 —— 期满后继续工作且用人单位未表示异议超过一个月
+# YAML 骨架来自 round3 §6，原样保留其字段与措辞。
+# 对应输出模板 C20 / C21 / C22（round3 §5）。问题树 A15 / A15.1–A15.5。
+#
+# 本规则**必须与第十条并行运行**，不得设计成"命中第十条即停止检测第十一条"。
+# round3 §4。
+#
+# 期间按日历月判断，依据《民法典》第二百零二条；不得实现为 days > 30。
+# round3 编者按一、§3 A15.3。
+
+id: "CN-NAT-SPC-LABOR-II-11"
+version: "1.0.0"
+status: "active"
+
+title: "劳动合同期满后继续工作且用人单位未表示异议超过一个月"
+description: >
+  固定期限劳动合同期满后，劳动者仍在用人单位工作，
+  用人单位未表示异议超过一个月的，
+  进入拟制续订以及后续解除法律后果审查路径。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 100
+overrides: []
+
+provision_effective:
+  from: "2025-09-01"
+  to: null
+
+authority_type: "judicial-interpretation"
+uncertainty: "fact-sensitive"
+severity: "warning"
+
+legal_basis:
+  - source_id: "SPC-LABOR-II-2025"
+    instrument: "最高人民法院关于审理劳动争议案件适用法律问题的解释（二）"
+    document_no: "法释〔2025〕12号"
+    article: "第十一条"
+  - source_id: "CN-CIVIL-CODE-2021"
+    instrument: "中华人民共和国民法典"
+    article: "第二百零二条"
+    note: "期间按日历月计算的依据"
+
+conditions:
+  all:
+    - fact: "contract.type"
+      operator: "equals"
+      value: "fixed-term"
+
+    - fact: "contract.expired"
+      operator: "equals"
+      value: true
+
+    - fact: "post_expiry.actual_work_continued"
+      operator: "equals"
+      value: true
+
+    - derived_fact: "post_expiry.no_objection_exceeds_one_calendar_month"
+      operator: "equals"
+      value: true
+
+findings:
+  base:
+    - "DEEMED_RENEWAL_CANDIDATE"
+
+  conditional:
+    - when:
+        fact: "indefinite_term.eligibility_candidate"
+        operator: "equals"
+        value: true
+      add:
+        - "INDEFINITE_TERM_UNDER_ORIGINAL_CONDITIONS_CANDIDATE"
+
+    - when:
+        fact: "post_expiry.employer_later_terminated"
+        operator: "equals"
+        value: true
+      add:
+        - "SUBSEQUENT_TERMINATION_CONSEQUENCES_REVIEW"
+
+claim_guidance:
+  recommended:
+    - "审查原条件续订请求"
+    - "审查是否符合订立无固定期限劳动合同条件"
+    - "如公司后来解除，审查解除依据及法律后果"
+
+  do_not_claim:
+    - "不得直接将原合同到期日作为劳动关系结束日"
+    - "不得仅凭本规则直接输出违法解除赔偿金"
+    - "不得仅凭继续工作超过一个月直接输出2N"
+
+  review_required: false
+
+evidence:
+  required:
+    - id: "EXPIRING_CONTRACT"
+      label: "到期的固定期限劳动合同"
+    - id: "POST_EXPIRY_WORK"
+      label: "到期后继续正常工作的材料"
+    - id: "FIRST_EMPLOYER_OBJECTION"
+      label: "用人单位首次明确表示异议的时间及内容"
+
+  supporting:
+    - id: "POST_EXPIRY_ATTENDANCE"
+      label: "到期后的考勤记录"
+    - id: "POST_EXPIRY_SALARY"
+      label: "到期后的工资支付记录"
+    - id: "POST_EXPIRY_TASKS"
+      label: "到期后的工作任务及管理记录"
+
+  contrary:
+    - id: "TIMELY_CLEAR_OBJECTION"
+      label: "用人单位在一个月内明确反对继续用工的材料"
+    - id: "HANDOVER_ONLY"
+      label: "证明到期后仅进行离职交接而非继续正常工作的材料"
+
+  at_risk_after_exit:
+    - id: "POST_EXPIRY_INTERNAL_SYSTEMS"
+      label: "企业邮箱、考勤、项目系统和任务记录"
+
+exceptions: []
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T11A"
+  - "T11B"
+  - "T11C"
+  - "T11D"
+  - "T11E"

@@ -1,0 +1,108 @@
+# AI 替岗／内部效率调整 —— 解释信号，不是硬规则
+# 骨架来自 round2 §11.5，原样保留其字段与措辞。
+# 对应输出模板 C13（round2 §7）。问题树 B03。
+#
+# ## 这条规则存在的意义是"拦住一个错误编码"
+#
+# round2 §3.3 明确禁止把案例编码成：
+#     reason == AI => unlawful
+# 案例只能作为裁判思路和解释信号。
+# 因此本规则 authority_type 为 published-case，
+# overrides 必须为空，sources 的 binding_role 必须是 interpretive-signal
+# （这三条已由 src/schema/rule.ts 强制，见 tests/schema.test.ts）。
+
+id: "CN-GD-AI-REPLACEMENT-NOT-SUFFICIENT-ALONE"
+version: "1.0.0"
+status: "active"
+
+title: "AI替岗或内部效率调整不足以单独证明客观情况重大变化"
+description: >
+  公司理由主要来自主动引入 AI、提高人效、降低成本、压缩团队
+  或者内部组织调整的，
+  不能单独完成劳动合同法第四十条第三项的判断。
+
+jurisdiction:
+  country: "CN"
+  province: "GD"
+  level: "province"
+
+priority: 50
+overrides: []
+
+provision_effective:
+  # 案例形成的解释信号没有"条款生效日"。
+  # 规格书未给出裁判日期或发布日期，不得由 AI 推测。
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "published-case"
+uncertainty: "judicial-discretion"
+severity: "warning"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第四十条第三项"
+    note: "本解释信号所指向的实体条文；案例本身不构成独立依据"
+
+conditions:
+  all:
+    - fact: "objective_change.cause_category"
+      operator: "in"
+      value:
+        - "AI_AUTOMATION"
+        - "INTERNAL_EFFICIENCY"
+        - "TEAM_REDUCTION"
+
+findings:
+  classification_candidates:
+    - "ARTICLE_40_3_CAUSE_NOT_ESTABLISHED_ALONE"
+  headline: "AI或内部效率调整不能单独完成第40条第3项判断"
+  explanation: >
+    该Finding只提示仍需审查变化来源、劳动合同是否无法履行、
+    是否存在适配岗位以及是否进行过实质协商。
+    它不自动认定违法解除。
+
+claim_guidance:
+  recommended:
+    - "审查原工作是否仍由其他人员继续完成"
+    - "审查公司是否仍有适配岗位"
+    - "审查是否提出过具体、合理的变更方案"
+  do_not_claim:
+    - "不得把讨论重点停留在AI能不能完成我的工作"
+    - "不得仅凭公司理由涉及AI就断言构成违法解除"
+  review_required: false
+
+evidence:
+  required:
+    - id: "TERMINATION_NOTICE_ORIGINAL"
+      label: "解除通知原件及全部版本"
+    - id: "EMPLOYER_STATED_REASON"
+      label: "公司最初给出的书面理由"
+
+  supporting:
+    - id: "ORIGINAL_WORK_STILL_PERFORMED"
+      label: "证明原工作仍由同事、外包或新员工完成的材料"
+    - id: "STILL_HIRING_SIMILAR_ROLES"
+      label: "仍在招聘或保留相近岗位的材料"
+
+  contrary:
+    - id: "ROLE_GENUINELY_ELIMINATED"
+      label: "证明原岗位对应工作确已完全停止的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_REORG_AND_AI_PROJECT_NOTICES"
+      label: "内部组织调整、岗位撤销和 AI 项目通知"
+
+exceptions: []
+
+sources:
+  - source_id: "GUANGZHOU-WEI-AI-CASE"
+    binding_role: "interpretive-signal"
+  - source_id: "HANGZHOU-ZHOU-AI-CASE"
+    binding_role: "interpretive-signal"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T12"

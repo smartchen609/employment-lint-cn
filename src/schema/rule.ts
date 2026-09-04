@@ -3,6 +3,7 @@ import {
   AuthorityType,
   BindingRole,
   IsoDate,
+  IsoDateOrTodo,
   JurisdictionLevel,
   RuleStatus,
   SemVer,
@@ -119,7 +120,7 @@ export const Jurisdiction = z
  */
 export const ProvisionEffective = z
   .object({
-    from: IsoDate,
+    from: IsoDateOrTodo,
     to: IsoDate.nullable(),
   })
   .strict();
@@ -286,7 +287,11 @@ export const RuleRecord = z
   })
   .strict()
   .superRefine((r, ctx) => {
-    if (r.provision_effective.to && r.provision_effective.to < r.provision_effective.from) {
+    if (
+      r.provision_effective.to &&
+      r.provision_effective.from !== "TODO_VERIFY" &&
+      r.provision_effective.to < r.provision_effective.from
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["provision_effective"],

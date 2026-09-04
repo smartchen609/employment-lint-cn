@@ -1,0 +1,123 @@
+# 劳动合同法第十四条 —— 连续订立二次固定期限后的无固定期限合同订立义务
+# 对应输出模板 C06（round2 §7）。问题树 A03 / A12 / A13 / A14。
+#
+# 这是 round2 §3.1 第一条法律护栏的落点：
+# "符合二次固定期限"不能直接等同于 2N。第十条只解决合同次数，
+# 无固定期限订立义务还要经过续订意愿、固定期限选择和法定排除事由。
+
+id: "CN-NAT-LCL-14-2-3"
+version: "1.0.0"
+status: "active"
+
+title: "连续订立二次固定期限后的无固定期限劳动合同订立义务"
+description: >
+  已经连续订立二次固定期限劳动合同（含依《解释二》第十条视为二次的情形），
+  劳动者提出或者同意续订、未要求仅签固定期限，
+  且不存在法定排除情形的，
+  用人单位可能负有订立无固定期限劳动合同的义务。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 80
+overrides: []
+
+provision_effective:
+  # 规格书未给出劳动合同法第十四条的施行日期，不得由 AI 推测。
+  # 见 docs/sources-to-verify.md §D。
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "fact-sensitive"
+severity: "warning"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第十四条第二款第三项"
+
+conditions:
+  all:
+    - any:
+        - fact: "contract.fixed_term_count"
+          operator: "greater_than_or_equal"
+          value: 2
+        - fact: "contract.deemed_second_fixed_term"
+          operator: "equals"
+          value: true
+
+    - fact: "renewal.employee_willingness"
+      operator: "in"
+      value:
+        - "written"
+        - "oral"
+
+    - fact: "renewal.employee_requested_fixed_term"
+      operator: "equals"
+      value: false
+
+    - fact: "renewal.statutory_exception"
+      operator: "equals"
+      value: false
+
+findings:
+  classification_candidates:
+    - "INDEFINITE_TERM_OBLIGATION_CANDIDATE"
+    - "UNLAWFUL_TERMINATION_CANDIDATE"
+  headline: "公司可能负有订立无固定期限劳动合同的义务"
+  explanation: >
+    在该义务存在的情况下，直接以合同期满为由不续签，
+    可能形成违法终止候选。
+    是否已经签过两次可以规则判断；
+    是否构成违法终止仍依赖续订意愿、排除事由和证据。
+
+claim_guidance:
+  recommended:
+    - "审查是否应当订立无固定期限劳动合同"
+    - "在主张路径确定前先固定续订意愿证据"
+  do_not_claim:
+    - "不得只把案件写成合同到期公司应当支付经济补偿"
+    - "不得仅凭本规则直接输出违法终止赔偿金"
+  review_required: false
+
+evidence:
+  required:
+    - id: "ALL_FIXED_TERM_CONTRACTS"
+      label: "全部固定期限劳动合同及补充协议"
+    - id: "WRITTEN_RENEWAL_WILLINGNESS"
+      label: "书面表达续订或继续工作意愿的邮件、微信"
+
+  supporting:
+    - id: "NON_RENEWAL_NOTICE"
+      label: "公司不续签通知及送达记录"
+    - id: "HR_RENEWAL_WORKFLOW"
+      label: "HR 系统中的续签流程状态"
+
+  contrary:
+    - id: "EMPLOYEE_REQUESTED_FIXED_TERM"
+      label: "劳动者主动要求仅签固定期限的记录"
+    - id: "EMPLOYER_ALLEGED_STATUTORY_EXCEPTION"
+      label: "公司主张严重违纪、医疗期满不能工作或不能胜任的材料"
+
+  at_risk_after_exit:
+    - id: "COMPANY_MAILBOX_RENEWAL_THREAD"
+      label: "公司邮箱中的续签审批与 HR 往来"
+
+exceptions:
+  - id: "EMPLOYEE_REFUSED_RENEWAL"
+    description: "劳动者明确拒绝续订，通常不进入违法终止候选"
+    effect: "block"
+  - id: "EMPLOYEE_REQUESTED_FIXED_TERM_ONLY"
+    description: "劳动者明确要求仍然只签固定期限合同"
+    effect: "block"
+  - id: "STATUTORY_EXCEPTION_ALLEGED"
+    description: "公司主张第三十九条或第四十条第一、二项情形，超出 v0.1 实质审查范围"
+    effect: "downgrade"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T02"
+  - "T03"

@@ -1,0 +1,103 @@
+# 劳动合同法第四十条第三项 —— 提出过岗位，但方案合理性存在重大争议
+# 对应输出模板 C15（round2 §7）。问题树 B08 / B09。
+#
+# uncertainty 必须是 judicial-discretion：
+# 法律没有一个可以机械适用于所有案件的固定降薪比例，
+# 本工具不会把"降低多少百分比"直接换算成合法或违法。round2 §7 C15。
+
+id: "CN-NAT-LCL-40-3-OFFER-REASONABLENESS"
+version: "1.0.0"
+status: "active"
+
+title: "提出过具体岗位，但变更方案合理性存在重大争议"
+description: >
+  用人单位提出过具体岗位，但该方案可能包含明显降薪、职级明显降低、
+  跨城市或显著增加通勤、核心技能严重不匹配等变化的，
+  协商是否真实、方案是否合理以及拒绝是否有正当理由，
+  属于事实依赖和裁判裁量问题。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 85
+overrides: []
+
+provision_effective:
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "judicial-discretion"
+severity: "warning"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第四十条第三项"
+
+conditions:
+  all:
+    - fact: "operation.selected_shape"
+      operator: "equals"
+      value: "ARTICLE_40_3"
+
+    - fact: "objective_change.concrete_offer_terms_complete"
+      operator: "equals"
+      value: true
+
+    - fact: "objective_change.adverse_changes"
+      operator: "includes_any"
+      value:
+        - "SIGNIFICANT_PAY_CUT"
+        - "SIGNIFICANT_LEVEL_DEMOTION"
+        - "CROSS_CITY_OR_COMMUTE_INCREASE"
+        - "SKILL_MISMATCH"
+
+findings:
+  classification_candidates:
+    - "ARTICLE_40_3_OFFER_REASONABLENESS_DISPUTED"
+  headline: "公司提出了方案，但不等于完成了合理协商"
+  explanation: >
+    法律没有一个可以机械适用于所有案件的固定降薪比例。
+    本工具不会把降低多少百分比直接换算成合法或违法。
+    协商是否真实、方案是否合理以及拒绝是否有正当理由，
+    属于事实依赖和裁判裁量问题。
+
+claim_guidance:
+  recommended:
+    - "保存并说明拒绝方案的具体原因"
+    - "记录工资与职级变化、地点与通勤成本、岗位职责与专业能力的对比"
+    - "记录公司是否提供培训以及本人提出的替代方案"
+  do_not_claim:
+    - "不得只回复我不同意调岗而不说明理由"
+    - "不得把降薪百分比直接当作合法或违法的判断标准"
+  review_required: true
+
+evidence:
+  required:
+    - id: "CONCRETE_ROLE_OFFER"
+      label: "公司提出的每一份调岗方案"
+    - id: "ORIGINAL_CONTRACT_TERMS"
+      label: "原岗位说明及劳动合同中的工作内容与待遇"
+
+  supporting:
+    - id: "EMPLOYEE_RESPONSE_WITH_REASONS"
+      label: "本人对调岗方案的回复及拒绝理由"
+    - id: "TRAINING_OFFER_RECORDS"
+      label: "公司是否提供培训或技能转型方案的记录"
+
+  contrary:
+    - id: "OFFER_SUBSTANTIALLY_EQUIVALENT"
+      label: "证明新方案核心条件与原合同基本相当的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_ROLE_AND_SALARY_BANDS"
+      label: "内部岗位库、薪酬级别和岗位权限"
+
+exceptions: []
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T14"

@@ -1,0 +1,104 @@
+# 劳动合同法第八十七条 —— 违法解除或终止赔偿金
+# 对应输出模板 R02（round2 §8）。
+#
+# ## 本规则不得产生任何金额
+#
+# 本产品根本不输出赔偿数字。round2 §17「现在绝对不要做」明确禁止
+# 赔偿金额计算器与 N/2N 自动结论。
+# 因此本规则只标注"路径"，不承载任何计算、口径或倍数换算逻辑，
+# 也不得在文案中出现 2N 之类的确定性承诺。
+
+id: "CN-NAT-LCL-87-DAMAGES"
+version: "1.0.0"
+status: "active"
+
+title: "违法解除或终止劳动合同的赔偿金路径"
+description: >
+  用人单位违反劳动合同法规定解除或者终止劳动合同的，
+  应当依照经济补偿标准的二倍向劳动者支付赔偿金。
+  本规则只标注主张路径，不计算金额、不输出倍数结论。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 60
+overrides: []
+
+provision_effective:
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "rule-based"
+severity: "warning"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第八十七条"
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第四十八条"
+    note: "赔偿金路径的前置选择依据"
+
+conditions:
+  all:
+    - fact: "findings.unlawful_termination_candidate_present"
+      operator: "equals"
+      value: true
+
+    - fact: "procedure.preferred_remedy"
+      operator: "equals"
+      value: "DAMAGES"
+
+findings:
+  classification_candidates:
+    - "DAMAGES_DIRECTION"
+  headline: "当前主张方向候选：违法解除或终止赔偿金"
+  explanation: >
+    如果最终能够证明公司违法解除或违法终止，
+    当前应重点评估赔偿金路径。
+    本工具不计算金额，也不判断请求金额、计算口径和现有证据是否完整。
+
+claim_guidance:
+  recommended:
+    - "评估违法解除或终止赔偿金路径"
+    - "核对公司已支付款项的性质与抵扣关系"
+  do_not_claim:
+    - "不得因为公司已经支付经济补偿就把案件只写成普通经济补偿"
+    - "不得把经济补偿与赔偿金作为两笔可以同时累计的最终金额"
+    - "不得把公司不续签直接等同于违法终止"
+    - "不得由本工具输出任何赔偿金额或倍数结论"
+  review_required: false
+
+evidence:
+  required:
+    - id: "TERMINATION_OR_EXPIRY_NOTICE"
+      label: "解除或终止通知及送达记录"
+    - id: "PAYMENTS_ALREADY_MADE"
+      label: "公司已支付款项的凭证及其名目"
+
+  supporting:
+    - id: "SALARY_RECORDS"
+      label: "工资发放记录"
+    - id: "SERVICE_PERIOD_RECORDS"
+      label: "连续工作年限的证明材料"
+
+  contrary:
+    - id: "LAWFUL_TERMINATION_EVIDENCE"
+      label: "公司证明解除或终止具备法定依据与程序的材料"
+
+  at_risk_after_exit:
+    - id: "PAYROLL_SYSTEM_ACCESS"
+      label: "工资系统与内部薪酬记录的访问权限"
+
+exceptions:
+  - id: "EMPLOYEE_ELECTS_CONTINUED_PERFORMANCE"
+    description: "劳动者选择继续履行，赔偿金路径不同时成立"
+    effect: "block"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T18"

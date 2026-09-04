@@ -1,0 +1,104 @@
+# 《解释二》第十条第二项 —— 约定自动续延且续延期限届满
+# 对应输出模板 C09（round2 §7）。问题树 A07 / A08。
+
+id: "CN-NAT-SPC-LABOR-II-10-2"
+version: "1.0.0"
+status: "active"
+
+title: "约定期满自动续延且续延后期限届满"
+description: >
+  原劳动合同约定期满后自动续延，双方在原到期日后继续履行，
+  且续延期限现已届满的，
+  进入连续订立二次固定期限劳动合同审查路径。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 100
+overrides: []
+
+provision_effective:
+  from: "2025-09-01"
+  to: null
+
+authority_type: "judicial-interpretation"
+uncertainty: "rule-based"
+severity: "warning"
+
+legal_basis:
+  - source_id: "SPC-LABOR-II-2025"
+    instrument: "最高人民法院关于审理劳动争议案件适用法律问题的解释（二）"
+    document_no: "法释〔2025〕12号"
+    article: "第十条第二项"
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第十四条第二款第三项"
+
+conditions:
+  all:
+    - fact: "contract.type"
+      operator: "equals"
+      value: "fixed-term"
+
+    - fact: "contract.automatic_extension.agreed"
+      operator: "equals"
+      value: true
+
+    - fact: "contract.automatic_extension.continued_performance"
+      operator: "equals"
+      value: true
+
+    - fact: "contract.automatic_extension.extended_period_expired"
+      operator: "equals"
+      value: true
+
+findings:
+  classification_candidates:
+    - "DEEMED_SECOND_FIXED_TERM"
+  headline: "自动续延可能构成第二次固定期限劳动合同"
+  explanation: >
+    双方没有重新签一份纸质合同，不等于只有一次合同。
+    自动续延条款和实际继续履行可能改变合同次数判断。
+    该规则只解决合同次数问题，不直接得出违法终止结论。
+
+claim_guidance:
+  recommended:
+    - "继续审查无固定期限劳动合同订立义务"
+  do_not_claim:
+    - "不得因为没有重新签一份纸质合同就认定只有一次合同"
+    - "不得仅凭本规则直接输出违法终止赔偿金"
+  review_required: false
+
+evidence:
+  required:
+    - id: "CONTRACT_WITH_AUTO_EXTENSION_CLAUSE"
+      label: "包含自动续延条款的完整合同"
+    - id: "ORIGINAL_EXPIRY_DATE"
+      label: "原到期日"
+    - id: "EXTENDED_TERM_PERIOD"
+      label: "续延后的期限"
+
+  supporting:
+    - id: "POST_EXPIRY_WORK_RECORDS"
+      label: "到期后继续工作、发薪、考勤和管理的材料"
+    - id: "RENEWAL_WILLINGNESS_AT_SECOND_EXPIRY"
+      label: "续延后再次到期时的续订意愿记录"
+
+  contrary:
+    - id: "AUTO_EXTENSION_NOT_PERFORMED"
+      label: "证明约定了自动续延但双方实际未继续履行的材料"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_CONTRACT_WORKFLOW"
+      label: "内部合同审批和续签流程"
+
+exceptions:
+  - id: "EXTENDED_TERM_NOT_YET_EXPIRED"
+    description: "续延期限尚未届满，本次不进入终止审查"
+    effect: "block"
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T08"

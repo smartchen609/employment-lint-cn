@@ -1,0 +1,107 @@
+# 劳动合同法第四十条第三项 —— 变更劳动合同协商前置程序缺失
+# 对应输出模板 C14（round2 §7）。问题树 B06 / B07 / B09。
+#
+# round2 §3.3 第三条护栏：第40条第3项必须拆成四层。
+# 本规则负责第三层"进行过真实的合同变更协商"。
+
+id: "CN-NAT-LCL-40-3-CONSULTATION-MISSING"
+version: "1.0.0"
+status: "active"
+
+title: "未进行实质性的劳动合同变更协商"
+description: >
+  用人单位解除前没有提出具体岗位，或者只讨论补偿与离职日期，
+  又或者仅要求劳动者自行查看内部招聘信息的，
+  不能等同于就变更劳动合同内容进行协商未能达成协议。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 90
+overrides: []
+
+provision_effective:
+  # 规格书未给出劳动合同法的施行日期，不得由 AI 推测。
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "fact-sensitive"
+severity: "error"
+
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第四十条第三项"
+
+conditions:
+  all:
+    - fact: "operation.selected_shape"
+      operator: "equals"
+      value: "ARTICLE_40_3"
+
+    - any:
+        - fact: "objective_change.consultation_type"
+          operator: "includes_any"
+          value:
+            - "NONE"
+            - "SEVERANCE_AND_EXIT_DATE_ONLY"
+            - "SELF_SERVE_INTERNAL_POSTINGS_ONLY"
+        - fact: "objective_change.concrete_offer_terms_complete"
+          operator: "equals"
+          value: false
+        - fact: "objective_change.employee_response"
+          operator: "in"
+          value:
+            - "NO_CHANCE_TO_RESPOND"
+            - "TERMINATED_BEFORE_RESPONSE"
+
+findings:
+  classification_candidates:
+    - "ARTICLE_40_3_CONSULTATION_GAP"
+    - "UNLAWFUL_TERMINATION_CANDIDATE"
+  headline: "双方谈的可能是离职，而不是合同变更"
+  explanation: >
+    "谈过话"不等于"谈过如何继续履行劳动合同"。
+    真正需要核对的是，公司是否明确提出过岗位、职责、工资、地点和生效时间，
+    并给予真实回应机会。
+    第40条第3项的协商前置条件存在明显缺口候选，
+    但最终仍需审查完整沟通记录。
+
+claim_guidance:
+  recommended:
+    - "审查公司是否提出过具体岗位及其核心条款"
+    - "保存全部沟通记录以还原协商过程"
+  do_not_claim:
+    - "不得把公司谈过补偿等同于完成了合同变更协商"
+    - "不得仅凭本规则直接输出违法解除赔偿金"
+  review_required: false
+
+evidence:
+  required:
+    - id: "TERMINATION_NOTICE_ORIGINAL"
+      label: "解除通知原件及全部版本"
+    - id: "PRE_TERMINATION_COMMUNICATIONS"
+      label: "解除前与岗位、工资、地点、职责有关的沟通"
+
+  supporting:
+    - id: "SEVERANCE_ONLY_RECORDS"
+      label: "仅谈补偿而未谈岗位的记录"
+    - id: "EMPLOYEE_ALTERNATIVE_PROPOSALS"
+      label: "劳动者提出的替代建议"
+
+  contrary:
+    - id: "CONCRETE_ROLE_OFFER"
+      label: "公司提出过含岗位名称、职责、工资、地点、生效时间的具体方案"
+
+  at_risk_after_exit:
+    - id: "INTERNAL_IM_AND_MAILBOX"
+      label: "企业邮箱、飞书、钉钉、Slack 等内部沟通完整历史"
+
+exceptions: []
+
+last_reviewed_at: "2026-09-03"
+
+tests:
+  - "T15"
