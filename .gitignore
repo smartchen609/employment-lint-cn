@@ -12,3 +12,6 @@ coverage/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# 构建产物
+src/generated/

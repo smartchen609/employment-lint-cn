@@ -31,6 +31,7 @@ import { parse } from "yaml";
 import { z } from "zod";
 
 import { RuleRecord } from "../src/schema/rule.js";
+import { EndpointTemplateFile, EvidenceChecklistFile } from "../src/schema/copy.js";
 import { SourceRegistry } from "../src/schema/source.js";
 import { TestFixture } from "../src/schema/fixture.js";
 
@@ -58,7 +59,10 @@ function walkYaml(dir: string): string[] {
   }
   for (const e of entries) {
     const p = join(dir, e);
-    if (statSync(p).isDirectory()) out = out.concat(walkYaml(p));
+    if (statSync(p).isDirectory()) {
+      if (e === "copy") continue; // 文案单独校验，不是 RuleRecord
+      out = out.concat(walkYaml(p));
+    }
     else if (e.endsWith(".yml") || e.endsWith(".yaml")) out.push(p);
   }
   return out.sort();
@@ -221,6 +225,41 @@ for (const file of ruleFiles) {
 }
 
 /* ------------------------------------------------------------------ */
+/* 3b. 输出文案                                                        */
+/* ------------------------------------------------------------------ */
+
+const copyFiles: Array<[string, "endpoints" | "evidence"]> = [
+  ["rules/copy/classification.yml", "endpoints"],
+  ["rules/copy/claim-paths.yml", "endpoints"],
+  ["rules/copy/evidence.yml", "evidence"],
+];
+
+const endpointIds = new Set<string>();
+
+for (const [relPath, kind] of copyFiles) {
+  const file = join(ROOT, relPath);
+  let raw: unknown;
+  try {
+    raw = loadYaml(file);
+  } catch (e) {
+    err(relPath, `无法解析: ${(e as Error).message}`);
+    continue;
+  }
+  const schema = kind === "endpoints" ? EndpointTemplateFile : EvidenceChecklistFile;
+  const parsed = schema.safeParse(raw);
+  if (!parsed.success) {
+    err(relPath, "结构校验失败:\n" + formatZod(parsed.error).join("\n"));
+    continue;
+  }
+  if (kind === "endpoints") {
+    for (const t of (parsed.data as { templates: Array<{ id: string }> }).templates) {
+      if (endpointIds.has(t.id)) err(relPath, `重复的终点编号: ${t.id}`);
+      endpointIds.add(t.id);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* 9. 未核验来源                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -263,7 +302,10 @@ for (const s of todoUrls) {
 /* 输出                                                               */
 /* ------------------------------------------------------------------ */
 
-notices.push(`规则文件 ${ruleFiles.length} 个，测试用例 ${fixtureFiles.length} 个，来源 ${sourceById.size} 条`);
+notices.push(
+  `规则文件 ${ruleFiles.length} 个，输出模板 ${endpointIds.size} 条，` +
+    `测试用例 ${fixtureFiles.length} 个，来源 ${sourceById.size} 条`,
+);
 notices.push(
   `已人工核验来源 ${sourceById.size - unverified.length}/${sourceById.size}` +
     (unverified.length ? `，待核验 ${unverified.map((s) => s.id).join("、")}` : ""),
