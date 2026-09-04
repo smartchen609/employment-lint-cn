@@ -206,9 +206,34 @@ describe("sources.yml 实文件", () => {
     expect(registry.sources.length).toBeGreaterThan(0);
   });
 
-  it("当前全部来源均为未核验状态（AI 不得代为置 true）", () => {
-    for (const s of registry.sources) {
-      expect(s.page_opened_and_checked, `${s.id} 的核验状态只能由维护人手工修改`).toBe(false);
+  /**
+   * 已由维护人亲自打开官方原文页核对过的来源。
+   *
+   * **这个清单只能由维护人扩充。** 断言用集合相等而非包含关系：
+   * 任何一条来源在未登记到本清单的情况下被置为 true，测试立即失败。
+   * 这样 AI 无法悄悄放行一条未核验来源。CLAUDE.md §L3。
+   */
+  const MAINTAINER_VERIFIED = new Set(["CN-LDCA-2008"]);
+
+  it("核验状态与维护人清单严格一致（AI 不得代为置 true）", () => {
+    const actual = new Set(
+      registry.sources.filter((s) => s.page_opened_and_checked).map((s) => s.id),
+    );
+    expect([...actual].sort()).toEqual([...MAINTAINER_VERIFIED].sort());
+  });
+
+  it("已核验来源必须有完整的核验记录", () => {
+    for (const s of registry.sources.filter((x) => x.page_opened_and_checked)) {
+      expect(s.last_verified_at, `${s.id} 缺 last_verified_at`).not.toBe("");
+      expect(s.verified_by, `${s.id} 缺 verified_by`).not.toBe("");
+      expect(s.url, `${s.id} 的 URL 仍是 TODO_VERIFY`).not.toBe("TODO_VERIFY");
+    }
+  });
+
+  it("未核验来源不得声称已核验", () => {
+    for (const s of registry.sources.filter((x) => !x.page_opened_and_checked)) {
+      expect(s.last_verified_at, `${s.id} 未核验却填了日期`).toBe("");
+      expect(s.verified_by, `${s.id} 未核验却填了核验人`).toBe("");
     }
   });
 

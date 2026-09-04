@@ -114,9 +114,9 @@ sources:
       - "第二十七条第二款"
       - "第二十七条第三款"
       - "第二十七条第四款"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-04"
+    verified_by: "apangchen"
     status: "active"
     note: >
       仲裁时效依据。由维护人于 2026-09-03 指定中国人大网法律全文页为官方来源，
@@ -147,20 +147,3 @@ sources:
       URL 抄自 round2 脚注 [5]。这是媒体报道而非裁判文书原文，
       official 为 false。只能作为 interpretive-signal 使用。
       维护人如能取得裁判文书原文，应另行登记并降低对本条的依赖。
-
-  - id: "HANGZHOU-ZHOU-AI-CASE"
-    publisher: "TODO_VERIFY"
-    authority_level: "published-case"
-    page_title: "杭州 AI 替岗案"
-    official: false
-    url: "TODO_VERIFY"
-    pinpoint:
-      - "杭州 AI 替岗案裁判要旨"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
-    status: "active"
-    note: >
-      round2 §11.5 的 AI 解释信号规则引用了本来源，
-      但规格书未给出案号、审理法院或任何 URL，全部填 TODO_VERIFY。
-      在维护人补齐前，P1 的 AI 规则不得依赖本条目作为唯一来源。

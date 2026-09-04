@@ -1,0 +1,152 @@
+# 劳动争议调解仲裁法第二十七条 —— 仲裁时效
+# 对应输出模板 R06（round2 §7）。问题树 P06 / P07。
+#
+# ## 起算点的适用范围（维护人 2026-09-04 决定，见 docs/open-questions.md Q5）
+#
+# 第二十七条第一款的一般起算点是"知道或者应当知道其权利被侵害之日"。
+# 维护人明确：该表述**更多指向在职期间的纠纷**；
+# 对于本工具唯一覆盖的解除、终止类争议，原则上就是**离职后一年内**。
+#
+# 因此本规则以解除或终止之日作为起算日，
+# 并且**只在解除/终止争议范围内成立** —— 由 conditions 中的
+# scope.dispute_category 显式限定，不得被引擎泛化到其他争议类型。
+#
+# ## 本规则不得输出"已经失效"
+#
+# 第二款中断、第三款中止是结构性约束：
+# 工具不会仅按日期宣布请求已经失效，也不会因曾经口头沟通就自动认定中断。
+# severity 为 warning，uncertainty 为 fact-sensitive，二者不得升格。
+
+id: "CN-NAT-LDCA-27-LIMITATION"
+version: "1.0.0"
+status: "active"
+
+title: "劳动争议仲裁时效一年及其中断、中止"
+description: >
+  劳动争议申请仲裁的时效期间为一年。
+  在本工具覆盖的解除、终止类争议中，以解除或终止之日为起算日。
+  向对方主张权利、向有关部门请求权利救济、对方同意履行义务的，时效中断并重新计算；
+  因不可抗力或者其他正当理由不能申请仲裁的，时效中止。
+  本规则只输出时效风险提示，不判断请求是否已经失效。
+
+jurisdiction:
+  country: "CN"
+  level: "national"
+
+priority: 120
+overrides: []
+
+provision_effective:
+  from: "TODO_VERIFY"
+  to: null
+
+authority_type: "statute"
+uncertainty: "fact-sensitive"
+severity: "warning"
+
+legal_basis:
+  - source_id: "CN-LDCA-2008"
+    instrument: "中华人民共和国劳动争议调解仲裁法"
+    article: "第二十七条第一款"
+    note: "一年时效期间及起算点"
+  - source_id: "CN-LDCA-2008"
+    instrument: "中华人民共和国劳动争议调解仲裁法"
+    article: "第二十七条第二款"
+    note: "中断事由，中断后重新计算"
+  - source_id: "CN-LDCA-2008"
+    instrument: "中华人民共和国劳动争议调解仲裁法"
+    article: "第二十七条第三款"
+    note: "中止事由，原因消除后继续计算"
+  - source_id: "CN-CIVIL-CODE-2021"
+    instrument: "中华人民共和国民法典"
+    article: "第二百零二条"
+    note: "一年按日历年计算的依据，禁止实现为 365 天"
+
+conditions:
+  all:
+    # 起算点结论只在解除/终止争议内成立，不得泛化。
+    - fact: "scope.dispute_category"
+      operator: "equals"
+      value: "TERMINATION_OR_EXPIRY"
+
+    - fact: "operation.effective_status"
+      operator: "equals"
+      value: "EFFECTIVE"
+
+    - derived_fact: "procedure.limitation_exceeds_one_calendar_year"
+      operator: "equals"
+      value: true
+
+findings:
+  base:
+    - "ARBITRATION_LIMITATION_RISK"
+
+  conditional:
+    - when:
+        fact: "procedure.limitation_interruption_events"
+        operator: "in"
+        value:
+          - "NONE"
+          - "UNKNOWN"
+      add:
+        - "LIMITATION_NO_KNOWN_INTERRUPTION"
+
+    - when:
+        fact: "procedure.limitation_interruption_events"
+        operator: "equals"
+        value: "WRITTEN_CLAIM_OR_AGENCY_OR_EMPLOYER_CONSENT"
+      add:
+        - "LIMITATION_POSSIBLE_INTERRUPTION_RECALCULATION"
+
+claim_guidance:
+  recommended:
+    - "时效问题应当优先于其他争点处理"
+    - "固定每次向公司主张权利的日期和原文"
+    - "固定向有关部门请求救济或公司同意履行的记录"
+  do_not_claim:
+    - "不得仅按日期宣布请求已经失效"
+    - "不得因曾经口头沟通就自动认定时效中断"
+    - "不得为了赶时效而在未确定主张方向时随意填写请求"
+  review_required: true
+
+evidence:
+  required:
+    - id: "TERMINATION_OR_EXPIRY_DATE"
+      label: "解除或终止之日的书面依据"
+
+  supporting:
+    - id: "WRITTEN_CLAIMS_TO_EMPLOYER"
+      label: "每次向公司主张权利的日期和原文"
+    - id: "AGENCY_COMPLAINT_RECORDS"
+      label: "投诉、调解或向有关部门请求救济的记录"
+    - id: "EMPLOYER_CONSENT_TO_PERFORM"
+      label: "公司答复或承诺支付的记录"
+    - id: "ARBITRATION_FILING_RECEIPT"
+      label: "仲裁申请和收件凭证"
+
+  contrary:
+    - id: "NO_CLAIM_DURING_PERIOD"
+      label: "期间未曾主张权利的情况说明"
+
+  at_risk_after_exit:
+    - id: "EMPLOYER_IM_AND_MAIL_HISTORY"
+      label: "企业邮箱与内部沟通中的主张权利记录"
+
+exceptions:
+  - id: "WAGE_ARREARS_SPECIAL_RULE"
+    description: >
+      拖欠劳动报酬争议适用第二十七条第四款的特别规则
+      （劳动关系存续期间不受一年限制，终止后自终止之日起一年内提出）。
+      欠薪不在本工具覆盖范围（round2 §17 禁做清单），
+      命中时应转入 C18 未覆盖范围，不由本规则处理。
+    effect: "block"
+  - id: "IN_SERVICE_DISPUTE"
+    description: >
+      在职期间发生的争议，起算点回到"知道或者应当知道其权利被侵害之日"，
+      本规则的离职日起算结论不适用。
+    effect: "block"
+
+last_reviewed_at: "2026-09-04"
+
+tests:
+  - "T19"

@@ -98,7 +98,16 @@
 - D01–D04 事实解除路径（C03）
 - A02 法定续延、A14 排除事由（C18 未覆盖）
 
-时效相关路径（P06 / P07 / R06）**尚未定义**，
-原因见 `docs/open-questions.md` Q5：第二十七条第一款的起算点是
-"知道或者应当知道其权利被侵害之日"，与 round2 P06 现有问法不一致，
-需维护人先决定问法后才能定 fact 路径。
+时效相关路径已于 2026-09-04 定义，见 open-questions Q5：
+
+| 路径 | 说明 |
+| --- | --- |
+| `scope.dispute_category` | 显式限定时效起算结论只在解除/终止争议内成立 |
+| `operation.effective_status` | 操作未生效时不进入时效计算 |
+| `procedure.limitation_interruption_events` | 中断事由；工具不因口头沟通自动认定中断 |
+| `procedure.limitation_exceeds_one_calendar_year`（派生） | 按日历年，禁止 365 天 |
+
+维护人明确：第二十七条第一款"知道或者应当知道其权利被侵害之日"的表述
+更多指向**在职期间**的纠纷；解除、终止类争议原则上就是离职后一年内。
+因此 P06 问法保持不变，但结论范围由 `scope.dispute_category` 锁死，
+并以 `IN_SERVICE_DISPUTE`、`WAGE_ARREARS_SPECIAL_RULE` 两条例外阻断泛化。

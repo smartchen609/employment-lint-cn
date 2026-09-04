@@ -99,8 +99,6 @@ exceptions: []
 sources:
   - source_id: "GUANGZHOU-WEI-AI-CASE"
     binding_role: "interpretive-signal"
-  - source_id: "HANGZHOU-ZHOU-AI-CASE"
-    binding_role: "interpretive-signal"
 
 last_reviewed_at: "2026-09-03"
 

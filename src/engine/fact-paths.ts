@@ -57,6 +57,17 @@ export const DIRECT_FACT_PATHS = [
   "procedure.preferred_remedy",
   "procedure.continued_performance_impossible",
 
+  // --- 仲裁时效 · round2 §4.7 P06–P07 ---
+  /**
+   * 争议类别。时效规则的离职日起算结论**只在解除/终止争议内成立**，
+   * 靠这个 fact 显式限定，不得被引擎泛化。见 docs/open-questions.md Q5。
+   */
+  "scope.dispute_category",
+  /** G02：操作是否已生效。未生效时不进入时效计算。 */
+  "operation.effective_status",
+  /** P07：是否存在中断事由。工具不因口头沟通自动认定中断。 */
+  "procedure.limitation_interruption_events",
+
   /**
    * 跨规则依赖：救济路径规则要读取定性阶段是否已产生违法解除/终止候选。
    * 因此引擎必须**分两轮**求值 —— 先跑定性规则，回填后再跑救济规则。
@@ -76,6 +87,11 @@ export const DERIVED_FACT_PATHS = [
   "contract.extension.cumulative_calendar_months",
   /** 用人单位未表示异议是否超过一个日历月。 */
   "post_expiry.no_objection_exceeds_one_calendar_month",
+  /**
+   * 自解除或终止之日起是否已超过一个日历年。
+   * 同样走民法典第二百零二条，**禁止实现为 365 天**。
+   */
+  "procedure.limitation_exceeds_one_calendar_year",
 ] as const;
 
 export type DirectFactPath = (typeof DIRECT_FACT_PATHS)[number];
