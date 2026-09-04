@@ -30,9 +30,17 @@ priority: 50
 overrides: []
 
 provision_effective:
-  # 案例形成的解释信号没有"条款生效日"。
-  # 规格书未给出裁判日期或发布日期，不得由 AI 推测。
-  from: "TODO_VERIFY"
+  # 案例形成的解释信号**没有"条款生效日"**。
+  #
+  # 这里填的是广州魏某案报道的公开发布日（中国青年报 2026-07-16，
+  # 见 sources.yml 中 GUANGZHOU-WEI-AI-CASE 的 URL 路径 202607/16），
+  # 含义是"该解释信号自此日起可被公开援引"，
+  # **不是**该裁判观点自此日起才成立，也不是任何条文的施行日。
+  #
+  # 结果页对本规则显示"条款生效"时应理解为上述含义。
+  # 若维护人取得裁判文书原文，应改为裁判作出日并同步更新来源。
+  # 见 docs/open-questions.md Q11。
+  from: "2026-07-16"
   to: null
 
 authority_type: "published-case"

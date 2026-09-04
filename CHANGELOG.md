@@ -7,11 +7,22 @@
 
 ## [未发布]
 
+### 2026-09-04
+
+- **6 条法律来源全部完成人工核验，`npm run build` 首次通过。**
+  核验记录写入 `sources.yml` 的 `verification_record` 字段。
+  深圳条例附则第七十二条证实 round3 §0 的结论：施行日为 2008-11-01。
+- 8 条规则的 `provision_effective.from` 由 `TODO_VERIFY` 填为真实施行日：
+  劳动合同法 2008-01-01、劳动争议调解仲裁法 2008-05-01。
+- schema 新增 `verification_record` 与 `insecure_url_reason` 两个字段。
+  后者用于中国人大网这类 https 握手失败、仅 http 可达的官方站点 ——
+  允许 http，但必须写明原因。
+
 ### 待完成
 
-- 5 条法律来源的人工核验（`npm run build` 在此之前必然失败）
-- 7 条规则的 `provision_effective.from` 仍为 `TODO_VERIFY`
-- 真实案件回放与 5—8 名程序员盲测（round2 §19 验收标准第 2、10 条）
+- 真实案件回放：25 条 fixture 的 `actual_result` 仍为空
+- 5—8 名程序员盲测（round2 §19 验收标准第 10、11 条）
+- 3—5 个留置真实案件的漏报检查（第 12 条）
 
 ## [0.1.0] — 开发中
 

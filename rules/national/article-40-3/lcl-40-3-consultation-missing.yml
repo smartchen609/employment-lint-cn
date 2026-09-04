@@ -22,8 +22,7 @@ priority: 90
 overrides: []
 
 provision_effective:
-  # 规格书未给出劳动合同法的施行日期，不得由 AI 推测。
-  from: "TODO_VERIFY"
+  from: "2008-01-01"
   to: null
 
 authority_type: "statute"

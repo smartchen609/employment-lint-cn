@@ -34,7 +34,7 @@ priority: 10
 overrides: []
 
 provision_effective:
-  from: "TODO_VERIFY"
+  from: "2008-01-01"
   to: null
 
 authority_type: "statute"

@@ -213,7 +213,14 @@ describe("sources.yml 实文件", () => {
    * 任何一条来源在未登记到本清单的情况下被置为 true，测试立即失败。
    * 这样 AI 无法悄悄放行一条未核验来源。CLAUDE.md §L3。
    */
-  const MAINTAINER_VERIFIED = new Set(["CN-LDCA-2008"]);
+  const MAINTAINER_VERIFIED = new Set([
+    "SPC-LABOR-II-2025",
+    "CN-LCL-2012",
+    "CN-CIVIL-CODE-2021",
+    "CN-LDCA-2008",
+    "SZ-HARMONIOUS-LABOR-2008",
+    "GUANGZHOU-WEI-AI-CASE",
+  ]);
 
   it("核验状态与维护人清单严格一致（AI 不得代为置 true）", () => {
     const actual = new Set(

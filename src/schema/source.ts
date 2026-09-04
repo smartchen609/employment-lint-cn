@@ -30,7 +30,8 @@ export const SourceAuthorityLevel = z.enum([
  * **不得由 AI 自行填写或推测 URL。** CLAUDE.md §L1。
  */
 export const SourceUrl = z.union([
-  z.string().url().startsWith("https://", "来源 URL 必须为 https"),
+  z.string().url().startsWith("https://"),
+  z.string().url().startsWith("http://"),
   z.literal("TODO_VERIFY"),
 ]);
 
@@ -54,6 +55,20 @@ export const SourceRecord = z
     status: z.enum(["active", "superseded", "forbidden"]),
     /** status 为 forbidden 时必填，说明为何禁止使用。 */
     forbidden_reason: z.string().optional(),
+    /**
+     * url 为 http（非 https）时必填。
+     *
+     * 部分中国政府网站至今不提供可用的 https。强制 https 会逼我们改用
+     * 转载页，而"来源注册表"的全部意义就在于指向制定机关本身的页面 ——
+     * 那是更坏的取舍。所以允许 http，但必须写明为什么。
+     */
+    insecure_url_reason: z.string().optional(),
+    /**
+     * 人工核验记录：核了什么、看到了什么。
+     * page_opened_and_checked 只是一个布尔值，说明不了核验到什么程度；
+     * 这里记录实际看到的条文与日期，让第三方能复核这次核验本身。
+     */
+    verification_record: z.string().optional(),
     note: z.string().optional(),
   })
   .strict()
@@ -77,6 +92,13 @@ export const SourceRecord = z
         code: z.ZodIssueCode.custom,
         path: ["url"],
         message: "URL 仍为 TODO_VERIFY 的来源不可能已被核验",
+      });
+    }
+    if (s.url.startsWith("http://") && !s.insecure_url_reason) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["insecure_url_reason"],
+        message: "使用 http（非 https）的来源必须写明 insecure_url_reason",
       });
     }
     if (s.status === "forbidden" && !s.forbidden_reason) {
