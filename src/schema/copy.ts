@@ -48,7 +48,18 @@ export const EndpointTemplate = z
     body: z.array(z.string().min(1)).default([]),
     primary_warning: z.string().min(1),
     sections: z.array(CopySection).default([]),
-    /** 该终点关联的 Finding 标识，供引擎结果映射到文案。 */
+    /**
+     * 该终点由哪几条规则锚定。**优先于 findings 匹配。**
+     *
+     * 多条规则会产出同一个 Finding（如第十条第一项与第二项都产出
+     * DEEMED_SECOND_FIXED_TERM），只按 Finding 匹配会让 C07 与 C09 同时出现。
+     * 因此凡是能唯一对应到某条规则的终点，一律用 rule_ids 锚定。
+     */
+    rule_ids: z.array(z.string().min(1)).default([]),
+    /**
+     * 该终点关联的 Finding 标识。
+     * 仅用于同一条规则内部按 conditional findings 分岔的终点（C20/C21/C22、R01–R03）。
+     */
     findings: z.array(z.string().min(1)).default([]),
     /** 与规格书原文的偏离说明。仅在不得不改动时填写。 */
     deviation_note: z.string().optional(),

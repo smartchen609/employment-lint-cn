@@ -54,6 +54,10 @@ export const DIRECT_FACT_PATHS = [
   "objective_change.notice_or_one_month_pay",
 
   // --- 主张与程序 · round2 §4.7 P01–P07 ---
+  /** P01：仲裁程序进行到哪一步。只用于复杂度触发，不进规则条件。 */
+  "procedure.arbitration_filed",
+  /** P04：已提交的核心请求，用于检查诉请与当前方向是否一致。 */
+  "procedure.current_claim",
   "procedure.preferred_remedy",
   "procedure.continued_performance_impossible",
 

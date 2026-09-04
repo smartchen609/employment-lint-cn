@@ -128,9 +128,9 @@ templates:
 
   - id: "C06"
     title: "规则命中：你已经实际连续履行两次固定期限劳动合同"
-    findings:
-      - "INDEFINITE_TERM_OBLIGATION_CANDIDATE"
-      - "UNLAWFUL_TERMINATION_CANDIDATE"
+    # 仅在**实际**签过两次时出现；靠视同规则达到二次的，由 C07–C11 承担。
+    rule_ids:
+      - "CN-NAT-LCL-14-2-3"
     body:
       - >
         如果你在合同到期前或到期时提出或者同意续订，且没有劳动合同法规定的排除情形，
@@ -151,8 +151,8 @@ templates:
 
   - id: "C07"
     title: "规则命中：协商延长期限可能被视为第二次固定期限劳动合同"
-    findings:
-      - "DEEMED_SECOND_FIXED_TERM"
+    rule_ids:
+      - "CN-NAT-SPC-LABOR-II-10-1"
     body:
       - "你填写的日期显示，双方协商延长原劳动合同期限累计达到一年以上，且延长期限已经届满。"
       - "根据当前全国规则，这一情形应当进入\"连续订立二次固定期限劳动合同\"的审查路径。"
@@ -172,8 +172,8 @@ templates:
 
   - id: "C08"
     title: "深圳规则命中：协商延长期限可能已被视为续订"
-    findings:
-      - "SZ_DEEMED_RENEWAL"
+    rule_ids:
+      - "CN-SZ-HARMONIOUS-LABOR-18-2"
     body:
       - "你的主要劳动合同履行地在深圳，且双方协商延长劳动合同期限累计超过六个月。"
       - "深圳现行地方规则将这种情形视为续订劳动合同。"
@@ -196,8 +196,8 @@ templates:
 
   - id: "C09"
     title: "规则命中：自动续延可能构成第二次固定期限劳动合同"
-    findings:
-      - "DEEMED_SECOND_FIXED_TERM"
+    rule_ids:
+      - "CN-NAT-SPC-LABOR-II-10-2"
     body:
       - "原劳动合同约定期满后自动续延，双方也在原到期日后继续履行，现续延期限再次届满。"
       - "根据当前规则，这一情形应当进入\"连续订立二次固定期限劳动合同\"的审查路径。"
@@ -215,8 +215,8 @@ templates:
 
   - id: "C10"
     title: "规则命中候选：变更签约主体可能不阻断合同次数"
-    findings:
-      - "ENTITY_CHANGE_DOES_NOT_RESET_COUNT"
+    rule_ids:
+      - "CN-NAT-SPC-LABOR-II-10-3"
     body:
       - >
         你并非因本人原因更换签约主体，但仍在原工作场所、原岗位或基本相同岗位工作，
@@ -239,8 +239,8 @@ templates:
 
   - id: "C11"
     title: "裁量风险：存在规避无固定期限合同的候选行为"
-    findings:
-      - "GOOD_FAITH_AVOIDANCE_CANDIDATE"
+    rule_ids:
+      - "CN-NAT-SPC-LABOR-II-10-4"
     body:
       - >
         你填写的事实显示，公司可能通过个人辞职后立即重签、形式性短暂中断、
@@ -274,8 +274,8 @@ templates:
 
   - id: "C13"
     title: "Warning：AI 替代、降本增效或内部缩编，不当然等于客观情况发生重大变化"
-    findings:
-      - "ARTICLE_40_3_CAUSE_NOT_ESTABLISHED_ALONE"
+    rule_ids:
+      - "CN-GD-AI-REPLACEMENT-NOT-SUFFICIENT-ALONE"
     body:
       - "公司给出的理由主要来自主动引入 AI、提高人效、降低成本、压缩团队或者内部调整。"
       - "这类理由可以解释公司为什么想减少岗位，但不能单独证明："
@@ -299,9 +299,8 @@ templates:
 
   - id: "C14"
     title: "关键前置程序缺失候选：双方谈的是离职，不是合同变更"
-    findings:
-      - "ARTICLE_40_3_CONSULTATION_GAP"
-      - "UNLAWFUL_TERMINATION_CANDIDATE"
+    rule_ids:
+      - "CN-NAT-LCL-40-3-CONSULTATION-MISSING"
     body:
       - >
         你填写的事实显示，公司解除前没有提出具体岗位，
@@ -317,8 +316,8 @@ templates:
 
   - id: "C15"
     title: "事实与裁量问题：公司提出了方案，但不等于完成了合理协商"
-    findings:
-      - "ARTICLE_40_3_OFFER_REASONABLENESS_DISPUTED"
+    rule_ids:
+      - "CN-NAT-LCL-40-3-OFFER-REASONABLENESS"
     body:
       - >
         公司确实提出过具体岗位，但该方案可能包含明显降薪、降级、跨城市、
@@ -347,8 +346,8 @@ templates:
 
   - id: "C16"
     title: "在当前覆盖范围内，暂未发现第 40 条第 3 项的明显缺口"
-    findings:
-      - "ARTICLE_40_3_NO_CONFLICT_FOUND_WITHIN_COVERAGE"
+    rule_ids:
+      - "CN-NAT-LCL-40-3-SURFACE-COMPLETE"
     body:
       - "你填写的事实显示："
     primary_warning: >

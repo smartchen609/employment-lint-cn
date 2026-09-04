@@ -104,8 +104,8 @@ templates:
 
   - id: "R06"
     title: "时效 Warning：解除或终止距今可能已经超过一年"
-    findings:
-      - "ARBITRATION_LIMITATION_RISK"
+    rule_ids:
+      - "CN-NAT-LDCA-27-LIMITATION"
     body:
       - >
         劳动争议仲裁的一般时效为一年，
