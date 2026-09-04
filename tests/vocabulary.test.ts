@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
-import { parse } from "yaml";
-import { RuleRecord, TestFixture } from "../src/schema/index.js";
 import { DERIVED_FACT_PATHS, DIRECT_FACT_PATHS } from "../src/engine/fact-paths.js";
+import { loadFixtures, loadRules, type LoadedFixture, type LoadedRule } from "./helpers.js";
 import {
   BOOLEAN_FACT_PATHS,
   FACT_VALUES,
@@ -18,28 +15,9 @@ import {
  * 这类漂移的失败模式是**静默漏报**，对 linter 来说最危险，因此必须机器强制。
  */
 
-const ROOT = new URL("..", import.meta.url).pathname;
 
-function walk(dir: string): string[] {
-  let out: string[] = [];
-  for (const e of readdirSync(dir)) {
-    const p = join(dir, e);
-    if (statSync(p).isDirectory()) out = out.concat(walk(p));
-    else if (e.endsWith(".yml")) out.push(p);
-  }
-  return out.sort();
-}
-const load = <T>(s: { parse: (x: unknown) => T }, f: string): T =>
-  s.parse(parse(readFileSync(f, "utf8"), { version: "1.2", uniqueKeys: true }));
-
-const rules = walk(join(ROOT, "rules")).map((f) => ({
-  file: f.replace(ROOT, ""),
-  rule: load(RuleRecord, f),
-}));
-const fixtures = walk(join(ROOT, "tests", "fixtures")).map((f) => ({
-  file: f.replace(ROOT, ""),
-  fixture: load(TestFixture, f),
-}));
+const rules = loadRules();
+const fixtures = loadFixtures();
 
 const KNOWN = new Set<string>([...DIRECT_FACT_PATHS, ...DERIVED_FACT_PATHS]);
 
@@ -92,7 +70,7 @@ describe("规则条件的取值都在词表内", () => {
     for (const v of Object.values(o)) collect(v, out);
   }
 
-  it.each(rules)("$file", ({ rule }) => {
+  it.each<LoadedRule>(rules)("$file", ({ rule }) => {
     const found: Array<[string, unknown]> = [];
     collect(rule.conditions, found);
     collect(rule.findings, found);
@@ -125,7 +103,7 @@ describe("fixture 输入的取值都在词表内", () => {
     }
   }
 
-  it.each(fixtures)("$file", ({ fixture }) => {
+  it.each<LoadedFixture>(fixtures)("$file", ({ fixture }) => {
     const found: Array<[string, unknown]> = [];
     flatten(fixture.input, "", found);
     for (const [path, value] of found) {

@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
-import { parse } from "yaml";
-import { RuleRecord } from "../src/schema/index.js";
 import { DERIVED_FACT_PATHS, DIRECT_FACT_PATHS } from "../src/engine/fact-paths.js";
+import { loadRules } from "./helpers.js";
 
 /**
  * P1 规则层守卫测试。
@@ -12,23 +9,9 @@ import { DERIVED_FACT_PATHS, DIRECT_FACT_PATHS } from "../src/engine/fact-paths.
  * 它们保护的是 CLAUDE.md 里可以机器检查的那部分硬约束。
  */
 
-const ROOT = new URL("..", import.meta.url).pathname;
 
-function walk(dir: string): string[] {
-  let out: string[] = [];
-  for (const e of readdirSync(dir)) {
-    const p = join(dir, e);
-    if (statSync(p).isDirectory()) out = out.concat(walk(p));
-    else if (e.endsWith(".yml")) out.push(p);
-  }
-  return out.sort();
-}
 
-const files = walk(join(ROOT, "rules"));
-const rules = files.map((f) => ({
-  file: f.replace(ROOT, ""),
-  rule: RuleRecord.parse(parse(readFileSync(f, "utf8"), { version: "1.2", uniqueKeys: true })),
-}));
+const rules = loadRules();
 
 describe("规则文件", () => {
   it("目录非空", () => {

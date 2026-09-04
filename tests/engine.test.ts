@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
-import { parse } from "yaml";
-import { RuleRecord } from "../src/schema/index.js";
 import { evaluateAllApplicableRules } from "../src/engine/evaluate.js";
+import { loadRules } from "./helpers.js";
 import { evaluateCondition } from "../src/engine/conditions.js";
 import { deriveFacts, getFact } from "../src/engine/facts.js";
 
@@ -14,19 +11,7 @@ import { deriveFacts, getFact } from "../src/engine/facts.js";
  * 本文件验证"结构对不对"，即使将来规则改了也必须成立。
  */
 
-const ROOT = new URL("..", import.meta.url).pathname;
-function walk(dir: string): string[] {
-  let out: string[] = [];
-  for (const e of readdirSync(dir)) {
-    const p = join(dir, e);
-    if (statSync(p).isDirectory()) out = out.concat(walk(p));
-    else if (e.endsWith(".yml")) out.push(p);
-  }
-  return out.sort();
-}
-const rules = walk(join(ROOT, "rules")).map((f) =>
-  RuleRecord.parse(parse(readFileSync(f, "utf8"), { version: "1.2", uniqueKeys: true })),
-);
+const rules = loadRules().map((r) => r.rule);
 
 const baseExpiry = {
   evaluation_date: "2026-09-04",

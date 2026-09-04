@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
-import { parse } from "yaml";
-import { RuleRecord, TestFixture } from "../src/schema/index.js";
 import { evaluateAllApplicableRules } from "../src/engine/evaluate.js";
+import { loadFixtures, loadRules } from "./helpers.js";
 
 /**
  * 规格书测试用例回归。
@@ -12,23 +9,10 @@ import { evaluateAllApplicableRules } from "../src/engine/evaluate.js";
  * 「fixture 自身纪律」一组应当是绿的 —— 它检查的是用例本身写得对不对。
  */
 
-const ROOT = new URL("..", import.meta.url).pathname;
 
-function walk(dir: string): string[] {
-  let out: string[] = [];
-  for (const e of readdirSync(dir)) {
-    const p = join(dir, e);
-    if (statSync(p).isDirectory()) out = out.concat(walk(p));
-    else if (e.endsWith(".yml")) out.push(p);
-  }
-  return out.sort();
-}
 
-const load = <T>(schema: { parse: (x: unknown) => T }, f: string): T =>
-  schema.parse(parse(readFileSync(f, "utf8"), { version: "1.2", uniqueKeys: true }));
-
-const fixtures = walk(join(ROOT, "tests", "fixtures")).map((f) => load(TestFixture, f));
-const rules = walk(join(ROOT, "rules")).map((f) => load(RuleRecord, f));
+const fixtures = loadFixtures().map((f) => f.fixture);
+const rules = loadRules().map((r) => r.rule);
 
 describe("fixture 自身纪律", () => {
   it("共 25 条（T01–T20 + T11A–T11E，维护人 2026-09-04 决定放宽自 20 条）", () => {
