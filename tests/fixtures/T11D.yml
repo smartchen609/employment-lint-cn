@@ -1,6 +1,8 @@
 id: "T11D"
 title: "已连续两次固定期限，第二次期满后继续工作超过一个月且单位未异议"
 input:
+  # 固定评估日：本用例依赖"截至当前"的计算，不得随系统时钟漂移
+  evaluation_date: "2026-09-04"
   scope:
     principal_place_of_performance: "CN-GD-SZ"
     dispute_category: "TERMINATION_OR_EXPIRY"
@@ -8,7 +10,7 @@ input:
     selected_shape: "FIXED_TERM_EXPIRY"
     effective_status: "EFFECTIVE"
   contract:
-    type: "fixed-term"
+    type: "FIXED_TERM"
     expired: true
     expiry_date: "2026-05-31"
     fixed_term_count: 2
@@ -22,7 +24,7 @@ input:
       extended_period_expired: false
     entity_change:
       occurred: false
-    avoidance_patterns: "NONE"
+    avoidance_patterns: []
   post_expiry:
     actual_work_continued: true
     employer_first_objection_date: null

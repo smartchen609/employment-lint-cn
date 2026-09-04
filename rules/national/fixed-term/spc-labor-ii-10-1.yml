@@ -42,11 +42,11 @@ conditions:
   all:
     - fact: "contract.type"
       operator: "equals"
-      value: "fixed-term"
+      value: "FIXED_TERM"
 
     - fact: "contract.extension.nature"
       operator: "equals"
-      value: "negotiated"
+      value: "NEGOTIATED"
 
     - derived_fact: "contract.extension.cumulative_calendar_months"
       operator: "greater_than_or_equal"

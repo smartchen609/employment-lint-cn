@@ -12,9 +12,10 @@ input:
     original_work_continues: "FULLY_STOPPED"
     consultation_type: "CONCRETE_POSITION_OFFERED"
     concrete_offer_terms_complete: true
-    adverse_changes: "SUBSTANTIALLY_EQUIVALENT"
+    adverse_changes:
+      - "SUBSTANTIALLY_EQUIVALENT"
     employee_response: "REFUSED_WITH_REASONS"
-    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN_NOTICE"
 expected:
   primary_endpoint: "C16"
   findings:

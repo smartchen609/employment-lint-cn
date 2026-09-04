@@ -12,9 +12,10 @@ input:
     original_work_continues: "BY_COLLEAGUES"
     consultation_type: "SELF_SERVE_JOB_BOARD_ONLY"
     concrete_offer_terms_complete: false
-    adverse_changes: "UNKNOWN"
+    adverse_changes:
+      - "UNKNOWN"
     employee_response: "NO_OPPORTUNITY"
-    notice_or_one_month_pay: "ONE_MONTH_PAY"
+    notice_or_one_month_pay: "ONE_MONTH_PAY_IN_LIEU"
 expected:
   primary_endpoint: "C14"
   findings:

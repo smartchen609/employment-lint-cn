@@ -12,9 +12,11 @@ input:
     original_work_continues: "PARTIALLY_STOPPED"
     consultation_type: "CONCRETE_POSITION_OFFERED"
     concrete_offer_terms_complete: true
-    adverse_changes: "SIGNIFICANT_PAY_CUT_AND_DEMOTION"
+    adverse_changes:
+      - "SIGNIFICANT_PAY_CUT"
+      - "SIGNIFICANT_LEVEL_DEMOTION"
     employee_response: "REFUSED_WITH_REASONS"
-    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN_NOTICE"
 expected:
   primary_endpoint: "C15"
   findings:

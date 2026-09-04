@@ -1,6 +1,8 @@
 id: "T19"
 title: "解除已超过一年，没有已知书面主张、政府救济或公司同意履行记录"
 input:
+  # 固定评估日：本用例依赖"截至当前"的计算，不得随系统时钟漂移
+  evaluation_date: "2026-09-04"
   scope:
     principal_place_of_performance: "CN-GD-SZ"
     dispute_category: "TERMINATION_OR_EXPIRY"
@@ -13,9 +15,10 @@ input:
     original_work_continues: "BY_COLLEAGUES"
     consultation_type: "SEVERANCE_ONLY"
     concrete_offer_terms_complete: false
-    adverse_changes: "UNKNOWN"
+    adverse_changes:
+      - "UNKNOWN"
     employee_response: "NO_OPPORTUNITY"
-    notice_or_one_month_pay: "NONE"
+    notice_or_one_month_pay: "NEITHER"
   procedure:
     arbitration_filed: "NOT_FILED"
     preferred_remedy: "UNDECIDED"

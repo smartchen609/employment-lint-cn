@@ -8,7 +8,7 @@ input:
     selected_shape: "FIXED_TERM_EXPIRY"
     effective_status: "EFFECTIVE"
   contract:
-    type: "fixed-term"
+    type: "FIXED_TERM"
     expired: true
     expiry_date: "2026-06-30"
     fixed_term_count: 1
@@ -22,7 +22,7 @@ input:
       extended_period_expired: false
     entity_change:
       occurred: false
-    avoidance_patterns: "NONE"
+    avoidance_patterns: []
   post_expiry:
     actual_work_continued: true
     employer_first_objection_date: "2026-07-20"

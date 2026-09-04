@@ -8,7 +8,7 @@ input:
     selected_shape: "FIXED_TERM_EXPIRY"
     effective_status: "EFFECTIVE"
   contract:
-    type: "fixed-term"
+    type: "FIXED_TERM"
     expired: true
     fixed_term_count: 2
     deemed_second_fixed_term: false
@@ -21,7 +21,7 @@ input:
       extended_period_expired: false
     entity_change:
       occurred: false
-    avoidance_patterns: "NONE"
+    avoidance_patterns: []
   post_expiry:
     actual_work_continued: false
     employer_later_terminated: false

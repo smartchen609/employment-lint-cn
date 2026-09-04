@@ -15,7 +15,8 @@ input:
     original_work_continues: "UNKNOWN"
     consultation_type: "NONE"
     concrete_offer_terms_complete: false
-    adverse_changes: "UNKNOWN"
+    adverse_changes:
+      - "UNKNOWN"
     employee_response: "NO_OPPORTUNITY"
     notice_or_one_month_pay: "UNKNOWN"
 expected:

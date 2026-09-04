@@ -12,9 +12,10 @@ input:
     original_work_continues: "BY_COLLEAGUES"
     consultation_type: "SEVERANCE_ONLY"
     concrete_offer_terms_complete: false
-    adverse_changes: "UNKNOWN"
+    adverse_changes:
+      - "UNKNOWN"
     employee_response: "NO_OPPORTUNITY"
-    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN"
+    notice_or_one_month_pay: "THIRTY_DAYS_WRITTEN_NOTICE"
   procedure:
     arbitration_filed: "NOT_FILED"
     preferred_remedy: "DAMAGES"

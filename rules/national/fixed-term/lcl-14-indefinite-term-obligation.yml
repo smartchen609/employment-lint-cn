@@ -51,8 +51,8 @@ conditions:
     - fact: "renewal.employee_willingness"
       operator: "in"
       value:
-        - "written"
-        - "oral"
+        - "WRITTEN"
+        - "ORAL"
 
     - fact: "renewal.employee_requested_fixed_term"
       operator: "equals"
@@ -60,7 +60,7 @@ conditions:
 
     - fact: "renewal.statutory_exception"
       operator: "equals"
-      value: false
+      value: "NONE"
 
 findings:
   classification_candidates:

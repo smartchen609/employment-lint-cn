@@ -43,18 +43,18 @@ conditions:
 
     - any:
         - fact: "objective_change.consultation_type"
-          operator: "includes_any"
+          operator: "in"
           value:
             - "NONE"
-            - "SEVERANCE_AND_EXIT_DATE_ONLY"
-            - "SELF_SERVE_INTERNAL_POSTINGS_ONLY"
+            - "SEVERANCE_ONLY"
+            - "SELF_SERVE_JOB_BOARD_ONLY"
         - fact: "objective_change.concrete_offer_terms_complete"
           operator: "equals"
           value: false
         - fact: "objective_change.employee_response"
           operator: "in"
           value:
-            - "NO_CHANCE_TO_RESPOND"
+            - "NO_OPPORTUNITY"
             - "TERMINATED_BEFORE_RESPONSE"
 
 findings:

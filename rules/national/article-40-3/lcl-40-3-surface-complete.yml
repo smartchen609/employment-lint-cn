@@ -55,11 +55,11 @@ conditions:
     - fact: "objective_change.cause_category"
       operator: "in"
       value:
-        - "EXTERNAL_POLICY_OR_FORCE_MAJEURE"
+        - "EXTERNAL_POLICY_OR_FORCE"
 
     - fact: "objective_change.original_work_continues"
       operator: "equals"
-      value: false
+      value: "FULLY_STOPPED"
 
     - fact: "objective_change.concrete_offer_terms_complete"
       operator: "equals"
@@ -74,7 +74,7 @@ conditions:
       operator: "in"
       value:
         - "REFUSED_WITH_REASONS"
-        - "REFUSED"
+        - "PROPOSED_ALTERNATIVE"
 
     - fact: "objective_change.notice_or_one_month_pay"
       operator: "in"
