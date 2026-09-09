@@ -18,7 +18,8 @@
     "check": "npm run typecheck && npm run validate && npm run test",
     "build:content": "tsx scripts/build-content.ts",
     "audit:bundle": "tsx scripts/audit-bundle.ts",
-    "test:mutation": "tsx scripts/mutation-test.ts"
+    "test:mutation": "tsx scripts/mutation-test.ts",
+    "check:full": "npm run check && npm run test:mutation && npm run build && npm run audit:bundle"
   },
   "dependencies": {
     "react": "^18.3.1",

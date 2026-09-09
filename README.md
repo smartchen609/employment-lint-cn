@@ -14,7 +14,7 @@
 - AI替岗、团队缩编或岗位取消，是否缺少第40条第3项的成立条件
 - 继续履行、赔偿金和经济补偿之间是否可能选错主张路径
 - 哪些证据现在还能取得，哪些会在账号关闭后消失
-- 导出一份可交给任何律师的 Markdown Case Report
+- 导出一份可交给任何律师的 Markdown Case Report，含"需要重点复核的问题"清单
 
 ## What it does not do
 
@@ -65,7 +65,7 @@ This is a linter, not a verdict.
 | --- | --- |
 | 规则 | 14 条 |
 | 输出模板 | 29 条（C00–C22、R01–R06） |
-| 测试 | 329 条 |
+| 测试 | 363 条 + 16 个突变 |
 | 已人工核验来源 | **6 / 6** |
 | 待完成 | 真实案件回放、程序员盲测 |
 
@@ -81,7 +81,7 @@ npm install
 npm run build:content   # YAML → JSON
 npm run dev             # http://localhost:5173
 npm run check           # typecheck + validate + test
-npx vite build && npm run audit:bundle   # 产物隐私审计
+npm run check:full      # 上面全部 + 突变测试 + 构建 + 产物隐私审计
 ```
 
 ### 目录
@@ -110,6 +110,11 @@ docs/spec/      规格书（round3 优先于 round2）
 
 `scripts/audit-bundle.ts` 扫描**打包产物**，因为依赖和构建工具
 可能注入源码里看不到的网络调用。
+
+`scripts/mutation-test.ts` 故意改坏 16 处（深圳施行日改回修正决定通过日、
+日历月改成 30 天、引擎命中一条就 return、不确定性取较低者……），
+验证测试套件会不会失败。**测试数量说明不了任何事**，
+要回答的是"改错了会被抓到吗"。目前 16/16 全部被抓。
 
 这些检查保护的是产品承诺本身 —— 否则某次重构顺手加一个缓存，
 整个信任结构就悄悄作废了。
