@@ -309,25 +309,26 @@ sources:
   - id: "SZ-COURT-LABOR-GUIDE-2015"
     publisher: "深圳市中级人民法院"
     authority_level: "local-court-guidance"
-    page_title: "深圳市中级人民法院关于审理劳动争议案件的裁判指引（2015年10月22日）"
+    page_title: "深圳市中级人民法院关于审理劳动争议案件的裁判指引（2015年9月2日审判委员会民事行政执行专业委员会第11次会议讨论通过）"
     official: true
-    url: "NO_PUBLIC_PAGE"
-    no_public_page_reason: >
-      2026-09-09 维护人确认：该裁判指引无公开的深圳法院官网原文页。
-      第八十一条第二款文本经知乎、劳动法苑、律所网站三处转载交叉比对一致，
-      由维护人（深圳执业律师）依职业知识确认。
+    url: "CORPUS"
+    corpus_file: "深圳市中级人民法院关于审理劳动争议案件的裁判指引.txt"
     pinpoint:
       - "第八十一条第二款"
+      - "第九十二条"
+      - "第九十四条"
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
     status: "active"
     note: >
-      被迫解除须在解除时明确告知事由，否则不予支持（但有证据证明确因 38 条情形除外）。
-      无公开官方原文页，见 no_public_page_reason。
+      第八十一条第二款：被迫解除须在解除时明确告知事由。
+      第九十二条：双倍工资、年休假工资、高温津贴不能作被迫解除理由。
+      第九十四条：未缴社保须先催缴，一个月内未缴方可被迫解除。
     verification_record: >
-      2026-09-09 AI 经第三方转载取得第八十一条第二款文本及深圳中院配套《说明》
-      中对该款的解释（三种情形）。引入 docs/handbook/03。2026-09-09 维护人确认。
+      2026-09-09 文本以维护人提供的汇编为准，第八十一条第二款与此前第三方转载逐字一致。
+      维护人同日确认：本指引仍在适用；第九十四条的实务已有变化——
+      未足额缴纳不再构成被迫解除事由，只有缺险种或完全未缴纳的，才可先催缴一个月后被迫解除。
 
   # --- 人社部门案例分析 -------------------------------------------------
   - id: "MOHRSS-CASE-2025-12-18"
@@ -384,6 +385,7 @@ sources:
       - "第十五条"
       - "第十六条"
       - "第十七条"
+      - "第六十二条"
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -395,4 +397,111 @@ sources:
     verification_record: >
       2026-09-09 AI 取得中国政府网公报页，第十四至十七条逐字原文引入 docs/handbook/10。
       2026-09-09 维护人确认。 工伤待遇（第五章）条文尚未取得，10 节只写认定与申请时限。
+
+  # --- 国务院行政法规（取自维护人汇编）--------------------------------
+  - id: "CN-LCL-IMPL-REG-2008"
+    publisher: "中华人民共和国国务院"
+    authority_level: "national-statute"
+    page_title: "中华人民共和国劳动合同法实施条例（国务院令第 535 号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "中华人民共和国劳动合同法实施条例.txt"
+    pinpoint:
+      - "第六条"
+      - "第七条"
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
+    status: "active"
+    note: >
+      2008-09-03 国务院第 25 次常务会议通过，2008-09-18 公布施行。
+      第六条：二倍工资起算为满一个月的次日，截止为补订前一日；
+      第七条：满一年视为已订立无固定期限劳动合同。
+    verification_record: >
+      2026-09-09 文本取自 docs/law-corpus/，维护人确认。引入 docs/handbook/04。
+
+  - id: "CN-ANNUAL-LEAVE-REG-2008"
+    publisher: "中华人民共和国国务院"
+    authority_level: "national-statute"
+    page_title: "职工带薪年休假条例（国务院令第 514 号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "职工带薪年休假条例.txt"
+    pinpoint:
+      - "第三条"
+      - "第五条"
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
+    status: "active"
+    note: >
+      2007-12-07 国务院第 198 次常务会议通过，2008-01-01 施行。
+      第三条天数；第五条应休未休按日工资 300% 支付。
+    verification_record: >
+      2026-09-09 文本取自 docs/law-corpus/，维护人确认。备用于「例行询问」（Q12）。
+
+  # --- 广东省高级人民法院（取自维护人汇编）-----------------------------
+  - id: "GD-COURT-2008-13"
+    publisher: "广东省高级人民法院、广东省劳动争议仲裁委员会"
+    authority_level: "local-court-guidance"
+    page_title: "关于适用《劳动争议调解仲裁法》、《劳动合同法》若干问题的指导意见（粤高法发[2008]13号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省高级人民法院、广东省劳动争议仲裁委员会关于适用《劳动争议调解仲裁法》、《劳动合同法》若干问题的指导意见.txt"
+    pinpoint:
+      - "第二十七条"
+      - "第二十八条"
+      - "第二十九条"
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
+    status: "active"
+    note: >
+      第二十七条：工资是否包含加班工资的认定；第二十八条：加班工资基数为正常工作时间工资；
+      第二十九条：用人单位否认加班的对未加班负举证责任，两年前的加班工资原则上由劳动者举证。
+    verification_record: >
+      2026-09-09 文本取自 docs/law-corpus/，维护人确认仍在适用。引入 docs/handbook/05。
+
+  - id: "GD-COURT-2017-147"
+    publisher: "广东省高级人民法院"
+    authority_level: "local-court-guidance"
+    page_title: "关于审理劳动争议案件疑难问题的解答（粤高法〔2017〕147号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省高级人民法院印发《广东省高级人民法院关于审理劳动争议案件疑难问题的解答》的通知.txt"
+    pinpoint:
+      - "第八条"
+      - "第九条"
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
+    status: "active"
+    note: >
+      第八条：被迫解除应在离职时明确提出；
+      第九条：企业因自身发展规划的搬迁属于客观情况发生重大变化（有合理弥补措施的除外）——
+      与上海高院「外部性」标准不同，为广东口径。
+    verification_record: >
+      2026-09-09 文本取自 docs/law-corpus/，维护人确认第九条仍为广东现行口径。引入 docs/handbook/02、03。
+
+  - id: "GD-COURT-2018-2"
+    publisher: "广东省高级人民法院、广东省劳动人事争议仲裁委员会"
+    authority_level: "local-court-guidance"
+    page_title: "关于审理劳动人事争议案件若干问题的座谈会纪要（粤高法发〔2018〕2号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省高级人民法院、广东省劳动人事争议仲裁委员会关于印发《广东省高级人民法院、广东省劳动人事争议仲裁委员会关于审理劳动人事争议案件若干问题的座谈会纪要》的通知.txt"
+    pinpoint:
+      - "第十四条"
+      - "第十五条"
+      - "第三十三条"
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
+    status: "active"
+    note: >
+      第十四条：二倍工资基数；期满后继续工作超过一个月未续订可主张二倍工资；满一年后不再支付。
+      第十五条：二倍工资差额时效——自主张权利之日起往前倒推一年按月计算。
+      第三十三条：违法解除赔偿金无须另行支付经济补偿。
+    verification_record: >
+      2026-09-09 文本取自 docs/law-corpus/，维护人确认第十五条「倒推一年」仍为现行算法。引入 docs/handbook/01、02、04。
 

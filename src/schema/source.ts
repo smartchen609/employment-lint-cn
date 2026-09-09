@@ -43,6 +43,11 @@ export const SourceUrl = z.union([
   z.literal("TODO_VERIFY"),
   /** 维护人确认该文件没有公开的官方原文页（如仅内部下发的裁判指引）。必须写 no_public_page_reason。 */
   z.literal("NO_PUBLIC_PAGE"),
+  /**
+   * 文本取自维护人提供的汇编（docs/law-corpus/）。必须写 corpus_file。
+   * 维护人 2026-09-09 决定：手册引用以其汇编为准，官方 URL 可后补。
+   */
+  z.literal("CORPUS"),
 ]);
 
 export const SourceRecord = z
@@ -75,6 +80,8 @@ export const SourceRecord = z
     insecure_url_reason: z.string().optional(),
     /** url 为 NO_PUBLIC_PAGE 时必填：为什么没有公开页、文本从哪里交叉比对得来。 */
     no_public_page_reason: z.string().optional(),
+    /** url 为 CORPUS 时必填：docs/law-corpus/ 下的文件名。 */
+    corpus_file: z.string().optional(),
     /**
      * 人工核验记录：核了什么、看到了什么。
      * page_opened_and_checked 只是一个布尔值，说明不了核验到什么程度；
@@ -97,6 +104,13 @@ export const SourceRecord = z
         code: z.ZodIssueCode.custom,
         path: ["verified_by"],
         message: "已核验的来源必须填写 verified_by",
+      });
+    }
+    if (s.url === "CORPUS" && !s.corpus_file) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["corpus_file"],
+        message: "url 为 CORPUS 的来源必须写明 corpus_file",
       });
     }
     if (s.url === "NO_PUBLIC_PAGE" && !s.no_public_page_reason) {

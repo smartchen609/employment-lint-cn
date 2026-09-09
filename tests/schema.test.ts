@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+const ROOT_DIR = new URL("..", import.meta.url).pathname;
 import { RuleRecord, SourceRegistry, TestFixture } from "../src/schema/index.js";
 
 /**
@@ -227,6 +229,11 @@ describe("sources.yml 实文件", () => {
     "MOHRSS-CASE-2025-12-18",
     "SPC-LABOR-I-2020",
     "CN-WORK-INJURY-REG-2010",
+    "CN-LCL-IMPL-REG-2008",
+    "CN-ANNUAL-LEAVE-REG-2008",
+    "GD-COURT-2008-13",
+    "GD-COURT-2017-147",
+    "GD-COURT-2018-2",
   ]);
 
   it("核验状态与维护人清单严格一致（AI 不得代为置 true）", () => {
@@ -242,6 +249,10 @@ describe("sources.yml 实文件", () => {
       expect(s.verified_by, `${s.id} 缺 verified_by`).not.toBe("");
       expect(s.url, `${s.id} 的 URL 仍是 TODO_VERIFY`).not.toBe("TODO_VERIFY");
       if (s.url === "NO_PUBLIC_PAGE") expect(s.no_public_page_reason, `${s.id} 无公开页必须写理由`).toBeTruthy();
+      if (s.url === "CORPUS") {
+        expect(s.corpus_file, `${s.id} 取自汇编必须写 corpus_file`).toBeTruthy();
+        expect(existsSync(join(ROOT_DIR, "docs/law-corpus", s.corpus_file!)), `${s.id} 的 corpus_file 不存在`).toBe(true);
+      }
     }
   });
 
