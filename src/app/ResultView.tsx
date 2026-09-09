@@ -3,6 +3,7 @@ import type { EndpointTemplate } from "../schema/copy.js";
 import type { EngineResult, Finding } from "../engine/evaluate.js";
 import type { ResolvedResult } from "../findings/resolve.js";
 import { RULES } from "./data.js";
+import { Feedback } from "./Feedback.js";
 
 /**
  * 结果页。round2 §1甲：
@@ -81,6 +82,20 @@ export function ResultView({
         </div>
       )}
 
+      {resolved.conflicts.length > 0 && (
+        <div className="conflicts">
+          <h2>你的答案中存在冲突</h2>
+          <p className="note">
+            以下事实互相矛盾，会直接影响定性。在补齐之前，下面的候选都可能是错的。
+          </p>
+          <ul>
+            {resolved.conflicts.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <h2 className="section-title">定性候选</h2>
       <p className="note">可以同时存在多项。它们是候选，不是已经成立的结论。</p>
       {resolved.classification.map((t) => (
@@ -134,6 +149,8 @@ export function ResultView({
       </div>
 
       {engine.complexity === "HIGH" && <ProfessionalReview triggers={engine.complexityTriggers} onExport={onExport} />}
+
+      <Feedback ruleIds={engine.firedRuleIds} />
 
       <div className="actions">
         <button type="button" className="primary" onClick={onExport}>

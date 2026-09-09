@@ -1,0 +1,51 @@
+name: 这个问题没有被覆盖
+description: 你遇到的情形本工具没有处理
+title: "[未覆盖] "
+labels: ["not-covered"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 请勿提交敏感材料
+
+        **请勿提交公司名称、姓名、身份证号、聊天记录、劳动合同、
+        解除通知、源代码、客户信息或其他敏感材料。**
+
+        ---
+
+        本工具 v0.1 只覆盖三个法律支点。很多情形是**故意**不覆盖的
+        （见 DISCLAIMER.md）。提 Issue 前请先确认它确实应当被覆盖。
+
+  - type: input
+    id: versions
+    attributes:
+      label: 工具版本 / 规则集版本
+      placeholder: "tool 0.1.0 / ruleset 2026-09-04"
+    validations:
+      required: true
+
+  - type: textarea
+    id: situation
+    attributes:
+      label: 匿名化的情形描述
+    validations:
+      required: true
+
+  - type: textarea
+    id: action_change
+    attributes:
+      label: 如果提前两周看到一条 warning，你会改变哪一个具体动作？
+      description: |
+        这是最关键的一问。只是「不了解劳动法」不构成加规则的理由 ——
+        那应该写文章，不应该做工具。
+        请写具体动作，例如「不会在离职文件上写个人原因」。
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 确认
+      options:
+        - label: 我确认本 Issue 中不含公司名称、姓名、聊天记录、合同原文或源代码
+          required: true

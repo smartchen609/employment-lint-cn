@@ -7,6 +7,7 @@
  */
 
 import type { Facts } from "../engine/evaluate.js";
+import { pruneAnswers } from "./tree.js";
 import type { Answers } from "./types.js";
 
 const str = (a: Answers, id: string): string | undefined => {
@@ -43,7 +44,13 @@ export interface BuildFactsOptions {
   evaluationDate?: string;
 }
 
-export function buildFacts(answers: Answers, options: BuildFactsOptions = {}): Facts {
+export function buildFacts(rawAnswers: Answers, options: BuildFactsOptions = {}): Facts {
+  /**
+   * 只采纳当前仍然可见的问题的答案。
+   * 用户改了前面的答案后，后面被隐藏的题不得继续影响定性 ——
+   * 否则规则会依据用户看不到也改不了的事实命中。见 pruneAnswers。
+   */
+  const answers = pruneAnswers(rawAnswers);
   const f: Record<string, unknown> = {};
   const evaluationDate = options.evaluationDate ?? new Date().toISOString().slice(0, 10);
   f["evaluation_date"] = evaluationDate;

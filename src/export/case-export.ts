@@ -14,7 +14,7 @@
 import type { EngineResult } from "../engine/evaluate.js";
 import type { ResolvedResult } from "../findings/resolve.js";
 import { calendarMonthsBetween } from "../engine/calendar.js";
-import { QUESTIONS } from "../questions/tree.js";
+import { pruneAnswers, QUESTIONS } from "../questions/tree.js";
 import type { Answers } from "../questions/types.js";
 
 export const TOOL_NAME = "Employment Lint CN";
@@ -79,12 +79,88 @@ function section(title: string, lines: string[]): string[] {
   return lines.length > 0 ? [`## ${title}`, "", ...lines, ""] : [];
 }
 
+/**
+ * 需要律师重点复核的问题。round2 §10.2 第 9 节。
+ *
+ * 这一节是整份报告里对**接收方**最有用的部分：
+ * 律师拿到报告后第一件事是判断"这个案子的争点在哪"，
+ * 而不是通读全部问答。
+ *
+ * 问题一律由本次命中的 Finding 与答案结构生成，
+ * **不新增规格书之外的法律判断** —— 每一条都对应一处已经在
+ * 规则或模板里写明的不确定性。
+ */
+function lawyerQuestions(
+  answers: Answers,
+  engine: EngineResult,
+  resolved: ResolvedResult | null,
+): string[] {
+  const qs: string[] = [];
+  const has = (id: string) => engine.findings.some((f) => f.id === id);
+  const answer = (id: string) => answers[id];
+
+  if (has("SZ_DEEMED_RENEWAL")) {
+    qs.push("深圳地方规则与全国司法解释在本案中如何并行适用？");
+  }
+  if (has("DEEMED_SECOND_FIXED_TERM") || has("SZ_DEEMED_RENEWAL")) {
+    qs.push("本案是否已构成连续订立二次固定期限劳动合同？");
+  }
+  if (has("ENTITY_CHANGE_DOES_NOT_RESET_COUNT")) {
+    qs.push("变更签约主体前后的劳动管理是否具有连续性，能否证明？");
+  }
+  if (has("GOOD_FAITH_AVOIDANCE_CANDIDATE")) {
+    qs.push("公司的用工安排是否构成规避无固定期限合同的诚信问题？");
+  }
+  if (has("INDEFINITE_TERM_OBLIGATION_CANDIDATE")) {
+    qs.push("续订意愿的证据是否已经明确到足以触发无固定期限合同订立义务？");
+  }
+  if (has("DEEMED_RENEWAL_CANDIDATE")) {
+    qs.push("劳动关系结束日应认定为原合同到期日，还是公司后来解除之日？");
+  }
+  if (has("SUBSEQUENT_TERMINATION_CONSEQUENCES_REVIEW")) {
+    qs.push("公司在拟制续订后作出的解除，依据与程序是否成立？");
+  }
+  if (has("ARTICLE_40_3_CONSULTATION_GAP")) {
+    qs.push("公司是否履行了第四十条第三项要求的实质性合同变更协商？");
+  }
+  if (has("ARTICLE_40_3_OFFER_REASONABLENESS_DISPUTED")) {
+    qs.push("公司提出的变更方案是否合理，劳动者拒绝是否有正当理由？");
+  }
+  if (has("ARTICLE_40_3_CAUSE_NOT_ESTABLISHED_ALONE")) {
+    qs.push("公司主张的变化是否属于其控制范围之外的客观情况？");
+  }
+  if (has("ARBITRATION_LIMITATION_RISK")) {
+    qs.push("仲裁时效是否已经届满，期间是否存在中断或中止事由？");
+  }
+  if (answer("P02") === "UNDECIDED") {
+    qs.push("应当选择继续履行还是违法解除赔偿金？");
+  }
+  if (answer("P01") !== undefined && answer("P01") !== "NOT_FILED") {
+    qs.push("现有仲裁请求应否调整，如何表述？");
+  }
+  if (answer("M02") === "SIGNED_AGREEMENT" || answer("M02") === "SUBMITTED_RESIGNATION") {
+    qs.push("已签署的退出文件对后续主张有何影响，是否存在可撤销事由？");
+  }
+  if (answer("B02") === "AFTER_TERMINATION" || answer("B02") === "AFTER_ARBITRATION") {
+    qs.push("公司事后补充的解除理由能否作为解除依据？");
+  }
+  if (resolved && resolved.classification.some((t) => t.id === "C18")) {
+    qs.push("本案涉及本工具未覆盖的法定情形，应如何处理？");
+  }
+
+  qs.push("是否存在尚未识别的程序或时效问题？");
+
+  return qs.map((q, i) => `${i + 1}. ${q}`);
+}
+
 export function buildCaseExport({
-  answers,
+  answers: rawAnswers,
   engine,
   resolved,
   generatedAt,
 }: ExportInput): string {
+  // 报告里只列用户真正回答过、且当前仍然有效的问题。
+  const answers = pruneAnswers(rawAnswers);
   const out: string[] = [];
 
   out.push(
@@ -125,6 +201,18 @@ export function buildCaseExport({
       }),
     ),
   );
+
+  /* 1b. 公司给出的解除理由原文（用户自行粘贴，工具不解析） */
+  const statedReason = answers["B02T"];
+  if (typeof statedReason === "string" && statedReason.trim()) {
+    out.push(
+      ...section("1b. 公司书面理由原文（使用者自行粘贴）", [
+        "> " + statedReason.trim().split("\n").join("\n> "),
+        "",
+        "本工具不解析该文本，也不据此作出任何判断。",
+      ]),
+    );
+  }
 
   /* 2. 定性候选 */
   if (resolved) {
@@ -208,9 +296,23 @@ export function buildCaseExport({
     );
   }
 
-  /* 8. 证据边界 */
+  /* 7b. 答案冲突 —— round2 §10.1 evidence.conflicting_facts */
+  if (resolved && resolved.conflicts.length > 0) {
+    out.push(
+      ...section("7b. 你的答案中存在的冲突", [
+        "以下事实互相矛盾，会直接影响定性。请在下一步行动前核对原始材料：",
+        "",
+        ...resolved.conflicts.map((c) => `- ${c}`),
+      ]),
+    );
+  }
+
+  /* 8. 需要律师重点复核的问题 —— round2 §10.2 第 9 节 */
+  out.push(...section("8. 需要律师重点复核的问题", lawyerQuestions(answers, engine, resolved)));
+
+  /* 9. 证据边界 */
   out.push(
-    ...section("8. 证据边界", [
+    ...section("9. 证据边界", [
       "只保存与本人劳动关系、岗位、绩效和解除事实具有必要关联的材料。",
       "",
       "不要绕过权限控制，不要使用他人账号，不要批量复制源代码、客户数据、模型权重、密钥、商业秘密或与案件无关的公司文件。",

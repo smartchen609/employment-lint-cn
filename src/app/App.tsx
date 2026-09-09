@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { evaluateAllApplicableRules } from "../engine/evaluate.js";
 import { resolveResult } from "../findings/resolve.js";
 import { buildFacts } from "../questions/build-facts.js";
-import { visibleQuestions } from "../questions/tree.js";
+import { pruneAnswers, visibleQuestions } from "../questions/tree.js";
 import type { Answers } from "../questions/types.js";
 import { buildCaseExport } from "../export/case-export.js";
 import { ALL_TEMPLATES, EVIDENCE, RULES } from "./data.js";
@@ -25,9 +25,14 @@ type Stage = "intro" | "questions" | "result" | "export";
 
 export function App(): React.JSX.Element {
   const [stage, setStage] = useState<Stage>("intro");
-  const [answers, setAnswers] = useState<Answers>({});
+  const [rawAnswers, setAnswers] = useState<Answers>({});
   const [cursor, setCursor] = useState(0);
 
+  /**
+   * 界面一律基于剪枝后的答案渲染：改了前面的答案之后，
+   * 已失效的选项不得仍然显示为选中状态。
+   */
+  const answers = useMemo(() => pruneAnswers(rawAnswers), [rawAnswers]);
   const questions = useMemo(() => visibleQuestions(answers), [answers]);
 
   const evaluation = useMemo(() => {
@@ -85,8 +90,12 @@ export function App(): React.JSX.Element {
         <QuestionView
           question={q}
           answers={answers}
-          index={index}
-          total={questions.length}
+          answeredCount={
+            questions.filter((x) => {
+              const v = answers[x.id];
+              return v !== undefined && v !== null && v !== "";
+            }).length
+          }
           onAnswer={onAnswer}
         />
         <div className="nav">

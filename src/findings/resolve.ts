@@ -14,7 +14,7 @@
 import type { EndpointTemplate, EvidenceChecklist, Severity } from "../schema/index.js";
 import type { EngineResult, Finding } from "../engine/evaluate.js";
 import type { Answers } from "../questions/types.js";
-import { is } from "../questions/tree.js";
+import { is, pruneAnswers } from "../questions/tree.js";
 
 export interface ResolvedResult {
   /** 最高优先级 Warning 所属终点。 */
@@ -29,6 +29,8 @@ export interface ResolvedResult {
   evidence: EvidenceChecklist[];
   /** 每条终点对应的 Finding，供展开显示 Rule ID 与依据。 */
   findingsByEndpoint: Record<string, Finding[]>;
+  /** 检测到的答案冲突说明。空数组表示未发现冲突。 */
+  conflicts: string[];
 }
 
 const SEVERITY_RANK: Record<Severity, number> = {
@@ -63,15 +65,60 @@ function isOutOfScope(a: Answers): boolean {
   return false;
 }
 
-/** 答案内部冲突。round2 §7 C19。 */
-function hasConflict(a: Answers): boolean {
-  // 公司到期前说过不续签，但之后仍持续安排工作
-  if (is(a, "A15.1", "CONFLICTING")) return true;
-  // 既表示拒绝续订，又主张公司应订立无固定期限合同
-  if (is(a, "A12", "REFUSED") && is(a, "A03", "2", "MULTI_ENTITY")) return true;
-  // 选了没有书面通知，却又填写了书面理由类型
-  if (is(a, "B01", "NONE") && is(a, "B02", "AT_OR_BEFORE_TERMINATION")) return true;
-  return false;
+/**
+ * 答案内部冲突。round2 §7 C19。
+ *
+ * 返回冲突说明的列表而不是布尔值 —— 只告诉用户"你的答案有冲突"
+ * 而不说清是哪两条冲突，等于让他自己去猜，那不是 linter 该干的事。
+ * 这些说明同时进入 Case Export 的冲突事实一节。
+ */
+export function detectConflicts(a: Answers): string[] {
+  const out: string[] = [];
+
+  if (is(a, "A15.1", "CONFLICTING")) {
+    out.push(
+      "公司在合同到期前后表态不一致：曾表示不续签，但到期后仍持续安排你工作。" +
+        "这会同时影响《解释二》第十一条的「未表示异议」判断和终止时点的认定。",
+    );
+  }
+  if (is(a, "A12", "REFUSED") && is(a, "A03", "2", "MULTI_ENTITY")) {
+    out.push(
+      "你表示明确拒绝续订，同时又已连续签订两次固定期限合同。" +
+        "拒绝续订通常会阻断无固定期限合同的订立义务，两者不能同时主张。",
+    );
+  }
+  if (is(a, "B01", "NONE") && is(a, "B02", "AT_OR_BEFORE_TERMINATION")) {
+    out.push(
+      "你选择公司没有出具书面解除文件，却又填写理由在「解除前或解除通知中」出现。" +
+        "请确认公司当时究竟是以何种形式给出理由的。",
+    );
+  }
+  if (is(a, "A15", "true") && is(a, "A15.4", "STILL_WORKING") && is(a, "G02", "EFFECTIVE")) {
+    out.push(
+      "你表示操作已经生效，同时又表示目前仍在继续工作。" +
+        "如果劳动关系仍在履行，则可能尚未发生终止，请确认「已生效」指的是什么。",
+    );
+  }
+  if (is(a, "M01", "EMPLOYEE") && is(a, "M03", "true")) {
+    out.push(
+      "你表示是本人先提出结束劳动关系，同时又表示公司要求你在文件中写「个人原因」。" +
+        "这两件事指向不同的解除主体，需要核对最初的沟通记录。",
+    );
+  }
+  if (is(a, "D01", "NONE") && is(a, "D04", "true")) {
+    out.push(
+      "公司没有表示解除，且仍要求你考勤或待命 —— " +
+        "这种情况下劳动关系可能仍在履行，事实解除候选未必成立。",
+    );
+  }
+  if (is(a, "B07", "true") && is(a, "B06", "NONE", "SEVERANCE_ONLY", "SELF_SERVE_JOB_BOARD_ONLY")) {
+    out.push(
+      "你表示公司说清楚了岗位的全部关键条款，但又表示公司没有谈过具体岗位。" +
+        "请确认公司是否真的提出过可供回应的具体方案。",
+    );
+  }
+
+  return out;
 }
 
 /**
@@ -86,7 +133,7 @@ function structuralEndpointIds(a: Answers, findings: Finding[]): string[] {
   if (findings.some((f) => f.id === "ARBITRATION_LIMITATION_RISK")) ids.push("R06");
 
   if (is(a, "G02", "NOT_YET_EFFECTIVE")) ids.push("C00");
-  if (hasConflict(a)) ids.push("C19");
+  if (detectConflicts(a).length > 0) ids.push("C19");
   if (isOutOfScope(a)) ids.push("C18");
 
   if (is(a, "G01", "MUTUAL_TERMINATION")) {
@@ -142,10 +189,12 @@ function excludedEndpoints(a: Answers): Set<string> {
 
 export function resolveResult(
   engine: EngineResult,
-  answers: Answers,
+  rawAnswers: Answers,
   templates: EndpointTemplate[],
   checklists: EvidenceChecklist[],
 ): ResolvedResult | null {
+  // 与 buildFacts 一致：只看当前仍然可见的答案。
+  const answers = pruneAnswers(rawAnswers);
   const byId = new Map(templates.map((t) => [t.id, t]));
 
   const fired = new Set(engine.firedRuleIds);
@@ -210,6 +259,7 @@ export function resolveResult(
     claimDirection,
     evidence: pickChecklists(answers, checklists),
     findingsByEndpoint,
+    conflicts: detectConflicts(answers),
   };
 }
 

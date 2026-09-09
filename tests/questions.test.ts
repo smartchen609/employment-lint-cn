@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { QUESTIONS, visibleQuestions } from "../src/questions/tree.js";
+import { pruneAnswers, QUESTIONS, visibleQuestions } from "../src/questions/tree.js";
 import { buildFacts } from "../src/questions/build-facts.js";
 import { evaluateAllApplicableRules } from "../src/engine/evaluate.js";
-import { resolveResult } from "../src/findings/resolve.js";
+import { detectConflicts, resolveResult } from "../src/findings/resolve.js";
 import { buildCaseExport } from "../src/export/case-export.js";
 import type { Answers } from "../src/questions/types.js";
 import { DERIVED_FACT_PATHS, DIRECT_FACT_PATHS } from "../src/engine/fact-paths.js";
@@ -263,6 +263,26 @@ describe("Case Export", () => {
     expect(md).not.toMatch(/\d+\s*个月工资/);
   });
 
+  it("含「需要律师重点复核的问题」，且问题由本次 Finding 生成", () => {
+    expect(md).toContain("## 8. 需要律师重点复核的问题");
+    expect(md).toContain("深圳地方规则与全国司法解释在本案中如何并行适用？");
+    expect(md).toContain("是否存在尚未识别的程序或时效问题？");
+  });
+
+  it("未命中的 Finding 不会生成对应的复核问题", () => {
+    // 本场景没有第四十条第三项相关 Finding
+    expect(md).not.toContain("实质性合同变更协商");
+  });
+
+  it("使用者粘贴的解除理由原文进入报告，并标明工具不解析", () => {
+    const withReason = { ...AI_REPLACEMENT, B02T: "因公司引入AI提升人效，岗位取消。" };
+    const m = buildCaseExport({
+      answers: withReason, ...run(withReason), generatedAt: "2026-09-04T10:00:00+08:00",
+    });
+    expect(m).toContain("> 因公司引入AI提升人效，岗位取消。");
+    expect(m).toContain("本工具不解析该文本");
+  });
+
   it("高复杂度时才出现专业复核区块", () => {
     expect(md).toContain("## 7. 建议专业复核");
     const plain = buildCaseExport({
@@ -271,5 +291,100 @@ describe("Case Export", () => {
       generatedAt: "2026-09-04T10:00:00+08:00",
     });
     expect(plain.includes("## 7. 建议专业复核")).toBe(run(PLAIN_EXPIRY).engine.complexity === "HIGH");
+  });
+});
+
+describe("陈旧答案剪枝", () => {
+  /**
+   * 用户回头改前面的答案时，后面被隐藏的题不得继续影响定性。
+   * 否则规则会依据用户在界面上看不到、也改不了的事实命中。
+   */
+  const STALE: Answers = {
+    G01: "FIXED_TERM_EXPIRY", G02: "EFFECTIVE", G02__date: "2026-06-30", G03: "CN-GD-SZ",
+    A01: "FIXED_TERM", A02: "NONE",
+    A03: "2",                                   // 改成了两份及以上
+    A04: "YES", A05: "NEGOTIATED",              // 这两题已因此不可见
+    A06: [{ from: "2025-05-30", to: "2026-06-30" }] as never,
+    A09: "false", A11: [], A12: "WRITTEN", A13: "false", A14: "NONE", A15: "false",
+    P01: "NOT_FILED", P02: "DAMAGES",
+  };
+
+  it("不可见问题的答案被剪掉", () => {
+    const pruned = pruneAnswers(STALE);
+    expect(pruned["A04"]).toBeUndefined();
+    expect(pruned["A05"]).toBeUndefined();
+    expect(pruned["A06"]).toBeUndefined();
+    expect(pruned["A03"]).toBe("2");
+  });
+
+  it("级联隐藏也被处理（A04 不可见后 A05 也不该留下）", () => {
+    const visible = visibleQuestions(pruneAnswers(STALE)).map((q) => q.id);
+    expect(visible).not.toContain("A04");
+    expect(visible).not.toContain("A05");
+    expect(visible).not.toContain("A06");
+  });
+
+  it("附带日期随主答案一起剪掉", () => {
+    const pruned = pruneAnswers({ ...STALE, "A15.1": "NEVER", "A15.1__date": "2026-08-01" });
+    expect(pruned["A15.1"]).toBeUndefined();
+    expect(pruned["A15.1__date"]).toBeUndefined();
+  });
+
+  it("陈旧的延长答案不再命中延长规则", () => {
+    const { engine } = run(STALE);
+    expect(engine.firedRuleIds).not.toContain("CN-NAT-SPC-LABOR-II-10-1");
+    expect(engine.firedRuleIds).not.toContain("CN-SZ-HARMONIOUS-LABOR-18-2");
+  });
+
+  it("Case Export 不列已被剪掉的问题", () => {
+    const md = buildCaseExport({ answers: STALE, ...run(STALE), generatedAt: "2026-09-04T10:00:00+08:00" });
+    expect(md).not.toContain("**A05**");
+    expect(md).not.toContain("**A06**");
+  });
+
+  it("非问题键（evaluation_date）不被剪掉", () => {
+    const pruned = pruneAnswers({ ...STALE, evaluation_date: "2026-09-04" } as Answers);
+    expect(pruned["evaluation_date"]).toBe("2026-09-04");
+  });
+});
+
+describe("答案冲突检测（C19）", () => {
+  it("公司先说不续签又持续派活 —— 报冲突并说清是哪两条", () => {
+    const a: Answers = {
+      ...POST_EXPIRY_WORK, "A15.1": "CONFLICTING",
+    };
+    const c = detectConflicts(a);
+    expect(c.length).toBeGreaterThan(0);
+    expect(c[0]).toContain("表态不一致");
+    expect(c[0]).toContain("第十一条");
+  });
+
+  it("拒绝续订又主张无固定期限义务 —— 报冲突", () => {
+    const c = detectConflicts({ ...TWO_CONTRACTS, A12: "REFUSED" });
+    expect(c.some((x) => x.includes("拒绝续订"))).toBe(true);
+  });
+
+  it("没有书面文件却填了书面理由时点 —— 报冲突", () => {
+    const c = detectConflicts({ ...AI_REPLACEMENT, B01: "NONE" });
+    expect(c.some((x) => x.includes("书面解除文件"))).toBe(true);
+  });
+
+  it("说清了岗位条款却又说没谈过岗位 —— 报冲突", () => {
+    const c = detectConflicts({ ...AI_REPLACEMENT, B07: "true", B06: "SEVERANCE_ONLY" });
+    expect(c.some((x) => x.includes("具体方案"))).toBe(true);
+  });
+
+  it("无冲突的正常路径不误报", () => {
+    for (const a of [SHENZHEN_EXTENSION, TWO_CONTRACTS, PLAIN_EXPIRY, DE_FACTO]) {
+      expect(detectConflicts(a), JSON.stringify(a["G01"])).toEqual([]);
+    }
+  });
+
+  it("冲突会触发 C19，并进入 Case Export", () => {
+    const a: Answers = { ...POST_EXPIRY_WORK, "A15.1": "CONFLICTING" };
+    const { resolved } = run(a);
+    expect(resolved!.classification.map((t) => t.id)).toContain("C19");
+    const md = buildCaseExport({ answers: a, ...run(a), generatedAt: "2026-09-04T10:00:00+08:00" });
+    expect(md).toContain("## 7b. 你的答案中存在的冲突");
   });
 });

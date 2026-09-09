@@ -28,10 +28,24 @@ const FORBIDDEN = [
   "dataLayer",
 ];
 
-/** 允许出现的外链：只有 React 的报错说明页，且它只是一个字符串常量。 */
+/**
+ * 允许出现的外链。
+ *
+ * 关键区别：**用户点击才跳转的链接** ≠ **页面自动发起的请求**。
+ * 前者是用户的自主动作，后者才违反"无网络调用"的承诺。
+ * 本清单只放前者，且每一条都要写明理由。
+ *
+ * FORBIDDEN 里的 fetch / XHR / sendBeacon 等仍然一律拦截，
+ * 所以即使某个外链被放行，页面也无法拿它去发请求。
+ */
 const ALLOWED_URL_PREFIXES = [
-  "http://www.w3.org/", // XML / SVG 命名空间
+  // XML / SVG 命名空间，只是字符串常量
+  "http://www.w3.org/",
+  // React 生产构建的报错说明页，只是字符串常量
   "https://reactjs.org/docs/error-decoder.html",
+  // 自愿反馈入口（round2 §1乙）：<a target="_blank">，用户点击才跳转。
+  // 链接只预填工具版本与 Rule ID，不含任何案件答案。
+  "https://github.com/apangchen/employment-lint-cn",
 ];
 
 if (!existsSync(DIST)) {

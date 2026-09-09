@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Answers, Question } from "../questions/types.js";
+import { isRadioNavKey, nextRadioIndex, rovingTabIndex } from "./radio-navigation.js";
 
 /**
  * 单个问题的渲染。手机端优先：选项是整块可点区域，不是小圆点。
@@ -11,26 +12,73 @@ import type { Answers, Question } from "../questions/types.js";
 interface Props {
   question: Question;
   answers: Answers;
-  index: number;
-  total: number;
+  /** 当前可见问题中已作答的数量。 */
+  answeredCount: number;
   onAnswer: (id: string, value: Answers[string]) => void;
 }
 
-export function QuestionView({ question: q, answers, index, total, onAnswer }: Props): React.JSX.Element {
+export function QuestionView({
+  question: q,
+  answers,
+  answeredCount,
+  onAnswer,
+}: Props): React.JSX.Element {
   const [showWhy, setShowWhy] = useState(false);
   const value = answers[q.id];
   const dateKey = `${q.id}__date`;
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * 换题后把焦点移到题干上。
+   *
+   * 不移焦点的话，读屏用户点完「下一题」还停在按钮上，
+   * 完全不知道页面已经换了内容；键盘用户则要从头 Tab 一遍。
+   */
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [q.id]);
+
+  /**
+   * radiogroup 的方向键导航。
+   *
+   * ARIA 规范里 radiogroup 内部靠方向键移动并选中，Tab 只在组之间跳。
+   * 之前只写了 role 没写键盘行为 —— 那比不写 role 更糟，
+   * 因为读屏会按 radiogroup 的规则提示用户按方向键，而按了没反应。
+   */
+  const onGroupKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
+    const options = q.options;
+    if (!options || options.length === 0) return;
+    if (!isRadioNavKey(e.key)) return;
+    e.preventDefault();
+
+    const currentIndex = options.findIndex((o) => o.value === value);
+    const nextIndex = nextRadioIndex(currentIndex, e.key, options.length);
+    const next = options[nextIndex];
+    if (!next) return;
+    onAnswer(q.id, next.value);
+
+    // 选中后把焦点跟过去，符合 radiogroup 的漫游 tabindex 约定
+    const buttons = groupRef.current?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+    buttons?.[nextIndex]?.focus();
+  };
 
   return (
     <section className="question" aria-labelledby={`q-${q.id}`}>
       <div className="question-meta">
         <span className="qid">{q.id}</span>
-        <span className="progress">
-          第 {index + 1} / {total} 题
-        </span>
+        {/*
+          不显示「第 N / M 题」。
+          问题树按答案动态展开，分母会随作答跳变（1/3 → 1/16），
+          读起来像是进度在倒退。显示已答题数更诚实：
+          它只增不减，也不假装我们知道还剩几题。
+        */}
+        <span className="progress">已回答 {answeredCount} 题</span>
       </div>
 
-      <h2 id={`q-${q.id}`}>{q.prompt}</h2>
+      <h2 id={`q-${q.id}`} ref={headingRef} tabIndex={-1}>
+        {q.prompt}
+      </h2>
 
       {q.why && (
         <div className="why">
@@ -42,15 +90,26 @@ export function QuestionView({ question: q, answers, index, total, onAnswer }: P
       )}
 
       {q.kind === "single" && (
-        <div className="options" role="radiogroup" aria-labelledby={`q-${q.id}`}>
-          {q.options?.map((o) => {
+        <div
+          className="options"
+          role="radiogroup"
+          aria-labelledby={`q-${q.id}`}
+          ref={groupRef}
+          onKeyDown={onGroupKeyDown}
+        >
+          {q.options?.map((o, i) => {
             const selected = value === o.value;
+            const roving = rovingTabIndex(
+              i,
+              q.options!.findIndex((x) => x.value === value),
+            );
             return (
               <div key={o.value}>
                 <button
                   type="button"
                   role="radio"
                   aria-checked={selected}
+                  tabIndex={roving}
                   className={selected ? "option selected" : "option"}
                   onClick={() => onAnswer(q.id, o.value)}
                 >
@@ -73,7 +132,7 @@ export function QuestionView({ question: q, answers, index, total, onAnswer }: P
       )}
 
       {q.kind === "multi" && (
-        <div className="options">
+        <div className="options" role="group" aria-labelledby={`q-${q.id}`}>
           {q.options?.map((o) => {
             const list = Array.isArray(value) ? value : [];
             const selected = list.includes(o.value);

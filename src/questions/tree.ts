@@ -784,4 +784,49 @@ export function visibleQuestions(answers: Answers): Question[] {
   return QUESTIONS.filter((q) => !q.visibleWhen || q.visibleWhen(answers));
 }
 
+/**
+ * 剪掉已不可见问题的答案，直到稳定。
+ *
+ * ## 为什么必须有这一步
+ *
+ * 用户回头改了前面的答案，后面某些题会不再显示 —— 但它们的旧答案还留在
+ * state 里，仍然会被 buildFacts 映射成事实、仍然会命中规则。
+ * 结果是：**规则依据的是用户在界面上看不到、也改不了的事实。**
+ * 对一个以"可核查"为卖点的 linter，这是不可接受的。
+ *
+ * 而且隐藏会级联：A03 改成「两份及以上」→ A04 不再可见 →
+ * 但 A05 的显示条件是 `A04 === "YES"`，读的还是陈旧值，于是 A05 仍然可见。
+ * 问题树进入自相矛盾的状态。
+ *
+ * 所以要迭代到不动点，而不是剪一遍就算。
+ *
+ * 附带答案（`${id}__date`）随主答案一起剪掉。
+ */
+export function pruneAnswers(answers: Answers): Answers {
+  let current = answers;
+
+  // 问题数量有限且可见性单调收敛，迭代次数以问题总数为上界。
+  for (let i = 0; i <= QUESTIONS.length; i += 1) {
+    const visible = new Set(visibleQuestions(current).map((q) => q.id));
+    const next: Answers = {};
+    let dropped = false;
+
+    for (const [key, value] of Object.entries(current)) {
+      // 非问题键（如 evaluation_date）一律保留
+      const baseId = key.endsWith("__date") ? key.slice(0, -"__date".length) : key;
+      const isQuestionKey = QUESTIONS.some((q) => q.id === baseId);
+      if (!isQuestionKey || visible.has(baseId)) {
+        next[key] = value;
+      } else {
+        dropped = true;
+      }
+    }
+
+    if (!dropped) return next;
+    current = next;
+  }
+
+  return current;
+}
+
 export { has, is };

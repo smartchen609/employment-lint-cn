@@ -17,7 +17,8 @@
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run validate && npm run test",
     "build:content": "tsx scripts/build-content.ts",
-    "audit:bundle": "tsx scripts/audit-bundle.ts"
+    "audit:bundle": "tsx scripts/audit-bundle.ts",
+    "test:mutation": "tsx scripts/mutation-test.ts"
   },
   "dependencies": {
     "react": "^18.3.1",

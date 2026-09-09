@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 这不是法律咨询渠道
+    url: https://github.com/apangchen/employment-lint-cn/blob/main/DISCLAIMER.md
+    about: 本仓库不提供个案法律意见。请勿在 Issue 中描述你的完整案情或寻求咨询。
