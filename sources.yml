@@ -60,15 +60,22 @@ sources:
       改用转载页会失去"指向制定机关本站"这一来源注册表的核心价值，
       故保留 http 原址。
     pinpoint:
+      - "第十条"
       - "第十四条"
       - "第十四条第二款第三项"
+      - "第三十条"
+      - "第三十一条"
+      - "第三十八条"
       - "第三十九条"
       - "第四十条第一项"
       - "第四十条第二项"
       - "第四十条第三项"
       - "第四十六条"
       - "第四十七条"
+      - "第四十四条"
       - "第四十八条"
+      - "第八十二条"
+      - "第八十五条"
       - "第八十七条"
     page_opened_and_checked: true
     last_verified_at: "2026-09-04"
@@ -86,6 +93,8 @@ sources:
       URL 仍登记人大网原址。维护人如能打开人大网本站，建议复核一次。
       2026-09-09 取得第三十九条、第四十条逐字全文引入 docs/handbook/02，
       待维护人逐字确认；第四十六、四十七条全文同日取得，维护人决定纳入并已逐字确认，已引入 docs/handbook/02。
+      2026-09-09 另取得第十、三十、三十一、三十八、四十四、八十二、八十五条全文，
+      引入 docs/handbook/03–05，**这七条引文待维护人逐字确认**。
 
   - id: "CN-CIVIL-CODE-2021"
     publisher: "全国人民代表大会"
@@ -122,6 +131,18 @@ sources:
       - "第二十七条第二款"
       - "第二十七条第三款"
       - "第二十七条第四款"
+      - "第二条"
+      - "第五条"
+      - "第六条"
+      - "第九条"
+      - "第二十一条"
+      - "第二十八条"
+      - "第二十九条"
+      - "第三十条"
+      - "第四十三条"
+      - "第四十七条"
+      - "第四十八条"
+      - "第五十条"
     page_opened_and_checked: true
     last_verified_at: "2026-09-04"
     verified_by: "apangchen"
@@ -142,6 +163,10 @@ sources:
       第三十一次会议通过，主席令第八十号公布；
       第五十四条「本法自2008年5月1日起施行」。
       第二十七条一至四款结构与本项目登记一致。
+      2026-09-09 因人大网 SSL 不可达，经中国就业网（人社部）转载全文页
+      https://chinajob.mohrss.gov.cn/h5/c/2022-07-15/356212.shtml
+      取得第二、五、六、九、二十一、二十八、二十九、三十、四十三、四十七、
+      四十八、五十条逐字原文，引入 docs/handbook/06–07，**待维护人逐字确认**。
 
   # --- 深圳 · 经济特区法规 --------------------------------------------
   - id: "SZ-HARMONIOUS-LABOR-2008"
@@ -217,4 +242,94 @@ sources:
       **不是裁判文书，不是规范性文件**，只作 docs/handbook/02「实务分歧」一节的
       实务参考，并须标明出处。文中援引最高人民法院指导性案例 183 号
       （房某诉某公司），该案例尚未单独登记来源。
+
+  # --- 全国 · 劳动法 ----------------------------------------------------
+  - id: "CN-LABOR-LAW-1994"
+    publisher: "全国人民代表大会常务委员会"
+    authority_level: "national-statute"
+    page_title: "中华人民共和国劳动法"
+    official: true
+    url: "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/bgt/art/2023/art_d9aa750028b14b99a776cb93726a360d.html"
+    pinpoint:
+      - "第三十六条"
+      - "第四十一条"
+      - "第四十四条"
+      - "第五十条"
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      加班费标准的依据（第四十四条三档比例）。
+      URL 为国家市场监督管理总局政府信息公开栏目转载的全文页；
+      人大网本站 SSL 不可达，维护人如能打开人大网原址建议替换。
+    verification_record: >
+      2026-09-09 AI 取得：1994-07-05 第八届全国人大常委会第八次会议通过；
+      2009-08-27 第一次修正；2018-12-29 第二次修正；
+      第一百零七条「本法自1995年1月1日起施行」。
+      第三十六、四十一、四十四、五十条逐字原文引入 docs/handbook/05。
+      **全部待维护人核验。**
+
+  # --- 最高人民法院指导性案例 ---------------------------------------
+  - id: "SPC-GUIDING-CASE-183"
+    publisher: "中华人民共和国最高人民法院"
+    authority_level: "guiding-case"
+    page_title: "指导案例183号：房玥诉中美联泰大都会人寿保险有限公司劳动合同纠纷案"
+    official: true
+    url: "https://www.court.gov.cn/fabu/xiangqing/364671.html"
+    pinpoint:
+      - "裁判要点"
+      - "相关法条：劳动合同法第40条"
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      **注意本案的裁判要点是年终奖，不是第四十条第三项本身。**
+      关键词「民事/劳动合同/离职/年终奖」。上海高院办案心法文章援引它，
+      用的是其背景事实（组织架构调整、战略部撤销、岗位取消），
+      手册引用时必须如实标明，不得把它写成对"客观情况重大变化"的裁判规则。
+    verification_record: >
+      2026-09-09 AI 取得官方页：2022-07-04 审判委员会讨论通过，2022-07-06 发布。
+      裁判要点逐字原文已引入 docs/handbook/02 类案参考。**待维护人核验。**
+
+  # --- 地方法院裁判指引 -------------------------------------------------
+  - id: "SZ-COURT-LABOR-GUIDE-2015"
+    publisher: "深圳市中级人民法院"
+    authority_level: "local-court-guidance"
+    page_title: "深圳市中级人民法院关于审理劳动争议案件的裁判指引（2015年10月22日）"
+    official: true
+    url: "TODO_VERIFY"
+    pinpoint:
+      - "第八十一条第二款"
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      被迫解除须在解除时明确告知事由，否则不予支持（但有证据证明确因 38 条情形除外）。
+      **只搜到第三方转载（知乎、劳动法苑、律所站），未找到深圳法院官网原文页。**
+      第八十一条第二款文本经三处转载交叉比对一致，仍需维护人给出官方来源。
+    verification_record: >
+      2026-09-09 AI 经第三方转载取得第八十一条第二款文本及深圳中院配套《说明》
+      中对该款的解释（三种情形）。引入 docs/handbook/03。**待维护人提供官方 URL 并核验。**
+
+  # --- 人社部门案例分析 -------------------------------------------------
+  - id: "MOHRSS-CASE-2025-12-18"
+    publisher: "中国就业网（人力资源和社会保障部）"
+    authority_level: "labor-authority-case-analysis"
+    page_title: "劳动者因用人单位拖欠劳动报酬被迫离职，一定能得到经济补偿吗？"
+    official: true
+    url: "https://chinajob.mohrss.gov.cn/h5/c/2025-12-18/471689.shtml"
+    pinpoint:
+      - "被迫解除的程序要件：提前告知"
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      仲裁案例分析，非裁判文书。结论：被迫解除虽有实体事由，
+      但缺乏提前告知的程序要件，仲裁委驳回。只作 docs/handbook/03 实务参考。
+    verification_record: >
+      2026-09-09 AI 取得，发布日期 2025-12-18。**待维护人核验。**
 

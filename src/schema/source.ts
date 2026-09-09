@@ -21,8 +21,14 @@ export const SourceAuthorityLevel = z.enum([
   "provincial-regulation",
   "local-regulation",
   "published-case",
+  /** 最高人民法院指导性案例。 */
+  "guiding-case",
+  /** 地方法院裁判指引。不是法律法规，但对本地裁审有直接影响。 */
+  "local-court-guidance",
   /** 法院官方渠道发布的审判实务文章。不是规范性文件，只作实务参考。 */
   "court-practice-article",
+  /** 人社部门官方渠道的案例分析。 */
+  "labor-authority-case-analysis",
   "media-report",
 ]);
 
