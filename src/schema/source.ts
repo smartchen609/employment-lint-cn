@@ -41,6 +41,8 @@ export const SourceUrl = z.union([
   z.string().url().startsWith("https://"),
   z.string().url().startsWith("http://"),
   z.literal("TODO_VERIFY"),
+  /** 维护人确认该文件没有公开的官方原文页（如仅内部下发的裁判指引）。必须写 no_public_page_reason。 */
+  z.literal("NO_PUBLIC_PAGE"),
 ]);
 
 export const SourceRecord = z
@@ -71,6 +73,8 @@ export const SourceRecord = z
      * 那是更坏的取舍。所以允许 http，但必须写明为什么。
      */
     insecure_url_reason: z.string().optional(),
+    /** url 为 NO_PUBLIC_PAGE 时必填：为什么没有公开页、文本从哪里交叉比对得来。 */
+    no_public_page_reason: z.string().optional(),
     /**
      * 人工核验记录：核了什么、看到了什么。
      * page_opened_and_checked 只是一个布尔值，说明不了核验到什么程度；
@@ -93,6 +97,13 @@ export const SourceRecord = z
         code: z.ZodIssueCode.custom,
         path: ["verified_by"],
         message: "已核验的来源必须填写 verified_by",
+      });
+    }
+    if (s.url === "NO_PUBLIC_PAGE" && !s.no_public_page_reason) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["no_public_page_reason"],
+        message: "url 为 NO_PUBLIC_PAGE 的来源必须写明 no_public_page_reason",
       });
     }
     if (s.page_opened_and_checked && s.url === "TODO_VERIFY") {

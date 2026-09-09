@@ -267,9 +267,9 @@ sources:
       - "第四十一条"
       - "第四十四条"
       - "第五十条"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       加班费标准的依据（第四十四条三档比例）。
@@ -280,7 +280,7 @@ sources:
       2009-08-27 第一次修正；2018-12-29 第二次修正；
       第一百零七条「本法自1995年1月1日起施行」。
       第三十六、四十一、四十四、五十条逐字原文引入 docs/handbook/05。
-      **全部待维护人核验。**
+      2026-09-09 维护人确认。
 
   # --- 最高人民法院指导性案例 ---------------------------------------
   - id: "SPC-GUIDING-CASE-183"
@@ -292,9 +292,9 @@ sources:
     pinpoint:
       - "裁判要点"
       - "相关法条：劳动合同法第40条"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       **注意本案的裁判要点是年终奖，不是第四十条第三项本身。**
@@ -303,7 +303,7 @@ sources:
       手册引用时必须如实标明，不得把它写成对"客观情况重大变化"的裁判规则。
     verification_record: >
       2026-09-09 AI 取得官方页：2022-07-04 审判委员会讨论通过，2022-07-06 发布。
-      裁判要点逐字原文已引入 docs/handbook/02 类案参考。**待维护人核验。**
+      裁判要点逐字原文已引入 docs/handbook/02 类案参考。2026-09-09 维护人确认。
 
   # --- 地方法院裁判指引 -------------------------------------------------
   - id: "SZ-COURT-LABOR-GUIDE-2015"
@@ -311,20 +311,23 @@ sources:
     authority_level: "local-court-guidance"
     page_title: "深圳市中级人民法院关于审理劳动争议案件的裁判指引（2015年10月22日）"
     official: true
-    url: "TODO_VERIFY"
+    url: "NO_PUBLIC_PAGE"
+    no_public_page_reason: >
+      2026-09-09 维护人确认：该裁判指引无公开的深圳法院官网原文页。
+      第八十一条第二款文本经知乎、劳动法苑、律所网站三处转载交叉比对一致，
+      由维护人（深圳执业律师）依职业知识确认。
     pinpoint:
       - "第八十一条第二款"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       被迫解除须在解除时明确告知事由，否则不予支持（但有证据证明确因 38 条情形除外）。
-      **只搜到第三方转载（知乎、劳动法苑、律所站），未找到深圳法院官网原文页。**
-      第八十一条第二款文本经三处转载交叉比对一致，仍需维护人给出官方来源。
+      无公开官方原文页，见 no_public_page_reason。
     verification_record: >
       2026-09-09 AI 经第三方转载取得第八十一条第二款文本及深圳中院配套《说明》
-      中对该款的解释（三种情形）。引入 docs/handbook/03。**待维护人提供官方 URL 并核验。**
+      中对该款的解释（三种情形）。引入 docs/handbook/03。2026-09-09 维护人确认。
 
   # --- 人社部门案例分析 -------------------------------------------------
   - id: "MOHRSS-CASE-2025-12-18"
@@ -335,15 +338,15 @@ sources:
     url: "https://chinajob.mohrss.gov.cn/h5/c/2025-12-18/471689.shtml"
     pinpoint:
       - "被迫解除的程序要件：提前告知"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       仲裁案例分析，非裁判文书。结论：被迫解除虽有实体事由，
       但缺乏提前告知的程序要件，仲裁委驳回。只作 docs/handbook/03 实务参考。
     verification_record: >
-      2026-09-09 AI 取得，发布日期 2025-12-18。**待维护人核验。**
+      2026-09-09 AI 取得，发布日期 2025-12-18。2026-09-09 维护人确认。
 
   # --- 全国 · 司法解释（一）------------------------------------------
   - id: "SPC-LABOR-I-2020"
@@ -358,16 +361,16 @@ sources:
       - "第三十八条"
       - "第三十九条"
       - "第四十条"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       法释〔2020〕26号，2020-12-25 审委会第 1825 次会议通过，2021-01-01 施行。
       竞业限制经济补偿的兜底标准（30%）、三个月未付可解除、单位单方解除须加付三个月等。
       解释（二）第二十一条废止的是本解释第三十二条第一款，第三十六至四十条未被废止。
     verification_record: >
-      2026-09-09 AI 取得官方页，第三十六至四十条逐字原文引入 docs/handbook/09。**待维护人核验。**
+      2026-09-09 AI 取得官方页，第三十六至四十条逐字原文引入 docs/handbook/09。2026-09-09 维护人确认。
 
   # --- 国务院行政法规 · 工伤保险条例 ----------------------------------
   - id: "CN-WORK-INJURY-REG-2010"
@@ -381,9 +384,9 @@ sources:
       - "第十五条"
       - "第十六条"
       - "第十七条"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       行政法规，非法律；authority_level 暂用 national-statute，
@@ -391,5 +394,5 @@ sources:
       国务院令第 586 号，2010-12-08 国务院第 136 次常务会议通过，2011-01-01 施行。
     verification_record: >
       2026-09-09 AI 取得中国政府网公报页，第十四至十七条逐字原文引入 docs/handbook/10。
-      **待维护人核验。** 工伤待遇（第五章）条文尚未取得，10 节只写认定与申请时限。
+      2026-09-09 维护人确认。 工伤待遇（第五章）条文尚未取得，10 节只写认定与申请时限。
 

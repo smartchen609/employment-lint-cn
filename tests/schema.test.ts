@@ -221,6 +221,12 @@ describe("sources.yml 实文件", () => {
     "SZ-HARMONIOUS-LABOR-2008",
     "GUANGZHOU-WEI-AI-CASE",
     "SH-COURT-LCL-40-3-2026",
+    "CN-LABOR-LAW-1994",
+    "SPC-GUIDING-CASE-183",
+    "SZ-COURT-LABOR-GUIDE-2015",
+    "MOHRSS-CASE-2025-12-18",
+    "SPC-LABOR-I-2020",
+    "CN-WORK-INJURY-REG-2010",
   ]);
 
   it("核验状态与维护人清单严格一致（AI 不得代为置 true）", () => {
@@ -235,6 +241,7 @@ describe("sources.yml 实文件", () => {
       expect(s.last_verified_at, `${s.id} 缺 last_verified_at`).not.toBe("");
       expect(s.verified_by, `${s.id} 缺 verified_by`).not.toBe("");
       expect(s.url, `${s.id} 的 URL 仍是 TODO_VERIFY`).not.toBe("TODO_VERIFY");
+      if (s.url === "NO_PUBLIC_PAGE") expect(s.no_public_page_reason, `${s.id} 无公开页必须写理由`).toBeTruthy();
     }
   });
 
