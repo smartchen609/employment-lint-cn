@@ -45,7 +45,7 @@ const ALLOWED_URL_PREFIXES = [
   "https://reactjs.org/docs/error-decoder.html",
   // 自愿反馈入口（round2 §1乙）：<a target="_blank">，用户点击才跳转。
   // 链接只预填工具版本与 Rule ID，不含任何案件答案。
-  "https://github.com/apangchen/employment-lint-cn",
+  "https://github.com/smartchen609/employment-lint-cn",
 ];
 
 /** 手册页面里不允许出现的：任何 <script>。它们是纯静态文档。 */

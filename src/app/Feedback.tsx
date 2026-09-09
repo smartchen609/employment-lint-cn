@@ -17,7 +17,7 @@ import { RULESET_VERSION, TOOL_VERSION } from "../export/case-export.js";
  * 页面本身不发任何请求。
  */
 
-const REPO = "https://github.com/apangchen/employment-lint-cn";
+const REPO = "https://github.com/smartchen609/employment-lint-cn";
 
 function issueUrl(template: string, ruleIds: string[]): string {
   const params = new URLSearchParams({
