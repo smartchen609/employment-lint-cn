@@ -21,6 +21,8 @@ export const SourceAuthorityLevel = z.enum([
   "provincial-regulation",
   "local-regulation",
   "published-case",
+  /** 法院官方渠道发布的审判实务文章。不是规范性文件，只作实务参考。 */
+  "court-practice-article",
   "media-report",
 ]);
 

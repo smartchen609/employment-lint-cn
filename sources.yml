@@ -66,6 +66,8 @@ sources:
       - "第四十条第一项"
       - "第四十条第二项"
       - "第四十条第三项"
+      - "第四十六条"
+      - "第四十七条"
       - "第四十八条"
       - "第八十七条"
     page_opened_and_checked: true
@@ -83,7 +85,7 @@ sources:
       条文经广东省人民政府门户网站转载版（该页标注来源为中国人大网）核对，
       URL 仍登记人大网原址。维护人如能打开人大网本站，建议复核一次。
       2026-09-09 取得第三十九条、第四十条逐字全文引入 docs/handbook/02，
-      待维护人逐字确认；另取得第四十六、四十七条全文备用，尚未引用。
+      待维护人逐字确认；第四十六、四十七条全文同日取得，维护人决定纳入，已引入 docs/handbook/02。
 
   - id: "CN-CIVIL-CODE-2021"
     publisher: "全国人民代表大会"
@@ -192,3 +194,27 @@ sources:
       该日期被 CN-GD-AI-REPLACEMENT-NOT-SUFFICIENT-ALONE 用作
       provision_effective.from，含义是"该解释信号自此日起可被公开援引"，
       不是裁判观点的成立日。见 docs/open-questions.md Q11。
+
+  # --- 法院实务文章 · 只作实务参考，不是规范性文件 --------------------
+  - id: "SH-COURT-LCL-40-3-2026"
+    publisher: "上海市高级人民法院（官方澎湃号「上海法院办案心法」专栏）"
+    authority_level: "court-practice-article"
+    page_title: "劳动合同解除之\"客观情况发生重大变化\"情形的司法认定"
+    official: true
+    url: "https://m.thepaper.cn/newsDetail_forward_33155800"
+    pinpoint:
+      - "三重标准：外部性、不可控性、非歧视性"
+      - "岗位功能实质性灭失：技术性、业务性、技能性"
+      - "协商须具备合理性与实质性，举证责任在用人单位"
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      作者：上海市第二中级人民法院立案庭副庭长、三级高级法官王国侠，
+      法官助理李曼柳、刘宇星。发布于 2026-05-11。
+      由维护人 2026-09-09 建议查阅上海法院实务文章，AI 检索后登记。
+      **不是裁判文书，不是规范性文件**，只作 docs/handbook/02「实务分歧」一节的
+      实务参考，并须标明出处。文中援引最高人民法院指导性案例 183 号
+      （房某诉某公司），该案例尚未单独登记来源。
+
