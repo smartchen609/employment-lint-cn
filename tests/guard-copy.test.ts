@@ -136,6 +136,8 @@ describe("守卫 A · 面向用户的文档与界面文案", () => {
     "PRIVACY.md",
     "DISCLAIMER.md",
     ...walk(join(ROOT, "src/app"), ".tsx").map((f) => f.replace(ROOT, "")),
+    // 手册是给劳动者读的，同样受 §6.5 约束
+    ...walk(join(ROOT, "docs/handbook"), ".md").map((f) => f.replace(ROOT, "")),
   ];
 
   /**
