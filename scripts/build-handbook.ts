@@ -1,12 +1,11 @@
 /**
  * 手册 Markdown → 静态 HTML。
  *
- * ## 为什么不引 markdown 库
- *
- * CLAUDE.md §E1：任何新增依赖必须先问维护人。维护人在休息，
- * 而手册用到的 Markdown 子集很小（标题、段落、列表、引用、表格、粗体、
- * 行内代码、代码块、链接），一百来行就能覆盖。先用这个，
- * 换正规库的决定放在 docs/handbook/CONFIRM.md。
+ * 用 markdown-it（维护人 2026-09-09 批准新增该依赖）。
+ * 关键安全设置：
+ *   - html: false —— 原始 HTML 一律按文本转义，手册里不允许内嵌 HTML
+ *   - linkify: false —— 不自动把 URL 变链接
+ *   - markdown-it 默认的 validateLink 会拦掉 javascript:/vbscript:/data: 链接
  *
  * 输出：dist/handbook/index.html + 每节一个 HTML。
  * 无脚本、无外链资源、无追踪 —— 与主应用同一套隐私承诺。
@@ -15,7 +14,14 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
+import MarkdownIt from "markdown-it";
 import { HandbookMapFile } from "../src/schema/copy.js";
+
+const md = new MarkdownIt({ html: false, linkify: false, typographer: false });
+
+// 表格外包一层可横向滚动的容器，手机上宽表格不撑破版面
+md.renderer.rules.table_open = () => '<div class="table-wrap"><table>';
+md.renderer.rules.table_close = () => "</table></div>";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const SRC = join(ROOT, "docs", "handbook");
@@ -25,137 +31,8 @@ function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-/** 行内：粗体、行内代码、链接。先转义再替换，避免把标记本身当 HTML。 */
-function inline(s: string): string {
-  let out = esc(s);
-  out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
-  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  out = out.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_m, text: string, href: string) => {
-    const safe = /^(https?:\/\/|\.\/|\.\.\/|[\w\-一-鿿]+\.html)/.test(href) ? href : "#";
-    return `<a href="${esc(safe)}">${text}</a>`;
-  });
-  return out;
-}
-
-export function markdownToHtml(md: string): string {
-  const lines = md.replace(/\r\n/g, "\n").split("\n");
-  const html: string[] = [];
-  let i = 0;
-
-  const flushPara = (buf: string[]) => {
-    if (buf.length) html.push(`<p>${inline(buf.join(" "))}</p>`);
-    buf.length = 0;
-  };
-
-  const para: string[] = [];
-
-  while (i < lines.length) {
-    const line = lines[i]!;
-
-    // 代码块
-    if (line.startsWith("```")) {
-      flushPara(para);
-      const buf: string[] = [];
-      i += 1;
-      while (i < lines.length && !lines[i]!.startsWith("```")) {
-        buf.push(lines[i]!);
-        i += 1;
-      }
-      i += 1;
-      html.push(`<pre><code>${esc(buf.join("\n"))}</code></pre>`);
-      continue;
-    }
-
-    // 标题
-    const h = /^(#{1,6})\s+(.*)$/.exec(line);
-    if (h) {
-      flushPara(para);
-      const level = h[1]!.length;
-      html.push(`<h${level}>${inline(h[2]!)}</h${level}>`);
-      i += 1;
-      continue;
-    }
-
-    // 引用块（连续 > 行合并，内部按行 <br>）
-    if (line.startsWith(">")) {
-      flushPara(para);
-      const buf: string[] = [];
-      while (i < lines.length && lines[i]!.startsWith(">")) {
-        buf.push(lines[i]!.replace(/^>\s?/, ""));
-        i += 1;
-      }
-      // 整块一起做行内转换，再把换行还原成 <br>。
-      // 逐行处理会让跨行的 **粗体** 永远闭不上（06 节顶部就有一处）。
-      html.push(`<blockquote>${inline(buf.join("\n")).replace(/\n/g, "<br>")}</blockquote>`);
-      continue;
-    }
-
-    // 表格
-    if (line.startsWith("|") && i + 1 < lines.length && /^\|[\s:|-]+\|$/.test(lines[i + 1]!)) {
-      flushPara(para);
-      const cells = (l: string) =>
-        l
-          .replace(/^\|/, "")
-          .replace(/\|$/, "")
-          .split("|")
-          .map((c) => inline(c.trim()));
-      const head = cells(line);
-      i += 2;
-      const rows: string[][] = [];
-      while (i < lines.length && lines[i]!.startsWith("|")) {
-        rows.push(cells(lines[i]!));
-        i += 1;
-      }
-      html.push(
-        `<div class="table-wrap"><table><thead><tr>${head.map((c) => `<th>${c}</th>`).join("")}</tr></thead>` +
-          `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
-      );
-      continue;
-    }
-
-    // 列表（有序 / 无序，支持一层）
-    const li = /^(\s*)([-*]|\d+\.)\s+(.*)$/.exec(line);
-    if (li) {
-      flushPara(para);
-      const ordered = /\d+\./.test(li[2]!);
-      const tag = ordered ? "ol" : "ul";
-      const items: string[] = [];
-      while (i < lines.length) {
-        const m = /^(\s*)([-*]|\d+\.)\s+(.*)$/.exec(lines[i]!);
-        if (!m) break;
-        // 续行：下一行缩进且不是新项
-        let text = m[3]!;
-        i += 1;
-        while (i < lines.length && /^\s{2,}\S/.test(lines[i]!) && !/^\s*([-*]|\d+\.)\s/.test(lines[i]!)) {
-          text += " " + lines[i]!.trim();
-          i += 1;
-        }
-        items.push(`<li>${inline(text)}</li>`);
-      }
-      html.push(`<${tag}>${items.join("")}</${tag}>`);
-      continue;
-    }
-
-    // 分隔线
-    if (/^---+$/.test(line.trim())) {
-      flushPara(para);
-      html.push("<hr>");
-      i += 1;
-      continue;
-    }
-
-    // 空行
-    if (line.trim() === "") {
-      flushPara(para);
-      i += 1;
-      continue;
-    }
-
-    para.push(line.trim());
-    i += 1;
-  }
-  flushPara(para);
-  return html.join("\n");
+export function markdownToHtml(source: string): string {
+  return md.render(source);
 }
 
 const CSS = `

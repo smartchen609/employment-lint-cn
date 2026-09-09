@@ -234,6 +234,7 @@ describe("sources.yml 实文件", () => {
     "GD-COURT-2008-13",
     "GD-COURT-2017-147",
     "GD-COURT-2018-2",
+    "SZ-WAGE-PAYMENT-REG-2019",
   ]);
 
   it("核验状态与维护人清单严格一致（AI 不得代为置 true）", () => {

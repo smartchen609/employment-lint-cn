@@ -69,6 +69,7 @@ sources:
       - "第十条"
       - "第十四条"
       - "第十四条第二款第三项"
+      - "第二十二条"
       - "第二十三条"
       - "第二十四条"
       - "第三十六条"
@@ -85,6 +86,7 @@ sources:
       - "第四十七条"
       - "第四十四条"
       - "第四十八条"
+      - "第五十条"
       - "第八十二条"
       - "第八十五条"
       - "第八十七条"
@@ -107,6 +109,7 @@ sources:
       2026-09-09 另取得第十、三十、三十一、三十八、四十四、八十二、八十五条全文，
       引入 docs/handbook/03–05，**这七条引文待维护人逐字确认**。
       同日另取得第二十三、二十四、三十六、三十七、四十一条，引入 08/09，**待确认**。
+      第二十二、五十条取自维护人汇编（docs/law-corpus/），引入 11 节。
 
   - id: "CN-CIVIL-CODE-2021"
     publisher: "全国人民代表大会"
@@ -504,4 +507,25 @@ sources:
       第三十三条：违法解除赔偿金无须另行支付经济补偿。
     verification_record: >
       2026-09-09 文本取自 docs/law-corpus/，维护人确认第十五条「倒推一年」仍为现行算法。引入 docs/handbook/01、02、04。
+
+  # --- 深圳 · 地方性法规（取自维护人汇编）-----------------------------
+  - id: "SZ-WAGE-PAYMENT-REG-2019"
+    publisher: "深圳市人民代表大会常务委员会"
+    authority_level: "local-regulation"
+    page_title: "深圳市员工工资支付条例（2019 修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "深圳市员工工资支付条例(2019修正).txt"
+    pinpoint:
+      - "第十三条"
+      - "第十四条"
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
+    status: "active"
+    note: >
+      第十三条：劳动关系解除或终止后三个工作日内一次付清月工资；
+      第十四条：工资计发至解除或终止之日，月度奖、季度奖、年终奖按实际工作时间折算。
+    verification_record: >
+      2026-09-09 文本取自 docs/law-corpus/，维护人确认。引入 docs/handbook/11。
 

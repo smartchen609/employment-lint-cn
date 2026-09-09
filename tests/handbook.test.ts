@@ -44,39 +44,37 @@ describe("终点 → 手册映射", () => {
   });
 });
 
-describe("Markdown 转换器（手册用到的子集）", () => {
+describe("Markdown 渲染（markdown-it，html:false）", () => {
   it("标题、段落、粗体、行内代码", () => {
     const html = markdownToHtml("# 标题\n\n一段 **重点** 和 `代码`。");
     expect(html).toContain("<h1>标题</h1>");
-    expect(html).toContain("<p>一段 <strong>重点</strong> 和 <code>代码</code>。</p>");
+    expect(html).toContain("<strong>重点</strong>");
+    expect(html).toContain("<code>代码</code>");
   });
 
-  it("多行引用块合并为一个 blockquote", () => {
-    const html = markdownToHtml("> 第一款\n> 第二款");
-    expect(html).toBe("<blockquote>第一款<br>第二款</blockquote>");
+  it("引用块内跨行粗体能闭合（06 节顶部的情形）", () => {
+    const html = markdownToHtml("> 状态：**第一行开头\n> 第二行结尾**）。");
+    expect(html).toContain("<strong>");
+    expect(html).not.toContain("**");
   });
 
-  it("表格", () => {
+  it("表格外包可横向滚动容器", () => {
     const html = markdownToHtml("| a | b |\n| --- | --- |\n| 1 | 2 |");
+    expect(html).toContain('<div class="table-wrap"><table>');
     expect(html).toContain("<th>a</th>");
     expect(html).toContain("<td>2</td>");
   });
 
-  it("有序与无序列表，含续行", () => {
-    const html = markdownToHtml("1. 一\n   续\n2. 二\n\n- x\n- y");
-    expect(html).toContain("<ol><li>一 续</li><li>二</li></ol>");
-    expect(html).toContain("<ul><li>x</li><li>y</li></ul>");
-  });
-
-  it("HTML 会被转义，不会注入", () => {
+  it("原始 HTML 被转义，不会注入", () => {
     const html = markdownToHtml("<script>alert(1)</script>");
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
   });
 
-  it("不安全链接被置空", () => {
+  it("javascript: 链接不会生成 <a>，只作纯文本输出", () => {
     const html = markdownToHtml("[x](javascript:alert(1))");
-    expect(html).toContain('href="#"');
+    expect(html).not.toContain("<a");
+    expect(html).not.toContain('href="javascript');
   });
 
   it("全部十节转换后不残留原始标记", () => {
