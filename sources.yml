@@ -85,7 +85,7 @@ sources:
       条文经广东省人民政府门户网站转载版（该页标注来源为中国人大网）核对，
       URL 仍登记人大网原址。维护人如能打开人大网本站，建议复核一次。
       2026-09-09 取得第三十九条、第四十条逐字全文引入 docs/handbook/02，
-      待维护人逐字确认；第四十六、四十七条全文同日取得，维护人决定纳入，已引入 docs/handbook/02。
+      待维护人逐字确认；第四十六、四十七条全文同日取得，维护人决定纳入并已逐字确认，已引入 docs/handbook/02。
 
   - id: "CN-CIVIL-CODE-2021"
     publisher: "全国人民代表大会"
@@ -206,9 +206,9 @@ sources:
       - "三重标准：外部性、不可控性、非歧视性"
       - "岗位功能实质性灭失：技术性、业务性、技能性"
       - "协商须具备合理性与实质性，举证责任在用人单位"
-    page_opened_and_checked: false
-    last_verified_at: ""
-    verified_by: ""
+    page_opened_and_checked: true
+    last_verified_at: "2026-09-09"
+    verified_by: "apangchen"
     status: "active"
     note: >
       作者：上海市第二中级人民法院立案庭副庭长、三级高级法官王国侠，

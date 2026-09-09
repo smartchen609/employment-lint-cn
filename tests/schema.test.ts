@@ -220,6 +220,7 @@ describe("sources.yml 实文件", () => {
     "CN-LDCA-2008",
     "SZ-HARMONIOUS-LABOR-2008",
     "GUANGZHOU-WEI-AI-CASE",
+    "SH-COURT-LCL-40-3-2026",
   ]);
 
   it("核验状态与维护人清单严格一致（AI 不得代为置 true）", () => {
