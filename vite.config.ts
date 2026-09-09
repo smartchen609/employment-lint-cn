@@ -3,6 +3,12 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  /**
+   * 相对路径。GitHub Pages 的项目页挂在 /employment-lint-cn/ 子路径下，
+   * 绝对路径 /assets/... 会 404。用 "./" 之后放在任何路径都能跑，
+   * 包括直接双击 dist/index.html。
+   */
+  base: "./",
   build: {
     // 纯静态产物，无后端。
     target: "es2022",
