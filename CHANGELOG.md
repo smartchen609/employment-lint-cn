@@ -63,9 +63,18 @@
 - schema 新增 authority_level：guiding-case、local-court-guidance、court-practice-article、
   labor-authority-case-analysis；SourceRecord 新增 verification_record、insecure_url_reason。
 
+### 2026-09-09 晚 · 手册第一版内容定稿
+
+- 维护人在对话中逐项确认：来源 19/19、引文 45 条、白话推论 13 条、口径修订 3 处。
+- 维护人提供 40 份法律法规汇编（docs/law-corpus/），手册引用以其为准；
+  广东高院 2008/2017/2018 与深圳中院 2015 口径写入 02/03/04/05 节。
+- 新增 11 节离职结算清单；PIP 并入 02 节；03 节补紧迫性。
+- 手册渲染改用 markdown-it（维护人批准新增依赖）。
+
 ### 待完成
 
-- docs/handbook/CONFIRM.md 全部条目（来源 6、引文 4 组、白话 10 节、经验 8 项、结构 4 项）
+- 部署（待维护人选定托管）
+- docs/handbook/CONFIRM.md 剩余条目（来源 6、引文 4 组、白话 10 节、经验 8 项、结构 4 项）
 - PIP 一节（需维护人先给框架）
 - 工伤待遇与劳动能力鉴定（第四、五章条文尚未取得）
 - 真实案件回放：25 条 fixture 的 `actual_result` 仍为空
