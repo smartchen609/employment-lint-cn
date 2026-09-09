@@ -48,6 +48,9 @@ const ALLOWED_URL_PREFIXES = [
   "https://github.com/apangchen/employment-lint-cn",
 ];
 
+/** 手册页面里不允许出现的：任何 <script>。它们是纯静态文档。 */
+const HANDBOOK_FORBIDDEN = ["<script", "onload=", "onclick="];
+
 if (!existsSync(DIST)) {
   console.error("dist/ 不存在。先运行 npx vite build。");
   process.exit(1);
@@ -57,11 +60,23 @@ const files = readdirSync(join(DIST, "assets"))
   .filter((f) => f.endsWith(".js") || f.endsWith(".css"))
   .map((f) => join(DIST, "assets", f));
 files.push(join(DIST, "index.html"));
+// 手册页面同样受隐私承诺约束：无脚本、无外链资源
+{
+  const hb = join(DIST, "handbook");
+  if (existsSync(hb)) {
+    for (const f of readdirSync(hb)) if (f.endsWith(".html")) files.push(join(hb, f));
+  }
+}
 
 const problems: string[] = [];
 
 for (const file of files) {
   const text = readFileSync(file, "utf8");
+  if (file.includes("/handbook/")) {
+    for (const token of HANDBOOK_FORBIDDEN) {
+      if (text.includes(token)) problems.push(`${file.replace(DIST, "dist")} 手册页含「${token}」`);
+    }
+  }
   for (const token of FORBIDDEN) {
     let i = text.indexOf(token);
     while (i !== -1) {

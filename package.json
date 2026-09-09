@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "npm run validate:strict && npm run build:content",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && npm run build:handbook",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-rules.ts",
@@ -19,7 +19,8 @@
     "build:content": "tsx scripts/build-content.ts",
     "audit:bundle": "tsx scripts/audit-bundle.ts",
     "test:mutation": "tsx scripts/mutation-test.ts",
-    "check:full": "npm run check && npm run test:mutation && npm run build && npm run audit:bundle"
+    "check:full": "npm run check && npm run test:mutation && npm run build && npm run audit:bundle",
+    "build:handbook": "tsx scripts/build-handbook.ts"
   },
   "dependencies": {
     "react": "^18.3.1",

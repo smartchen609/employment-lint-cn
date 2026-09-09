@@ -118,3 +118,35 @@ export const EvidenceChecklistFile = z
   .strict();
 
 export type EvidenceChecklistFile = z.infer<typeof EvidenceChecklistFile>;
+
+/** 定性终点 → 手册章节映射。rules/copy/handbook-map.yml。 */
+export const HandbookSection = z
+  .object({
+    id: z.string().regex(/^\d{2}$/),
+    file: z.string().regex(/^\d{2}-.+\.md$/),
+    title: z.string().min(1),
+  })
+  .strict();
+
+export const HandbookMapFile = z
+  .object({
+    sections: z.array(HandbookSection).min(1),
+    endpoints: z.record(z.string().regex(/^[CR]\d{2}$/), z.array(z.string().regex(/^\d{2}$/)).min(1)),
+  })
+  .strict()
+  .superRefine((m, ctx) => {
+    const ids = new Set(m.sections.map((s) => s.id));
+    for (const [ep, secs] of Object.entries(m.endpoints)) {
+      for (const sec of secs) {
+        if (!ids.has(sec)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["endpoints", ep],
+            message: `终点 ${ep} 指向不存在的手册章节 ${sec}`,
+          });
+        }
+      }
+    }
+  });
+
+export type HandbookMapFile = z.infer<typeof HandbookMapFile>;

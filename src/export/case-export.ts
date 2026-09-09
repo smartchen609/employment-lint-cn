@@ -21,11 +21,18 @@ export const TOOL_NAME = "Employment Lint CN";
 export const TOOL_VERSION = "0.1.0";
 export const RULESET_VERSION = "2026-09-04";
 
+interface HandbookSectionRef {
+  id: string;
+  title: string;
+}
+
 interface ExportInput {
   answers: Answers;
   engine: EngineResult;
   resolved: ResolvedResult | null;
   generatedAt: string;
+  /** 本次涉及的手册章节（去重、有序）。由调用方按映射查出，本模块不读 JSON。 */
+  handbookSections?: HandbookSectionRef[];
 }
 
 interface DateRange {
@@ -158,6 +165,7 @@ export function buildCaseExport({
   engine,
   resolved,
   generatedAt,
+  handbookSections = [],
 }: ExportInput): string {
   // 报告里只列用户真正回答过、且当前仍然有效的问题。
   const answers = pruneAnswers(rawAnswers);
@@ -309,6 +317,16 @@ export function buildCaseExport({
 
   /* 8. 需要律师重点复核的问题 —— round2 §10.2 第 9 节 */
   out.push(...section("8. 需要律师重点复核的问题", lawyerQuestions(answers, engine, resolved)));
+
+  /* 8b. 对应手册章节 */
+  if (handbookSections.length > 0) {
+    out.push(
+      ...section(
+        "8b. 对应手册章节",
+        handbookSections.map((h) => `- 第 ${h.id} 节 · ${h.title}`),
+      ),
+    );
+  }
 
   /* 9. 证据边界 */
   out.push(

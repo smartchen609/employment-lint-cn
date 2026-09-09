@@ -14,7 +14,7 @@ import { join, resolve } from "node:path";
 import { parse } from "yaml";
 
 import { RuleRecord } from "../src/schema/rule.js";
-import { EndpointTemplateFile, EvidenceChecklistFile } from "../src/schema/copy.js";
+import { EndpointTemplateFile, EvidenceChecklistFile, HandbookMapFile } from "../src/schema/copy.js";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const OUT = join(ROOT, "src", "generated");
@@ -48,6 +48,9 @@ const claimPaths = EndpointTemplateFile.parse(
 const evidence = EvidenceChecklistFile.parse(
   loadYaml(join(ROOT, "rules", "copy", "evidence.yml")),
 );
+const handbookMap = HandbookMapFile.parse(
+  loadYaml(join(ROOT, "rules", "copy", "handbook-map.yml")),
+);
 
 const banner = "// 由 scripts/build-content.ts 生成，请勿手工编辑。改 rules/ 下的 YAML。\n";
 
@@ -59,6 +62,7 @@ writeFileSync(
       classification: classification.templates,
       claimPaths: claimPaths.templates,
       evidence,
+      handbookMap,
     },
     null,
     2,
@@ -72,5 +76,6 @@ writeFileSync(
 
 console.log(
   `生成完成：规则 ${rules.length} 条，定性模板 ${classification.templates.length} 条，` +
-    `主张模板 ${claimPaths.templates.length} 条，证据清单 ${evidence.checklists.length} 组`,
+    `主张模板 ${claimPaths.templates.length} 条，证据清单 ${evidence.checklists.length} 组，` +
+    `手册章节 ${handbookMap.sections.length} 节`,
 );

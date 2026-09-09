@@ -5,7 +5,7 @@ import { buildFacts } from "../questions/build-facts.js";
 import { pruneAnswers, visibleQuestions } from "../questions/tree.js";
 import type { Answers } from "../questions/types.js";
 import { buildCaseExport } from "../export/case-export.js";
-import { ALL_TEMPLATES, EVIDENCE, RULES } from "./data.js";
+import { ALL_TEMPLATES, EVIDENCE, handbookSectionsFor, RULES } from "./data.js";
 import { Intro } from "./Intro.js";
 import { QuestionView } from "./QuestionView.js";
 import { ResultView } from "./ResultView.js";
@@ -45,11 +45,23 @@ export function App(): React.JSX.Element {
 
   const markdown = useMemo(() => {
     if (!evaluation) return "";
+    const endpointIds = evaluation.resolved
+      ? [
+          ...evaluation.resolved.classification.map((t) => t.id),
+          ...(evaluation.resolved.claimDirection ? [evaluation.resolved.claimDirection.id] : []),
+        ]
+      : [];
+    const seen = new Set<string>();
+    const handbookSections = endpointIds
+      .flatMap((id) => handbookSectionsFor(id))
+      .filter((s) => (seen.has(s.id) ? false : (seen.add(s.id), true)))
+      .map((s) => ({ id: s.id, title: s.title }));
     return buildCaseExport({
       answers,
       engine: evaluation.engine,
       resolved: evaluation.resolved,
       generatedAt: new Date().toISOString(),
+      handbookSections,
     });
   }, [evaluation, answers]);
 

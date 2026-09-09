@@ -35,6 +35,14 @@ export function Intro({ onStart }: { onStart: () => void }): React.JSX.Element {
       <button className="primary" type="button" onClick={onStart}>
         开始检查
       </button>
+
+      <p className="note handbook-entry">
+        不想答题？直接看
+        <a href="handbook/" target="_blank" rel="noreferrer noopener">
+          劳动者自助仲裁手册
+        </a>
+        ——每条法条都标了来源与核验状态。答完题，结果页会告诉你该看哪几节。
+      </p>
     </section>
   );
 }

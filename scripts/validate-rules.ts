@@ -31,7 +31,7 @@ import { parse } from "yaml";
 import { z } from "zod";
 
 import { RuleRecord } from "../src/schema/rule.js";
-import { EndpointTemplateFile, EvidenceChecklistFile } from "../src/schema/copy.js";
+import { EndpointTemplateFile, EvidenceChecklistFile, HandbookMapFile } from "../src/schema/copy.js";
 import { SourceRegistry } from "../src/schema/source.js";
 import { TestFixture } from "../src/schema/fixture.js";
 
@@ -256,6 +256,40 @@ for (const [relPath, kind] of copyFiles) {
       if (endpointIds.has(t.id)) err(relPath, `重复的终点编号: ${t.id}`);
       endpointIds.add(t.id);
     }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 3c. 终点 → 手册章节映射                                             */
+/* ------------------------------------------------------------------ */
+
+{
+  const relPath = "rules/copy/handbook-map.yml";
+  try {
+    const parsed = HandbookMapFile.safeParse(loadYaml(join(ROOT, relPath)));
+    if (!parsed.success) {
+      err(relPath, "结构校验失败:\n" + formatZod(parsed.error).join("\n"));
+    } else {
+      const map = parsed.data;
+      // 每个终点都必须有章节可看 —— "工具是皮"的意思就是每张卡片都能翻到骨架
+      for (const id of endpointIds) {
+        if (!map.endpoints[id]) err(relPath, `终点 ${id} 没有对应的手册章节`);
+      }
+      for (const id of Object.keys(map.endpoints)) {
+        if (!endpointIds.has(id)) err(relPath, `映射里的 ${id} 不是已登记的终点`);
+      }
+      // 章节文件必须存在
+      for (const sec of map.sections) {
+        const f = join(ROOT, "docs", "handbook", sec.file);
+        try {
+          statSync(f);
+        } catch {
+          err(relPath, `章节 ${sec.id} 指向不存在的文件 docs/handbook/${sec.file}`);
+        }
+      }
+    }
+  } catch (e) {
+    err(relPath, `无法解析: ${(e as Error).message}`);
   }
 }
 

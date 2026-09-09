@@ -9,7 +9,7 @@
  */
 
 import type { RuleRecord } from "../schema/rule.js";
-import type { EndpointTemplate, EvidenceChecklistFile } from "../schema/copy.js";
+import type { EndpointTemplate, EvidenceChecklistFile, HandbookMapFile } from "../schema/copy.js";
 import { provideCopy } from "../findings/copy.js";
 
 import rulesJson from "../generated/rules.json";
@@ -21,9 +21,19 @@ const copy = copyJson as unknown as {
   classification: EndpointTemplate[];
   claimPaths: EndpointTemplate[];
   evidence: EvidenceChecklistFile;
+  handbookMap: HandbookMapFile;
 };
 
 provideCopy(copy);
 
 export const ALL_TEMPLATES: EndpointTemplate[] = [...copy.classification, ...copy.claimPaths];
 export const EVIDENCE = copy.evidence;
+export const HANDBOOK = copy.handbookMap;
+
+/** 某终点对应的手册章节（按映射顺序）。 */
+export function handbookSectionsFor(endpointId: string): HandbookMapFile["sections"] {
+  const ids = HANDBOOK.endpoints[endpointId] ?? [];
+  return ids
+    .map((id) => HANDBOOK.sections.find((s) => s.id === id))
+    .filter((s): s is HandbookMapFile["sections"][number] => !!s);
+}

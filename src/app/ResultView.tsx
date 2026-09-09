@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { EndpointTemplate } from "../schema/copy.js";
 import type { EngineResult, Finding } from "../engine/evaluate.js";
 import type { ResolvedResult } from "../findings/resolve.js";
-import { RULES } from "./data.js";
+import { handbookSectionsFor, RULES } from "./data.js";
 import { Feedback } from "./Feedback.js";
 
 /**
@@ -203,6 +203,8 @@ function EndpointCard({
         </div>
       ))}
 
+      <HandbookLinks endpointId={template.id} />
+
       {findings.length > 0 && (
         <div className="rule-detail">
           <button type="button" className="link" onClick={() => setOpen((o) => !o)}>
@@ -212,6 +214,25 @@ function EndpointCard({
         </div>
       )}
     </article>
+  );
+}
+
+/**
+ * 「手册是骨架，工具是皮」—— 每张卡片都能翻到对应章节。
+ * 手册页是构建期生成的静态 HTML，与主应用同一套隐私承诺。
+ */
+function HandbookLinks({ endpointId }: { endpointId: string }): React.JSX.Element | null {
+  const sections = handbookSectionsFor(endpointId);
+  if (sections.length === 0) return null;
+  return (
+    <p className="handbook-links">
+      看手册：
+      {sections.map((s) => (
+        <a key={s.id} href={`handbook/${s.id}.html`} target="_blank" rel="noreferrer noopener">
+          第 {s.id} 节 · {s.title}
+        </a>
+      ))}
+    </p>
   );
 }
 
