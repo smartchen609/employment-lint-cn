@@ -118,6 +118,13 @@ sources:
     page_title: "中华人民共和国民法典"
     official: true
     url: "https://www.beijing.gov.cn/zhengce/zhengcefagui/202006/t20200602_1913330.html"
+    official_url: "https://flk.npc.gov.cn/detail?title=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E6%B0%91%E6%B3%95%E5%85%B8&id=ff808081729d1efe01729d50b5c500bf"
+    official_url_checked: false
+    official_url_record: >
+      2026-09-16 AI 检索取得：国家法律法规数据库（全国人大常委会办公厅）。页面正文以版式文件渲染，
+      AI 经数据库接口核对了制定机关、公布日期 2020-05-28、施行日期 2021-01-01、状态有效；
+      第二百零二条文本经另一政府网站转载页交叉比对一致。现登记的 url 是北京市政府转载页，
+      维护人确认后可改用本链接。
     pinpoint:
       - "第二百零二条"
     page_opened_and_checked: true
@@ -410,6 +417,11 @@ sources:
     official: true
     url: "CORPUS"
     corpus_file: "中华人民共和国劳动合同法实施条例.txt"
+    official_url: "https://www.gov.cn/zhengce/2008-09/19/content_2602519.htm"
+    official_url_checked: false
+    official_url_record: >
+      2026-09-16 AI 检索取得：中国政府网（国务院）原文页。抽查第二十七条，与汇编逐字一致。
+      另有国务院公报版 https://www.gov.cn/gongbao/content/2008/content_1107604.htm 内容一致。待维护人打开确认。
     pinpoint:
       - "第六条"
       - "第七条"
@@ -431,6 +443,10 @@ sources:
     official: true
     url: "CORPUS"
     corpus_file: "职工带薪年休假条例.txt"
+    official_url: "https://www.gov.cn/zhengce/2007-12/16/content_2602498.htm"
+    official_url_checked: false
+    official_url_record: >
+      2026-09-16 AI 检索取得：中国政府网（国务院）原文页。抽查第五条（含 300% 表述），与汇编逐字一致。待维护人打开确认。
     pinpoint:
       - "第三条"
       - "第五条"
@@ -452,6 +468,12 @@ sources:
     official: true
     url: "CORPUS"
     corpus_file: "广东省高级人民法院、广东省劳动争议仲裁委员会关于适用《劳动争议调解仲裁法》、《劳动合同法》若干问题的指导意见.txt"
+    official_url: "https://www.gdhrss.gov.cn/ldgxxt/13241.jhtml"
+    official_url_checked: false
+    official_url_record: >
+      2026-09-16 AI 检索取得：广东省人力资源和社会保障厅网站（省劳动人事争议仲裁委员会办公室设于该厅）。
+      AI 所在网络直连该站被重置，未能亲自打开；标题与第二十九条原文取自搜索引擎对该页的索引，与汇编逐字一致。
+      须维护人在内地网络下打开确认。另：一家律所网站称本文件已废止，未经核实，见 CONFIRM.md 第 I 节。
     pinpoint:
       - "第二十七条"
       - "第二十八条"
