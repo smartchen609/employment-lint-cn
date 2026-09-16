@@ -72,6 +72,7 @@ p { margin: .6rem 0; }
 ul, ol { margin: .5rem 0; padding-left: 1.3rem; }
 li { margin: .3rem 0; }
 
+a { color: var(--accent); }
 .note { color: var(--ink-soft); font-size: .88rem; }
 .lede { font-size: 1.05rem; font-weight: 600; }
 
