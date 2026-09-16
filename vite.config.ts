@@ -9,6 +9,13 @@ export default defineConfig({
    * 包括直接双击 dist/index.html。
    */
   base: "./",
+  /**
+   * 草稿预览开关。只有 `npm run dev:drafts`（VITE_DRAFTS=1）为 true。
+   * 线上构建为 false：src/app/main.tsx 里的草稿分支成为死代码被删除。
+   */
+  define: {
+    __DRAFTS__: JSON.stringify(process.env["VITE_DRAFTS"] === "1"),
+  },
   build: {
     // 纯静态产物，无后端。
     target: "es2022",

@@ -91,7 +91,7 @@ const MUTANTS: Mutant[] = [
   {
     name: "陈旧答案不剪枝",
     file: "src/questions/build-facts.ts",
-    from: "  const answers = pruneAnswers(rawAnswers);",
+    from: "  const answers = pruneAnswers(rawAnswers, options.questions);",
     to: "  const answers = rawAnswers;",
     why: "用户看不到的答案仍然驱动规则",
   },
@@ -143,6 +143,20 @@ const MUTANTS: Mutant[] = [
     from: '    page_opened_and_checked: true\n    last_verified_at: "2026-09-04"\n    verified_by: "apangchen"\n    status: "active"\n    note: >\n      URL 抄自 round2 脚注 [3]。',
     to: '    page_opened_and_checked: true\n    last_verified_at: ""\n    verified_by: ""\n    status: "active"\n    note: >\n      URL 抄自 round2 脚注 [3]。',
     why: "核验状态与核验记录脱节",
+  },
+  {
+    name: "引擎不再跳过草稿规则",
+    file: "src/engine/evaluate.ts",
+    from: '    if (rule.status !== "active") continue;',
+    to: '    if (rule.status === "deprecated") continue;',
+    why: "维护人未确认的草稿规则会在线上命中",
+  },
+  {
+    name: "来源文号与汇编文件对不上",
+    file: "sources.yml",
+    from: "（粤高法〔2012〕284号）",
+    to: "（粤高法发〔2018〕2号）",
+    why: "来源页把 2012 年纪要标成 2018 年文件（2026-09-16 实际发生过）",
   },
 ];
 

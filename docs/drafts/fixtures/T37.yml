@@ -1,0 +1,15 @@
+id: "T37"
+title: "【草稿】公司提出协商解除，要求写个人原因，什么都还没签"
+input:
+  scope: { principal_place_of_performance: "CN-OTHER" }
+  operation: { selected_shape: "MUTUAL_TERMINATION" }
+  mutual:
+    proposer: "EMPLOYER"
+    signed: "NOTHING"
+    asked_personal_reason: true
+expected:
+  primary_endpoint: "C01"
+  secondary_endpoints: ["C30"]
+  findings: ["PERSONAL_REASON_WORDING_RISK"]
+note: "C01 是线上已有的结构性终点，C30 在其下补充规则依据。"
+actual_result: ""

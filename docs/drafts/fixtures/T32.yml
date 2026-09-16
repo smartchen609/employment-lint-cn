@@ -1,0 +1,15 @@
+id: "T32"
+title: "【草稿】深圳：拖欠加班费，还在职"
+input:
+  scope: { principal_place_of_performance: "CN-GD-SZ" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["OVERTIME_UNPAID"]
+    arrears_age: "WITHIN_ONE_YEAR"
+    exit_status: "STILL_EMPLOYED"
+expected:
+  primary_endpoint: "C28"
+  findings: ["STATE_REASON_WHEN_LEAVING", "FORCED_RESIGNATION_GROUND_CANDIDATE"]
+  not_findings: ["REASON_NOT_STATED_AT_EXIT"]
+note: "还没走的人，最该知道的是先发通知、再离开。"
+actual_result: ""

@@ -268,3 +268,11 @@ footer {
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: #555; }
   footer { border-top: 1px solid #999; }
 }
+
+/* 草稿预览横幅：只在 VITE_DRAFTS=1 时出现 */
+.draft-banner {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 2px dashed var(--accent);
+  font-weight: 600;
+}

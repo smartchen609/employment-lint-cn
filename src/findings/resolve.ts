@@ -13,7 +13,7 @@
 
 import type { EndpointTemplate, EvidenceChecklist, Severity } from "../schema/index.js";
 import type { EngineResult, Finding } from "../engine/evaluate.js";
-import type { Answers } from "../questions/types.js";
+import type { Answers, Question } from "../questions/types.js";
 import { is, pruneAnswers } from "../questions/tree.js";
 
 export interface ResolvedResult {
@@ -187,14 +187,28 @@ function excludedEndpoints(a: Answers): Set<string> {
   return out;
 }
 
+/**
+ * 内容层扩展点。线上不传；草稿预览与草稿测试用它叠加尚未确认的入口，
+ * 这样本文件不需要知道任何草稿入口的存在。
+ */
+export interface ResolveOptions {
+  /** 问题集，默认线上问题树。 */
+  questions?: readonly Question[];
+  /** 额外的结构性终点（排在线上结构性终点之后）。 */
+  extraEndpointIds?: (answers: Answers, findings: Finding[]) => string[];
+  /** 额外的证据清单编号。 */
+  extraChecklistIds?: (answers: Answers) => string[];
+}
+
 export function resolveResult(
   engine: EngineResult,
   rawAnswers: Answers,
   templates: EndpointTemplate[],
   checklists: EvidenceChecklist[],
+  options: ResolveOptions = {},
 ): ResolvedResult | null {
   // 与 buildFacts 一致：只看当前仍然可见的答案。
-  const answers = pruneAnswers(rawAnswers);
+  const answers = pruneAnswers(rawAnswers, options.questions);
   const byId = new Map(templates.map((t) => [t.id, t]));
 
   const fired = new Set(engine.firedRuleIds);
@@ -220,7 +234,10 @@ export function resolveResult(
     findingsByEndpoint[t.id] = matched;
   }
 
-  const structural = structuralEndpointIds(answers, engine.findings);
+  const structural = [
+    ...structuralEndpointIds(answers, engine.findings),
+    ...(options.extraEndpointIds?.(answers, engine.findings) ?? []),
+  ];
   const orderedIds = [...new Set([...structural, ...fromFindings])];
   const endpoints = orderedIds.map((id) => byId.get(id)).filter((t): t is EndpointTemplate => !!t);
   if (endpoints.length === 0) return null;
@@ -257,15 +274,15 @@ export function resolveResult(
     secondary,
     classification,
     claimDirection,
-    evidence: pickChecklists(answers, checklists),
+    evidence: pickChecklists(answers, checklists, options.extraChecklistIds?.(answers) ?? []),
     findingsByEndpoint,
     conflicts: detectConflicts(answers),
   };
 }
 
 /** 按案件形态挑证据清单。round2 §9。 */
-function pickChecklists(a: Answers, all: EvidenceChecklist[]): EvidenceChecklist[] {
-  const wanted: string[] = [];
+function pickChecklists(a: Answers, all: EvidenceChecklist[], extra: string[]): EvidenceChecklist[] {
+  const wanted: string[] = [...extra];
   if (is(a, "G01", "FIXED_TERM_EXPIRY")) wanted.push("P01");
   if (is(a, "G01", "ARTICLE_40_3")) wanted.push("P02");
   if (is(a, "G01", "DE_FACTO_TERMINATION")) wanted.push("P03");

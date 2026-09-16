@@ -1,0 +1,14 @@
+id: "T35"
+title: "【草稿】深圳：只欠二倍工资和年休假工资，已书面写明事由离开"
+input:
+  scope: { principal_place_of_performance: "CN-GD-SZ" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["DOUBLE_WAGE_UNPAID", "ANNUAL_LEAVE_PAY_UNPAID"]
+    exit_status: "LEFT_WITH_WRITTEN_REASON"
+expected:
+  primary_endpoint: "C26"
+  findings: ["EXCLUDED_ARREARS_ONLY"]
+  not_findings: ["FORCED_RESIGNATION_GROUND_CANDIDATE", "REASON_NOT_STATED_AT_EXIT"]
+note: "深圳中院裁判指引第九十二条。"
+actual_result: ""

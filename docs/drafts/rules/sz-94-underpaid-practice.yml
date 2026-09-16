@@ -1,0 +1,42 @@
+# 【草稿】深圳：社保缴费基数不足，现行司法实践不作被迫解除事由
+# 对应手册 03 节「实务分歧」二。维护人 2026-09-09 口述确认，无单独文件依据。
+
+id: "CN-SZ-PRACTICE-SOCIAL-INSURANCE-UNDERPAID-NOT-A-GROUND"
+version: "0.1.0"
+status: "draft"
+title: "深圳：社保未足额缴纳，现行司法实践不作被迫解除事由"
+jurisdiction: { country: "CN", province: "GD", city: "SZ", level: "city" }
+priority: 88
+overrides: []
+provision_effective: { from: "TODO_VERIFY", to: null }
+authority_type: "internal-methodology"
+uncertainty: "judicial-discretion"
+severity: "warning"
+legal_basis:
+  - source_id: "SZ-COURT-LABOR-GUIDE-2015"
+    instrument: "深圳市中级人民法院关于审理劳动争议案件的裁判指引"
+    article: "第九十四条"
+    note: "维护人 2026-09-09 确认的现行司法实践对本条的收紧适用：只有缺险种或完全未缴可先催缴一个月后被迫解除，未足额缴纳不再构成事由。无单独文件依据。"
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - { fact: "scope.principal_place_of_performance", operator: "equals", value: "CN-GD-SZ" }
+    - { fact: "forced.grounds", operator: "includes_any", value: ["SI_UNDERPAID"] }
+    - not:
+        fact: "forced.grounds"
+        operator: "includes_any"
+        value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+findings:
+  classification_candidates: ["UNDERPAID_SOCIAL_INSURANCE_NOT_A_GROUND"]
+claim_guidance:
+  recommended: ["社保基数不足的，走投诉或补缴的路"]
+  do_not_claim: ["不得以社保基数不足为由被迫解除"]
+  review_required: false
+evidence:
+  required:
+    - { id: "SOCIAL_INSURANCE_RECORDS", label: "社保缴费记录（可自行查询）" }
+  supporting: []
+  contrary: []
+  at_risk_after_exit: []
+tests: ["T34"]
+last_reviewed_at: "2026-09-16"

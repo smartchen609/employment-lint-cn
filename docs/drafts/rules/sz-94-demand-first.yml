@@ -1,0 +1,39 @@
+# 【草稿】深圳：社保未缴须先书面要求缴纳，一个月后仍未缴方可被迫解除
+# 对应手册 03 节「实务分歧」二。
+
+id: "CN-SZ-COURT-94-DEMAND-SOCIAL-INSURANCE-FIRST"
+version: "0.1.0"
+status: "draft"
+title: "深圳：以未缴社保为由被迫解除，须先要求缴纳满一个月"
+jurisdiction: { country: "CN", province: "GD", city: "SZ", level: "city" }
+priority: 92
+overrides: []
+provision_effective: { from: "TODO_VERIFY", to: null }
+authority_type: "local-court-guidance"
+uncertainty: "rule-based"
+severity: "warning"
+legal_basis:
+  - { source_id: "SZ-COURT-LABOR-GUIDE-2015", instrument: "深圳市中级人民法院关于审理劳动争议案件的裁判指引", article: "第九十四条" }
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - { fact: "scope.principal_place_of_performance", operator: "equals", value: "CN-GD-SZ" }
+    - { fact: "forced.grounds", operator: "includes_any", value: ["SI_NONE", "SI_MISSING_TYPES"] }
+    - fact: "forced.social_insurance_demand"
+      operator: "in"
+      value: ["NOT_YET", "ORAL_ONLY", "WRITTEN_UNDER_ONE_MONTH"]
+findings:
+  classification_candidates: ["DEMAND_SOCIAL_INSURANCE_ONE_MONTH_FIRST"]
+claim_guidance:
+  recommended: ["先书面要求公司缴纳社保，满一个月仍未缴再发被迫解除通知"]
+  do_not_claim: ["不得未经催缴直接以未缴社保为由被迫解除"]
+  review_required: false
+evidence:
+  required:
+    - { id: "WRITTEN_SOCIAL_INSURANCE_DEMAND", label: "书面要求公司缴纳社保的记录及送达凭证" }
+  supporting:
+    - { id: "SOCIAL_INSURANCE_RECORDS", label: "社保缴费记录（可自行查询）" }
+  contrary: []
+  at_risk_after_exit: []
+tests: ["T33"]
+last_reviewed_at: "2026-09-16"

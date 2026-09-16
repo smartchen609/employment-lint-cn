@@ -779,9 +779,14 @@ function limitationNear(a: Answers): boolean {
   return new Date().toISOString().slice(0, 10) >= threshold;
 }
 
-/** 当前答案下实际可见的问题。 */
-export function visibleQuestions(answers: Answers): Question[] {
-  return QUESTIONS.filter((q) => !q.visibleWhen || q.visibleWhen(answers));
+/**
+ * 当前答案下实际可见的问题。
+ *
+ * `questions` 默认是线上问题树；只有草稿预览（VITE_DRAFTS=1）与草稿测试
+ * 才会传入叠加了草稿题目的问题集。见 src/questions/drafts/。
+ */
+export function visibleQuestions(answers: Answers, questions: readonly Question[] = QUESTIONS): Question[] {
+  return questions.filter((q) => !q.visibleWhen || q.visibleWhen(answers));
 }
 
 /**
@@ -802,19 +807,19 @@ export function visibleQuestions(answers: Answers): Question[] {
  *
  * 附带答案（`${id}__date`）随主答案一起剪掉。
  */
-export function pruneAnswers(answers: Answers): Answers {
+export function pruneAnswers(answers: Answers, questions: readonly Question[] = QUESTIONS): Answers {
   let current = answers;
 
   // 问题数量有限且可见性单调收敛，迭代次数以问题总数为上界。
-  for (let i = 0; i <= QUESTIONS.length; i += 1) {
-    const visible = new Set(visibleQuestions(current).map((q) => q.id));
+  for (let i = 0; i <= questions.length; i += 1) {
+    const visible = new Set(visibleQuestions(current, questions).map((q) => q.id));
     const next: Answers = {};
     let dropped = false;
 
     for (const [key, value] of Object.entries(current)) {
       // 非问题键（如 evaluation_date）一律保留
       const baseId = key.endsWith("__date") ? key.slice(0, -"__date".length) : key;
-      const isQuestionKey = QUESTIONS.some((q) => q.id === baseId);
+      const isQuestionKey = questions.some((q) => q.id === baseId);
       if (!isQuestionKey || visible.has(baseId)) {
         next[key] = value;
       } else {

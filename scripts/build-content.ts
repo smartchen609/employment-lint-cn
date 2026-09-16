@@ -15,6 +15,8 @@ import { parse } from "yaml";
 
 import { RuleRecord } from "../src/schema/rule.js";
 import { EndpointTemplateFile, EvidenceChecklistFile, HandbookMapFile } from "../src/schema/copy.js";
+import { DraftCopyFile } from "../src/schema/drafts.js";
+import { existsSync } from "node:fs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const OUT = join(ROOT, "src", "generated");
@@ -69,6 +71,38 @@ writeFileSync(
     2,
   ) + "\n",
 );
+/**
+ * 草稿层：docs/drafts/。同样过 Zod 校验（草稿写坏了也要在构建期发现），
+ * 但**线上应用不导入** drafts.json —— 只有 VITE_DRAFTS=1 的预览构建经动态 import 读取，
+ * 生产构建里那段分支是死代码，会被整段删除。scripts/audit-bundle.ts 验证产物里没有草稿内容。
+ */
+const DRAFTS = join(ROOT, "docs", "drafts");
+const draftRules = existsSync(join(DRAFTS, "rules"))
+  ? walkRules(join(DRAFTS, "rules")).map((f) => RuleRecord.parse(loadYaml(f)))
+  : [];
+for (const r of draftRules) {
+  if (r.status !== "draft") throw new Error(`docs/drafts/rules 里的规则 ${r.id} 必须是 status: "draft"`);
+}
+const draftCopy = existsSync(join(DRAFTS, "copy"))
+  ? readdirSync(join(DRAFTS, "copy"))
+      .filter((f) => f.endsWith(".yml"))
+      .sort()
+      .map((f) => DraftCopyFile.parse(loadYaml(join(DRAFTS, "copy", f))))
+  : [];
+writeFileSync(
+  join(OUT, "drafts.json"),
+  JSON.stringify(
+    {
+      rules: draftRules,
+      templates: draftCopy.flatMap((c) => c.templates),
+      checklists: draftCopy.flatMap((c) => c.checklists),
+      endpoints: Object.assign({}, ...draftCopy.map((c) => c.endpoints)),
+    },
+    null,
+    2,
+  ) + "\n",
+);
+
 writeFileSync(
   join(OUT, "README.md"),
   banner.replace("// ", "# ") +
@@ -78,5 +112,6 @@ writeFileSync(
 console.log(
   `生成完成：规则 ${rules.length} 条，定性模板 ${classification.templates.length} 条，` +
     `主张模板 ${claimPaths.templates.length} 条，证据清单 ${evidence.checklists.length} 组，` +
-    `手册章节 ${handbookMap.sections.filter((x) => x.status === "published").length} 节已发布`,
+    `手册章节 ${handbookMap.sections.filter((x) => x.status === "published").length} 节已发布；` +
+    `草稿规则 ${draftRules.length} 条（不上线）`,
 );

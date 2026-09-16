@@ -1,0 +1,39 @@
+# 【草稿】事实解除：尚未书面表态愿意继续工作
+# 对应手册 08 节「常见误解」与「你现在该做什么」。
+
+id: "CN-NAT-DEFACTO-NO-WRITTEN-WILLINGNESS"
+version: "0.1.0"
+status: "draft"
+title: "公司不安排工作而你未书面表态，容易被认定为你自己不来了"
+jurisdiction: { country: "CN", level: "national" }
+priority: 90
+overrides: []
+provision_effective: { from: "2008-05-01", to: null }
+authority_type: "statute"
+uncertainty: "fact-sensitive"
+severity: "warning"
+legal_basis:
+  - source_id: "CN-LDCA-2008"
+    instrument: "中华人民共和国劳动争议调解仲裁法"
+    article: "第六条"
+    note: "谁主张谁举证：主张公司解除，需要能证明不是自己不来。事实解除没有专门条文。"
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "DE_FACTO_TERMINATION" }
+    - { fact: "defacto.willingness_expressed", operator: "in", value: ["NONE", "ORAL", "UNKNOWN"] }
+findings:
+  classification_candidates: ["NO_WRITTEN_WILLINGNESS_TO_WORK"]
+claim_guidance:
+  recommended: ["书面表态愿意继续工作并请公司明确劳动关系状态", "记录每一个停止用工动作的时间"]
+  do_not_claim: ["不得自行写辞职"]
+  review_required: false
+evidence:
+  required:
+    - { id: "WRITTEN_WILLINGNESS", label: "书面表达仍愿意工作的消息" }
+  supporting:
+    - { id: "ACCESS_REVOKED_EVIDENCE", label: "权限被关闭的页面、时间和账号信息" }
+  contrary: []
+  at_risk_after_exit:
+    - { id: "ACCOUNT_BACKEND_STATUS", label: "账号后台状态及权限变更记录" }
+tests: ["T38"]
+last_reviewed_at: "2026-09-16"

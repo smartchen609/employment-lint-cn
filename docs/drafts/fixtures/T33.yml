@@ -1,0 +1,14 @@
+id: "T33"
+title: "【草稿】深圳：公司完全没缴社保，还没催过，还在职"
+input:
+  scope: { principal_place_of_performance: "CN-GD-SZ" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["SI_NONE"]
+    social_insurance_demand: "NOT_YET"
+    exit_status: "STILL_EMPLOYED"
+expected:
+  primary_endpoint: "C24"
+  findings: ["DEMAND_SOCIAL_INSURANCE_ONE_MONTH_FIRST", "STATE_REASON_WHEN_LEAVING", "FORCED_RESIGNATION_GROUND_CANDIDATE"]
+note: "深圳中院裁判指引第九十四条：先要求缴纳，一个月内未缴方可被迫解除。"
+actual_result: ""

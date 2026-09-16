@@ -62,6 +62,9 @@ export const AuthorityType = z.enum([
   "judicial-interpretation",
   "local-regulation",
   "published-case",
+  /** 地方法院裁判指引、解答、座谈会纪要。不是法律法规，但对本地裁审有直接影响。 */
+  "local-court-guidance",
+  /** 维护人依司法实践作出的判断，无单独文件依据。 */
   "internal-methodology",
 ]);
 export type AuthorityType = z.infer<typeof AuthorityType>;

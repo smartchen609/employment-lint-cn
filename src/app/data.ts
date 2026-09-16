@@ -37,9 +37,12 @@ export const HANDBOOK = copy.handbookMap;
  */
 export const PUBLISHED_SECTIONS = HANDBOOK.sections.filter((s) => (s.status ?? "published") === "published");
 
-/** 某终点对应的手册章节（按映射顺序）。 */
-export function handbookSectionsFor(endpointId: string): HandbookMapFile["sections"] {
-  const ids = HANDBOOK.endpoints[endpointId] ?? [];
+/** 某终点对应的手册章节（按映射顺序）。草稿预览传入叠加草稿终点后的映射。 */
+export function handbookSectionsFor(
+  endpointId: string,
+  endpoints: Readonly<Record<string, readonly string[]>> = HANDBOOK.endpoints,
+): HandbookMapFile["sections"] {
+  const ids = endpoints[endpointId] ?? [];
   return ids
     .map((id) => HANDBOOK.sections.find((s) => s.id === id))
     .filter((s): s is HandbookMapFile["sections"][number] => !!s);

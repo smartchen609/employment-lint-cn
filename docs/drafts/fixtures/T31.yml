@@ -1,0 +1,15 @@
+id: "T31"
+title: "【草稿】广东（非深圳）：欠薪，但离开时写的是个人原因"
+input:
+  scope: { principal_place_of_performance: "CN-GD-OTHER" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["WAGES_UNPAID"]
+    arrears_age: "WITHIN_ONE_YEAR"
+    exit_status: "LEFT_WITH_OTHER_REASON"
+expected:
+  primary_endpoint: "C23"
+  findings: ["REASON_NOT_STATED_AT_EXIT", "FORCED_RESIGNATION_GROUND_CANDIDATE"]
+  not_findings: ["STATE_REASON_WHEN_LEAVING"]
+note: "广东高院 2017 年解答第 8 条：离职时未明确提出，之后主张被迫解除经济补偿的，一般不予支持。"
+actual_result: ""

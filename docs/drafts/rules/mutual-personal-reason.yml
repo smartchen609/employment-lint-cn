@@ -1,0 +1,40 @@
+# 【草稿】协商解除：公司要求写"个人原因"
+# 对应手册 08 节「法律怎么规定」一、二与三行对照表。
+
+id: "CN-NAT-LCL-36-37-PERSONAL-REASON-REWRITE"
+version: "0.1.0"
+status: "draft"
+title: "公司提出解除却要求写个人原因，会把协商解除改写成辞职"
+jurisdiction: { country: "CN", level: "national" }
+priority: 90
+overrides: []
+provision_effective: { from: "2008-01-01", to: null }
+authority_type: "statute"
+uncertainty: "rule-based"
+severity: "warning"
+legal_basis:
+  - { source_id: "CN-LCL-2012", instrument: "中华人民共和国劳动合同法", article: "第三十六条" }
+  - { source_id: "CN-LCL-2012", instrument: "中华人民共和国劳动合同法", article: "第三十七条" }
+  - { source_id: "CN-LCL-2012", instrument: "中华人民共和国劳动合同法", article: "第四十六条", note: "第二项：用人单位提出并协商一致解除的，应当支付经济补偿" }
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "MUTUAL_TERMINATION" }
+    - { fact: "mutual.proposer", operator: "equals", value: "EMPLOYER" }
+    - { fact: "mutual.asked_personal_reason", operator: "equals", value: true }
+    - { fact: "mutual.signed", operator: "in", value: ["NOTHING", "DRAFT_ONLY", "ACKNOWLEDGED_RECEIPT"] }
+findings:
+  classification_candidates: ["PERSONAL_REASON_WORDING_RISK"]
+claim_guidance:
+  recommended: ["协议写协商一致解除", "保存公司最初提出解除的记录"]
+  do_not_claim: ["不得在协议或离职文件中写个人原因、自愿辞职"]
+  review_required: false
+evidence:
+  required:
+    - { id: "EMPLOYER_INITIATED_RECORDS", label: "公司最初提出解除的邮件、聊天和会议纪要" }
+  supporting:
+    - { id: "PERSONAL_REASON_REQUEST", label: "公司要求提交个人辞职的记录" }
+  contrary: []
+  at_risk_after_exit:
+    - { id: "ORIGINAL_PROPOSAL_COMMS", label: "谁先提出解除的原始沟通" }
+tests: ["T37"]
+last_reviewed_at: "2026-09-16"

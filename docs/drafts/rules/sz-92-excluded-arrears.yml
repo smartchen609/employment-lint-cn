@@ -1,0 +1,40 @@
+# 【草稿】深圳：二倍工资、年休假工资、高温津贴不作被迫解除理由
+# 对应手册 03 节「实务分歧」三。
+
+id: "CN-SZ-COURT-92-EXCLUDED-ARREARS"
+version: "0.1.0"
+status: "draft"
+title: "深圳：以未付二倍工资、年休假工资、高温津贴为由被迫解除，不予支持"
+jurisdiction: { country: "CN", province: "GD", city: "SZ", level: "city" }
+priority: 91
+overrides: []
+provision_effective: { from: "TODO_VERIFY", to: null }
+authority_type: "local-court-guidance"
+uncertainty: "rule-based"
+severity: "warning"
+legal_basis:
+  - { source_id: "SZ-COURT-LABOR-GUIDE-2015", instrument: "深圳市中级人民法院关于审理劳动争议案件的裁判指引", article: "第九十二条" }
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - { fact: "scope.principal_place_of_performance", operator: "equals", value: "CN-GD-SZ" }
+    - fact: "forced.grounds"
+      operator: "includes_any"
+      value: ["DOUBLE_WAGE_UNPAID", "ANNUAL_LEAVE_PAY_UNPAID", "HIGH_TEMP_ALLOWANCE_UNPAID"]
+    - not:
+        fact: "forced.grounds"
+        operator: "includes_any"
+        value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+findings:
+  classification_candidates: ["EXCLUDED_ARREARS_ONLY"]
+claim_guidance:
+  recommended: ["这三类款项单独主张"]
+  do_not_claim: ["不得以这三类款项未付为由被迫解除并要求经济补偿"]
+  review_required: false
+evidence:
+  required: []
+  supporting: []
+  contrary: []
+  at_risk_after_exit: []
+tests: ["T35"]
+last_reviewed_at: "2026-09-16"

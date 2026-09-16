@@ -1,0 +1,41 @@
+# 【草稿】被迫解除：还在职——走之前书面告知事由
+# 对应手册 03 节「实务分歧」一「用在你身上」与「你现在该做什么」。
+
+id: "CN-GD-FORCED-RESIGNATION-STATE-REASON-WHEN-LEAVING"
+version: "0.1.0"
+status: "draft"
+title: "被迫解除应在离职时明确提出事由"
+jurisdiction: { country: "CN", province: "GD", level: "province" }
+priority: 90
+overrides: []
+provision_effective: { from: "TODO_VERIFY", to: null }
+authority_type: "local-court-guidance"
+uncertainty: "rule-based"
+severity: "warning"
+legal_basis:
+  - { source_id: "GD-COURT-2017-147", instrument: "广东省高级人民法院关于审理劳动争议案件疑难问题的解答", article: "第八条" }
+  - { source_id: "SZ-COURT-LABOR-GUIDE-2015", instrument: "深圳市中级人民法院关于审理劳动争议案件的裁判指引", article: "第八十一条第二款" }
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - { fact: "scope.principal_place_of_performance", operator: "in", value: ["CN-GD-SZ", "CN-GD-OTHER"] }
+    - fact: "forced.grounds"
+      operator: "includes_any"
+      value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+    - { fact: "forced.exit_status", operator: "equals", value: "STILL_EMPLOYED" }
+findings:
+  classification_candidates: ["STATE_REASON_WHEN_LEAVING"]
+claim_guidance:
+  recommended: ["离职前或离职当时书面送达解除通知，写明第三十八条第几项", "用能留痕的方式发送并保存凭证"]
+  do_not_claim: ["不得在离职文件上写个人原因"]
+  review_required: false
+evidence:
+  required:
+    - { id: "RESIGNATION_NOTICE_WITH_REASON", label: "写明解除事由的被迫解除通知及送达凭证" }
+  supporting:
+    - { id: "PRIOR_WAGE_DEMANDS", label: "向公司催要工资的书面记录" }
+  contrary: []
+  at_risk_after_exit:
+    - { id: "CORPORATE_IM_HISTORY", label: "企业邮箱与内部聊天完整历史" }
+tests: ["T32"]
+last_reviewed_at: "2026-09-16"

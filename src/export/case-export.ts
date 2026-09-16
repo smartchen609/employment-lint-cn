@@ -15,7 +15,7 @@ import type { EngineResult } from "../engine/evaluate.js";
 import type { ResolvedResult } from "../findings/resolve.js";
 import { calendarMonthsBetween } from "../engine/calendar.js";
 import { pruneAnswers, QUESTIONS } from "../questions/tree.js";
-import type { Answers } from "../questions/types.js";
+import type { Answers, Question } from "../questions/types.js";
 
 export const TOOL_NAME = "Employment Lint CN";
 export const TOOL_VERSION = "0.1.0";
@@ -33,6 +33,8 @@ interface ExportInput {
   generatedAt: string;
   /** 本次涉及的手册章节（去重、有序）。由调用方按映射查出，本模块不读 JSON。 */
   handbookSections?: HandbookSectionRef[];
+  /** 问题集。默认线上问题树。 */
+  questions?: readonly Question[];
 }
 
 interface DateRange {
@@ -70,8 +72,8 @@ function formatRanges(ranges: DateRange[]): string[] {
   return lines;
 }
 
-function labelOf(questionId: string, value: unknown): string {
-  const q = QUESTIONS.find((x) => x.id === questionId);
+function labelOf(questionId: string, value: unknown, questions: readonly Question[]): string {
+  const q = questions.find((x) => x.id === questionId);
   if (!q) return String(value);
   if (Array.isArray(value)) {
     if (value.length === 0) return "（未选择）";
@@ -166,9 +168,10 @@ export function buildCaseExport({
   resolved,
   generatedAt,
   handbookSections = [],
+  questions = QUESTIONS,
 }: ExportInput): string {
   // 报告里只列用户真正回答过、且当前仍然有效的问题。
-  const answers = pruneAnswers(rawAnswers);
+  const answers = pruneAnswers(rawAnswers, questions);
   const out: string[] = [];
 
   out.push(
@@ -189,7 +192,7 @@ export function buildCaseExport({
   );
 
   /* 1. 已回答的问题，按规格书编号原样列出 */
-  const answered = QUESTIONS.filter(
+  const answered = questions.filter(
     (q) => answers[q.id] !== undefined && answers[q.id] !== null && answers[q.id] !== "",
   );
   out.push(
@@ -201,7 +204,7 @@ export function buildCaseExport({
         if (Array.isArray(raw) && raw.some(isDateRange)) {
           lines.push(...formatRanges(raw as unknown as DateRange[]));
         } else {
-          lines.push(`  - ${labelOf(q.id, raw)}`);
+          lines.push(`  - ${labelOf(q.id, raw, questions)}`);
         }
         const date = answers[`${q.id}__date`];
         if (typeof date === "string" && date) lines.push(`  - 日期：${date}`);

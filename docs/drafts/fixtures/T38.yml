@@ -1,0 +1,15 @@
+id: "T38"
+title: "【草稿】公司关了账号、停止安排工作，本人还没有书面表态"
+input:
+  scope: { principal_place_of_performance: "CN-OTHER" }
+  operation: { selected_shape: "DE_FACTO_TERMINATION" }
+  defacto:
+    employer_statement: "NONE"
+    actions: ["ACCOUNT_DISABLED", "NO_WORK_ASSIGNED"]
+    willingness_expressed: "NONE"
+expected:
+  primary_endpoint: "C03"
+  secondary_endpoints: ["C31"]
+  findings: ["NO_WRITTEN_WILLINGNESS_TO_WORK"]
+note: "C03 是线上已有的结构性终点，C31 在其下补充规则依据。"
+actual_result: ""

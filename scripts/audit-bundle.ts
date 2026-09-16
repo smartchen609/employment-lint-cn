@@ -125,6 +125,49 @@ for (const file of appFiles) {
   }
 }
 
+/* ---------------- 草稿不进产物 ---------------- */
+
+/**
+ * docs/drafts/ 是维护人尚未确认的规则与文案（CLAUDE.md §L2、§1b.6）。
+ * 线上产物里不得出现草稿入口取值、草稿规则编号、草稿卡片标题、草稿题目。
+ * main.tsx 的草稿分支在线上构建中是死代码；这里验证它确实被删掉了。
+ */
+function draftMarkers(): string[] {
+  const markers = new Set<string>();
+  const dir = join(ROOT, "docs", "drafts");
+  if (!existsSync(dir)) return [];
+  const walk = (d: string): string[] =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? walk(join(d, e.name)) : e.name.endsWith(".yml") ? [join(d, e.name)] : [],
+    );
+  for (const f of walk(dir)) {
+    const doc = parse(readFileSync(f, "utf8"), { version: "1.2" }) as Record<string, unknown>;
+    if (typeof doc["id"] === "string" && f.includes("/rules/")) markers.add(doc["id"]);
+    for (const t of (doc["templates"] as Array<{ title: string }> | undefined) ?? []) markers.add(t.title);
+  }
+  const questions = join(ROOT, "src", "questions", "drafts");
+  if (existsSync(questions)) {
+    for (const f of readdirSync(questions)) {
+      const text = readFileSync(join(questions, f), "utf8");
+      for (const m of text.matchAll(/export const DRAFT_SHAPE = "([A-Z_]+)"/g)) markers.add(m[1]!);
+      for (const m of text.matchAll(/prompt: "([^"]+)"/g)) markers.add(m[1]!);
+    }
+  }
+  return [...markers];
+}
+
+const markers = draftMarkers();
+const distAll = readdirSync(DIST, { recursive: true, withFileTypes: true })
+  .filter((e) => e.isFile() && /\.(js|css|html|json)$/.test(e.name))
+  .map((e) => join(e.parentPath, e.name));
+for (const file of distAll) {
+  const text = readFileSync(file, "utf8");
+  for (const m of markers) {
+    if (text.includes(m)) problems.push(`${rel(file)} 含草稿内容「${m}」`);
+  }
+}
+if (existsSync(join(DIST, "handbook", "drafts"))) problems.push("dist/handbook/drafts/ 不应存在");
+
 /* ---------------- 手册产物 ---------------- */
 
 const hbDir = join(DIST, "handbook");
@@ -161,6 +204,7 @@ for (const file of hbFiles) {
 
 console.log("── audit-bundle ──");
 console.log(`  · 应用产物 ${appFiles.length} 个，手册页面 ${hbFiles.length} 个`);
+console.log(`  · 草稿标记 ${markers.length} 个，逐一确认未进入产物`);
 
 if (problems.length > 0) {
   console.error("\n产物中发现违反隐私承诺的内容：");

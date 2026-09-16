@@ -1,0 +1,45 @@
+# 【草稿】被迫解除：公司存在劳动合同法第三十八条列明的过错
+# 维护人确认前不进 rules/（CLAUDE.md §L2）。对应手册 03 节「法律怎么规定」一、二。
+
+id: "CN-NAT-LCL-38-FORCED-RESIGNATION-GROUNDS"
+version: "0.1.0"
+status: "draft"
+title: "公司存在第三十八条列明的过错，劳动者可以解除并要求经济补偿"
+description: >
+  用人单位未及时足额支付劳动报酬、未依法缴纳社会保险费的，劳动者可以解除劳动合同，
+  用人单位应当支付经济补偿。本规则只标注"存在被迫解除事由的候选"，
+  是否成立还取决于程序（离职时是否书面告知事由）与地方口径。
+jurisdiction: { country: "CN", level: "national" }
+priority: 60
+overrides: []
+provision_effective: { from: "2008-01-01", to: null }
+authority_type: "statute"
+uncertainty: "fact-sensitive"
+severity: "warning"
+legal_basis:
+  - { source_id: "CN-LCL-2012", instrument: "中华人民共和国劳动合同法", article: "第三十八条" }
+  - { source_id: "CN-LCL-2012", instrument: "中华人民共和国劳动合同法", article: "第四十六条", note: "第一项：依第三十八条解除的，用人单位应当支付经济补偿" }
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - fact: "forced.grounds"
+      operator: "includes_any"
+      value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+findings:
+  classification_candidates: ["FORCED_RESIGNATION_GROUND_CANDIDATE"]
+claim_guidance:
+  recommended: ["走之前书面告知解除事由", "保存欠薪或未缴社保的证据"]
+  do_not_claim: ["不得仅凭本规则认定被迫解除已经成立", "不得由本工具输出任何经济补偿金额"]
+  review_required: false
+evidence:
+  required:
+    - { id: "WAGE_AGREEMENT", label: "劳动合同中的工资约定" }
+    - { id: "BANK_STATEMENTS", label: "银行流水（发放主体、金额、日期）" }
+  supporting:
+    - { id: "SOCIAL_INSURANCE_RECORDS", label: "社保、公积金缴费记录" }
+  contrary:
+    - { id: "WAGES_PAID_BEFORE_NOTICE", label: "公司在收到解除通知前已足额补发的记录" }
+  at_risk_after_exit:
+    - { id: "PAYROLL_SYSTEM", label: "工资系统中的应发明细" }
+tests: ["T30"]
+last_reviewed_at: "2026-09-16"

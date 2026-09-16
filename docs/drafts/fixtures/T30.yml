@@ -1,0 +1,15 @@
+id: "T30"
+title: "【草稿】外地：公司欠正常工资不到一年，离开时书面写明被迫解除事由"
+input:
+  scope: { principal_place_of_performance: "CN-OTHER" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["WAGES_UNPAID"]
+    arrears_age: "WITHIN_ONE_YEAR"
+    exit_status: "LEFT_WITH_WRITTEN_REASON"
+expected:
+  primary_endpoint: "C29"
+  findings: ["FORCED_RESIGNATION_GROUND_CANDIDATE"]
+  not_findings: ["REASON_NOT_STATED_AT_EXIT", "STALE_ARREARS_URGENCY_RISK", "STATE_REASON_WHEN_LEAVING"]
+note: "实体事由与程序都具备，只剩「存在这条路」的候选。"
+actual_result: ""

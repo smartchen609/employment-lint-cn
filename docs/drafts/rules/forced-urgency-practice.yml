@@ -1,0 +1,39 @@
+# 【草稿】被迫解除的"紧迫性"：以一年以前、当时未提的欠款为由
+# 对应手册 03 节「实务分歧」四。维护人依司法实践判断，无单独文件依据。
+
+id: "CN-PRACTICE-FORCED-RESIGNATION-URGENCY"
+version: "0.1.0"
+status: "draft"
+title: "以陈年欠款为由被迫解除，存在被认定缺乏紧迫性的风险"
+jurisdiction: { country: "CN", level: "national" }
+priority: 85
+overrides: []
+provision_effective: { from: "TODO_VERIFY", to: null }
+authority_type: "internal-methodology"
+uncertainty: "judicial-discretion"
+severity: "warning"
+legal_basis:
+  - source_id: "CN-LCL-2012"
+    instrument: "中华人民共和国劳动合同法"
+    article: "第三十八条"
+    note: "维护人 2026-09-09 依司法实践判断：裁审机关越来越多地审查被迫解除的被迫性与紧迫性。无单独文件依据。"
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - { fact: "forced.grounds", operator: "includes_any", value: ["WAGES_UNPAID", "OVERTIME_UNPAID"] }
+    - { fact: "forced.arrears_age", operator: "equals", value: "OVER_ONE_YEAR" }
+findings:
+  classification_candidates: ["STALE_ARREARS_URGENCY_RISK"]
+claim_guidance:
+  recommended: ["陈年欠款走投诉或单独主张的路"]
+  do_not_claim: ["不得仅凭陈年欠款认定被迫解除成立"]
+  review_required: true
+evidence:
+  required:
+    - { id: "ARREARS_TIMELINE", label: "每笔欠款的发生时间与金额" }
+  supporting:
+    - { id: "PRIOR_WAGE_DEMANDS", label: "当时向公司催要的书面记录" }
+  contrary: []
+  at_risk_after_exit: []
+tests: ["T36"]
+last_reviewed_at: "2026-09-16"

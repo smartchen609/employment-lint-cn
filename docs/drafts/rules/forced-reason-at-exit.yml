@@ -1,0 +1,44 @@
+# 【草稿】被迫解除：离职时未书面说明事由
+# 对应手册 03 节「实务分歧」一。
+
+id: "CN-GD-FORCED-RESIGNATION-REASON-NOT-STATED"
+version: "0.1.0"
+status: "draft"
+title: "离职时未明确以公司过错为由提出解除，事后主张被迫解除一般不予支持"
+jurisdiction: { country: "CN", province: "GD", level: "province" }
+priority: 95
+overrides: []
+provision_effective: { from: "TODO_VERIFY", to: null }
+authority_type: "local-court-guidance"
+uncertainty: "rule-based"
+severity: "error"
+legal_basis:
+  - { source_id: "GD-COURT-2017-147", instrument: "广东省高级人民法院关于审理劳动争议案件疑难问题的解答", article: "第八条" }
+  - { source_id: "SZ-COURT-LABOR-GUIDE-2015", instrument: "深圳市中级人民法院关于审理劳动争议案件的裁判指引", article: "第八十一条第二款", note: "深圳留有例外：劳动者有证据证明解除确因用人单位第三十八条第一款情形的除外" }
+conditions:
+  all:
+    - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
+    - { fact: "scope.principal_place_of_performance", operator: "in", value: ["CN-GD-SZ", "CN-GD-OTHER"] }
+    - fact: "forced.grounds"
+      operator: "includes_any"
+      value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+    - fact: "forced.exit_status"
+      operator: "in"
+      value: ["LEFT_WITH_OTHER_REASON", "LEFT_WITHOUT_NOTICE", "NOTICE_AFTER_LEAVING"]
+findings:
+  classification_candidates: ["REASON_NOT_STATED_AT_EXIT"]
+claim_guidance:
+  recommended: ["找齐离职前后的全部沟通记录，核对能否证明当时确因公司过错离开"]
+  do_not_claim: ["不得再补写与当初说法不一致的辞职说明或确认书"]
+  review_required: true
+evidence:
+  required:
+    - { id: "EXIT_COMMUNICATIONS", label: "离职前后与公司的全部沟通记录" }
+  supporting:
+    - { id: "PRIOR_WAGE_DEMANDS", label: "离职前向公司催要工资或要求缴纳社保的书面记录" }
+  contrary:
+    - { id: "PERSONAL_REASON_RESIGNATION", label: "写有个人原因或其他理由的辞职文件" }
+  at_risk_after_exit:
+    - { id: "CORPORATE_IM_HISTORY", label: "企业邮箱与内部聊天完整历史" }
+tests: ["T31"]
+last_reviewed_at: "2026-09-16"

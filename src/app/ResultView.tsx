@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { EndpointTemplate } from "../schema/copy.js";
 import type { EngineResult, Finding } from "../engine/evaluate.js";
 import type { ResolvedResult } from "../findings/resolve.js";
-import { handbookSectionsFor, RULES } from "./data.js";
+import { handbookSectionsFor } from "./data.js";
+import { useLayer } from "./layer.js";
 import { Feedback } from "./Feedback.js";
 
 /**
@@ -222,7 +223,8 @@ function EndpointCard({
  * 手册页是构建期生成的静态 HTML，与主应用同一套隐私承诺。
  */
 function HandbookLinks({ endpointId }: { endpointId: string }): React.JSX.Element | null {
-  const sections = handbookSectionsFor(endpointId);
+  const layer = useLayer();
+  const sections = handbookSectionsFor(endpointId, layer.handbookEndpoints);
   if (sections.length === 0) return null;
   return (
     <p className="handbook-links">
@@ -237,7 +239,7 @@ function HandbookLinks({ endpointId }: { endpointId: string }): React.JSX.Elemen
 }
 
 function RuleDetail({ finding }: { finding: Finding }): React.JSX.Element {
-  const rule = RULES.find((r) => r.id === finding.ruleId);
+  const rule = useLayer().rules.find((r) => r.id === finding.ruleId);
   if (!rule) return <p className="note">规则 {finding.ruleId} 未找到。</p>;
 
   const region =

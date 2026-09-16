@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "dev:drafts": "VITE_DRAFTS=1 vite",
     "prebuild": "npm run validate:strict",
     "build": "tsc --noEmit && vite build && npm run build:handbook",
     "preview": "vite preview",

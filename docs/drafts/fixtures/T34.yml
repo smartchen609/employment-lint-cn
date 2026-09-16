@@ -1,0 +1,14 @@
+id: "T34"
+title: "【草稿】深圳：社保只是缴费基数偏低，还在职"
+input:
+  scope: { principal_place_of_performance: "CN-GD-SZ" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["SI_UNDERPAID"]
+    exit_status: "STILL_EMPLOYED"
+expected:
+  primary_endpoint: "C25"
+  findings: ["UNDERPAID_SOCIAL_INSURANCE_NOT_A_GROUND"]
+  not_findings: ["FORCED_RESIGNATION_GROUND_CANDIDATE", "STATE_REASON_WHEN_LEAVING", "DEMAND_SOCIAL_INSURANCE_ONE_MONTH_FIRST"]
+note: "维护人 2026-09-09 确认的现行实践：未足额缴纳不再构成被迫解除事由。"
+actual_result: ""

@@ -4,8 +4,24 @@
     {
       "name": "employment-lint-cn",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 5173
+    },
+    {
+      "name": "employment-lint-cn-drafts",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:drafts",
+        "--",
+        "--port",
+        "5174",
+        "--strictPort"
+      ],
+      "port": 5174
     }
   ]
 }

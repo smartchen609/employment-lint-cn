@@ -5,7 +5,8 @@ import { buildFacts } from "../questions/build-facts.js";
 import { pruneAnswers, visibleQuestions } from "../questions/tree.js";
 import type { Answers } from "../questions/types.js";
 import { buildCaseExport } from "../export/case-export.js";
-import { ALL_TEMPLATES, EVIDENCE, handbookSectionsFor, RULES } from "./data.js";
+import { handbookSectionsFor } from "./data.js";
+import { LayerContext, PRODUCTION_LAYER, useLayer, type ContentLayer } from "./layer.js";
 import { Intro } from "./Intro.js";
 import { QuestionView } from "./QuestionView.js";
 import { ResultView } from "./ResultView.js";
@@ -23,7 +24,15 @@ import { ExportView } from "./ExportView.js";
 
 type Stage = "intro" | "questions" | "result" | "export";
 
-export function App(): React.JSX.Element {
+export function App({ layer = PRODUCTION_LAYER }: { layer?: ContentLayer }): React.JSX.Element {
+  return (
+    <LayerContext.Provider value={layer}>
+      <AppBody layer={layer} />
+    </LayerContext.Provider>
+  );
+}
+
+function AppBody({ layer }: { layer: ContentLayer }): React.JSX.Element {
   const [stage, setStage] = useState<Stage>("intro");
   const [rawAnswers, setAnswers] = useState<Answers>({});
   const [cursor, setCursor] = useState(0);
@@ -32,16 +41,21 @@ export function App(): React.JSX.Element {
    * 界面一律基于剪枝后的答案渲染：改了前面的答案之后，
    * 已失效的选项不得仍然显示为选中状态。
    */
-  const answers = useMemo(() => pruneAnswers(rawAnswers), [rawAnswers]);
-  const questions = useMemo(() => visibleQuestions(answers), [answers]);
+  const answers = useMemo(() => pruneAnswers(rawAnswers, layer.questions), [rawAnswers, layer]);
+  const questions = useMemo(() => visibleQuestions(answers, layer.questions), [answers, layer]);
 
   const evaluation = useMemo(() => {
     if (stage !== "result" && stage !== "export") return null;
-    const facts = buildFacts(answers);
-    const engine = evaluateAllApplicableRules(facts, RULES);
-    const resolved = resolveResult(engine, answers, ALL_TEMPLATES, EVIDENCE.checklists);
+    const base = buildFacts(answers, { questions: layer.questions });
+    const facts = layer.extendFacts ? layer.extendFacts(answers, base) : base;
+    const engine = evaluateAllApplicableRules(facts, layer.rules);
+    const resolved = resolveResult(engine, answers, layer.templates, layer.checklists, {
+      questions: layer.questions,
+      extraEndpointIds: layer.extraEndpointIds,
+      extraChecklistIds: layer.extraChecklistIds,
+    });
     return { engine, resolved };
-  }, [stage, answers]);
+  }, [stage, answers, layer]);
 
   const markdown = useMemo(() => {
     if (!evaluation) return "";
@@ -53,7 +67,7 @@ export function App(): React.JSX.Element {
       : [];
     const seen = new Set<string>();
     const handbookSections = endpointIds
-      .flatMap((id) => handbookSectionsFor(id))
+      .flatMap((id) => handbookSectionsFor(id, layer.handbookEndpoints))
       .filter((s) => (seen.has(s.id) ? false : (seen.add(s.id), true)))
       .map((s) => ({ id: s.id, title: s.title }));
     return buildCaseExport({
@@ -62,8 +76,9 @@ export function App(): React.JSX.Element {
       resolved: evaluation.resolved,
       generatedAt: new Date().toISOString(),
       handbookSections,
+      questions: layer.questions,
     });
-  }, [evaluation, answers]);
+  }, [evaluation, answers, layer]);
 
   const onAnswer = (id: string, value: Answers[string]): void => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -149,8 +164,14 @@ export function App(): React.JSX.Element {
 }
 
 function Shell({ children }: { children: React.ReactNode }): React.JSX.Element {
+  const { preview } = useLayer();
   return (
     <div className="shell">
+      {preview && (
+        <p className="draft-banner" role="note">
+          草稿预览：本页叠加了维护人尚未确认的规则与文案，仅供维护人核对，不得对外使用。
+        </p>
+      )}
       <main>{children}</main>
       <footer>
         <p>

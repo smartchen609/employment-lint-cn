@@ -8,7 +8,7 @@
 
 import type { Facts } from "../engine/evaluate.js";
 import { pruneAnswers } from "./tree.js";
-import type { Answers } from "./types.js";
+import type { Answers, Question } from "./types.js";
 
 const str = (a: Answers, id: string): string | undefined => {
   const v = a[id];
@@ -42,6 +42,8 @@ function set(target: Record<string, unknown>, path: string, value: unknown): voi
 export interface BuildFactsOptions {
   /** 评估日。默认取今天；测试注入固定值。 */
   evaluationDate?: string;
+  /** 问题集。默认线上问题树；草稿预览与草稿测试传入叠加草稿后的问题集。 */
+  questions?: readonly Question[];
 }
 
 export function buildFacts(rawAnswers: Answers, options: BuildFactsOptions = {}): Facts {
@@ -50,7 +52,7 @@ export function buildFacts(rawAnswers: Answers, options: BuildFactsOptions = {})
    * 用户改了前面的答案后，后面被隐藏的题不得继续影响定性 ——
    * 否则规则会依据用户看不到也改不了的事实命中。见 pruneAnswers。
    */
-  const answers = pruneAnswers(rawAnswers);
+  const answers = pruneAnswers(rawAnswers, options.questions);
   const f: Record<string, unknown> = {};
   const evaluationDate = options.evaluationDate ?? new Date().toISOString().slice(0, 10);
   f["evaluation_date"] = evaluationDate;
