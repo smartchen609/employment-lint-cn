@@ -26,4 +26,12 @@ async function boot(): Promise<void> {
   );
 }
 
-void boot();
+boot().catch((error: unknown) => {
+  // 只可能发生在草稿预览（线上没有这段分支）：草稿层加载失败时退回线上内容，不留白屏。
+  console.error("草稿层加载失败，已退回线上内容：", error);
+  createRoot(mount).render(
+    <StrictMode>
+      <App layer={PRODUCTION_LAYER} />
+    </StrictMode>,
+  );
+});

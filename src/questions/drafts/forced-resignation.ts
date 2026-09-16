@@ -51,7 +51,8 @@ export const DRAFT_QUESTIONS: Question[] = [
     visibleWhen: (a) => isForced(a) && picked(a, "F01").some((v) => v === "WAGES_UNPAID" || v === "OVERTIME_UNPAID"),
     options: [
       { value: "WITHIN_ONE_YEAR", label: "一年以内" },
-      { value: "OVER_ONE_YEAR", label: "一年以前，而且当时没有提过" },
+      { value: "OVER_ONE_YEAR_RAISED", label: "一年以前，当时向公司提过" },
+      { value: "OVER_ONE_YEAR_NOT_RAISED", label: "一年以前，当时没有向公司提过" },
       { value: "UNKNOWN", label: "不确定" },
     ],
   },
@@ -61,7 +62,9 @@ export const DRAFT_QUESTIONS: Question[] = [
     prompt: "社保的事，你是否已经书面要求公司缴纳？",
     why: "深圳中院裁判指引第九十四条：社保没交，要先要求公司缴纳，公司一个月内还不缴，才可以被迫解除。",
     kind: "single",
-    visibleWhen: (a) => isForced(a) && picked(a, "F01").some((v) => v === "SI_NONE" || v === "SI_MISSING_TYPES"),
+    // 只有深圳中院裁判指引第九十四条要求先催缴；其他地区不问，免得多答一道不影响结果的题。
+    visibleWhen: (a) =>
+      isForced(a) && a["G03"] === "CN-GD-SZ" && picked(a, "F01").some((v) => v === "SI_NONE" || v === "SI_MISSING_TYPES"),
     options: [
       { value: "NOT_YET", label: "还没有要求过" },
       { value: "ORAL_ONLY", label: "只口头说过" },

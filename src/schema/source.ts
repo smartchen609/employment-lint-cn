@@ -63,6 +63,12 @@ export const SourceRecord = z
     url: SourceUrl,
     /** 本项目实际引用到的条文。规则的 legal_basis[].article 必须落在其中。 */
     pinpoint: z.array(z.string().min(1)).min(1),
+    /**
+     * 只被手册草稿（docs/handbook/drafts/）引用、尚未上线的条文。
+     * 来源页只展示 pinpoint；草稿转正时把对应条文从这里移到 pinpoint。
+     * 这样已核验来源不会因为草稿引了新条文，就在来源页上提前列出维护人还没逐字确认过的条文。
+     */
+    draft_pinpoint: z.array(z.string().min(1)).optional(),
     /** 维护人是否亲自打开过原文页。**AI 不得改为 true。** */
     page_opened_and_checked: z.boolean(),
     last_verified_at: IsoDateOrEmpty,

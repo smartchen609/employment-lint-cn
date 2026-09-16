@@ -26,8 +26,10 @@ export default defineConfig({
      * 该 polyfill 会往产物里注入一处 `fetch(link.href)` 用于预加载自身 chunk。
      * 它只会请求本站自己的 JS，不涉及用户数据 —— 但产品承诺是
      * "运行期不得有任何 fetch"，而承诺要经得起用户自己打开 devtools 查。
-     * 本应用是单 bundle、无动态 import，target 为 es2022，
-     * 目标浏览器原生支持 modulepreload，polyfill 本就是死代码。
+     * 线上产物是单 bundle：main.tsx 里唯一的动态 import（草稿预览层）处在
+     * `if (__DRAFTS__)` 分支里，线上构建时 __DRAFTS__ 为 false，整段被删除。
+     * target 为 es2022，目标浏览器原生支持 modulepreload，polyfill 本就是死代码。
+     * 升级 Vite/Rollup 后要重新确认这一点——scripts/audit-bundle.ts 会检查产物里没有草稿内容。
      *
      * 由 scripts/audit-bundle.ts 验证产物中确实没有网络调用。
      */

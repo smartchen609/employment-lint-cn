@@ -23,8 +23,10 @@ import {
 import { buildFacts } from "../src/questions/build-facts.js";
 import { QUESTIONS, visibleQuestions } from "../src/questions/tree.js";
 import type { Answers } from "../src/questions/types.js";
-import { DRAFT_SHAPE, DRAFT_QUESTIONS, addDraftFacts, withDraftQuestions } from "../src/questions/drafts/forced-resignation.js";
+import { DRAFT_SHAPE, DRAFT_QUESTIONS, withDraftQuestions } from "../src/questions/drafts/forced-resignation.js";
 import { resolveResult } from "../src/findings/resolve.js";
+import { draftLayer } from "../src/app/draft-layer.js";
+import type { ContentLayer } from "../src/app/layer.js";
 import { ROOT, loadRules, parseYamlFile, walkYaml } from "./helpers.js";
 
 /**
@@ -269,14 +271,43 @@ function answersFromFixtureInput(input: Record<string, unknown>): Answers {
   return a;
 }
 
+/**
+ * 草稿预览的内容层：用 src/app/draft-layer.ts 里预览真正加载的 draftLayer()，
+ * 线上内容层从 YAML 现读（测试不依赖 src/generated/），草稿内容也从 YAML 现读。
+ */
+const productionLayer: ContentLayer = {
+  preview: false,
+  questions: QUESTIONS,
+  rules: prodRules,
+  templates: prodTemplates,
+  checklists: prodEvidence.checklists,
+  handbookEndpoints: handbookMap.endpoints,
+};
+const previewLayer = draftLayer(productionLayer, {
+  rules: draftRules.map((d) => d.rule),
+  templates: draftTemplates,
+  checklists: draftChecklists,
+  endpoints: draftEndpoints,
+});
+
+it("草稿预览内容层：规则、卡片、清单、题目与测试里叠加的一致", () => {
+  expect(previewLayer.preview).toBe(true);
+  expect(previewLayer.rules.map((r) => r.id).sort()).toEqual(previewRules.map((r) => r.id).sort());
+  expect(previewLayer.rules.every((r) => r.status === "active")).toBe(true);
+  expect(previewLayer.templates.map((t) => t.id)).toEqual(previewTemplates.map((t) => t.id));
+  expect(previewLayer.checklists.map((c) => c.id)).toEqual(previewChecklists.map((c) => c.id));
+  expect(previewLayer.questions.map((q) => q.id)).toEqual(draftQuestions.map((q) => q.id));
+});
+
 function runPreview(answers: Answers) {
-  const facts = addDraftFacts(answers, buildFacts(answers, { questions: draftQuestions, evaluationDate: "2026-09-16" }));
-  const engine = evaluateAllApplicableRules(facts, previewRules);
-  const isForced = answers["G01"] === DRAFT_SHAPE;
-  const resolved = resolveResult(engine, answers, previewTemplates, previewChecklists, {
-    questions: draftQuestions,
-    extraEndpointIds: (a, findings) => (a["G01"] === DRAFT_SHAPE && findings.length === 0 ? ["C18"] : []),
-    extraChecklistIds: () => (isForced ? ["P05"] : []),
+  const layer = previewLayer;
+  const base = buildFacts(answers, { questions: layer.questions, evaluationDate: "2026-09-16" });
+  const facts = layer.extendFacts ? layer.extendFacts(answers, base) : base;
+  const engine = evaluateAllApplicableRules(facts, layer.rules);
+  const resolved = resolveResult(engine, answers, layer.templates, layer.checklists, {
+    questions: layer.questions,
+    extraEndpointIds: layer.extraEndpointIds,
+    extraChecklistIds: layer.extraChecklistIds,
   });
   return { facts, engine, resolved };
 }
@@ -306,14 +337,17 @@ describe("草稿层：用例回放（草稿规则临时视为 active）", () => 
   });
 
   it("被迫解除入口一条规则都没命中时，落到 C18「未覆盖」，不出现空结果", () => {
-    // 外地、只有社保基数偏低：深圳口径不适用，第三十八条候选也不成立
-    const { engine, resolved } = runPreview({ G01: DRAFT_SHAPE, G03: "CN-OTHER", F01: ["SI_UNDERPAID"], F04: "STILL_EMPLOYED" });
+    // 外地、只欠二倍工资：深圳第九十二条不适用，第三十八条候选也不成立
+    const { engine, resolved } = runPreview({ G01: DRAFT_SHAPE, G03: "CN-OTHER", F01: ["DOUBLE_WAGE_UNPAID"], F04: "STILL_EMPLOYED" });
     expect(engine.findings).toEqual([]);
     expect(resolved!.primary.id).toBe("C18");
   });
 
   it("选了被迫解除才出现 F 题；「公司操作何时生效」对被迫解除隐藏", () => {
-    const forced = visibleQuestions({ G01: DRAFT_SHAPE, F01: ["WAGES_UNPAID", "SI_NONE"] }, draftQuestions).map((q) => q.id);
+    const forced = visibleQuestions({ G01: DRAFT_SHAPE, G03: "CN-GD-SZ", F01: ["WAGES_UNPAID", "SI_NONE"] }, draftQuestions).map((q) => q.id);
+    // 催缴题只问深圳
+    const outsideSz = visibleQuestions({ G01: DRAFT_SHAPE, G03: "CN-OTHER", F01: ["SI_NONE"] }, draftQuestions).map((q) => q.id);
+    expect(outsideSz).not.toContain("F03");
     expect(forced).toEqual(expect.arrayContaining(["F01", "F02", "F03", "F04"]));
     expect(forced).not.toContain("G02");
     const other = visibleQuestions({ G01: "MUTUAL_TERMINATION" }, draftQuestions).map((q) => q.id);
@@ -353,7 +387,7 @@ describe("草稿层：没有上线", () => {
 
   it("线上文案产物（src/generated/copy.json）里没有草稿卡片与证据清单", () => {
     const f = join(ROOT, "src/generated/copy.json");
-    if (!existsSync(f)) return; // 由 pretypecheck 生成；单独跑 vitest 时可能尚未生成
+    expect(existsSync(f), "src/generated/copy.json 不存在：先运行 npm run build:content（npm run check 会自动运行）").toBe(true);
     const copy = readFileSync(f, "utf8");
     for (const t of draftTemplates) {
       expect(copy.includes(`"${t.id}"`), `copy.json 含草稿终点 ${t.id}`).toBe(false);

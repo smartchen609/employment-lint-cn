@@ -1,0 +1,14 @@
+id: "T39"
+title: "【草稿】外地：社保只是缴费基数偏低，还在职"
+input:
+  scope: { principal_place_of_performance: "CN-OTHER" }
+  operation: { selected_shape: "FORCED_RESIGNATION" }
+  forced:
+    grounds: ["SI_UNDERPAID"]
+    exit_status: "STILL_EMPLOYED"
+expected:
+  primary_endpoint: "C29"
+  findings: ["FORCED_RESIGNATION_GROUND_CANDIDATE"]
+  not_findings: ["UNDERPAID_SOCIAL_INSURANCE_NOT_A_GROUND"]
+note: "未足额缴纳不作事由是深圳的现行实践；深圳以外没有依据说它不算，保留为候选。见 open-questions Q13。"
+actual_result: ""

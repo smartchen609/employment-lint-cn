@@ -255,6 +255,13 @@ describe("来源与核验页", () => {
     expect(whereToRead({ ...s, official_url_checked: true })).toContain("example.gov.cn");
   });
 
+  it("只被草稿引用的条文（draft_pinpoint）不在来源页展示", () => {
+    const s = { ...registry.sources.find((x) => x.page_opened_and_checked)!, draft_pinpoint: ["第九百九十九条"] };
+    const h = buildSourcesPage([s], texts);
+    expect(h).toContain(`id="${s.id}"`);
+    expect(h).not.toContain("第九百九十九条");
+  });
+
   it("核验记录里的网址不外露", () => {
     expect(recordForPublic("经 https://a.example.com/x 取得")).not.toContain("https://");
   });

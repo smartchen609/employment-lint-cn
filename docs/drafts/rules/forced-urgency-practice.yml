@@ -21,7 +21,7 @@ conditions:
   all:
     - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
     - { fact: "forced.grounds", operator: "includes_any", value: ["WAGES_UNPAID", "OVERTIME_UNPAID"] }
-    - { fact: "forced.arrears_age", operator: "equals", value: "OVER_ONE_YEAR" }
+    - { fact: "forced.arrears_age", operator: "equals", value: "OVER_ONE_YEAR_NOT_RAISED" }
 findings:
   classification_candidates: ["STALE_ARREARS_URGENCY_RISK"]
 claim_guidance:

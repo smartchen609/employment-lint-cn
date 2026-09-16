@@ -5,11 +5,11 @@ input:
   operation: { selected_shape: "FORCED_RESIGNATION" }
   forced:
     grounds: ["WAGES_UNPAID"]
-    arrears_age: "OVER_ONE_YEAR"
+    arrears_age: "OVER_ONE_YEAR_NOT_RAISED"
     exit_status: "STILL_EMPLOYED"
 expected:
   primary_endpoint: "C27"
   findings: ["STALE_ARREARS_URGENCY_RISK", "FORCED_RESIGNATION_GROUND_CANDIDATE"]
   not_findings: ["STATE_REASON_WHEN_LEAVING"]
-note: "紧迫性：维护人依司法实践判断，无单独文件依据。「一年」这个分界是草稿假设，待维护人确认。"
+note: "紧迫性：维护人依司法实践判断，无单独文件依据。「一年以前、当时没提」这条线是草稿假设，待维护人确认。"
 actual_result: ""

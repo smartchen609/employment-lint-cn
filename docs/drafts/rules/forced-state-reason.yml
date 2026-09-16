@@ -19,9 +19,14 @@ conditions:
   all:
     - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
     - { fact: "scope.principal_place_of_performance", operator: "in", value: ["CN-GD-SZ", "CN-GD-OTHER"] }
-    - fact: "forced.grounds"
-      operator: "includes_any"
-      value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+    # 有效事由：欠工资、欠加班费、未缴、缺险种；社保基数不足只在深圳以外保留为候选（open-questions Q13）
+    - any:
+        - fact: "forced.grounds"
+          operator: "includes_any"
+          value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+        - all:
+            - { fact: "forced.grounds", operator: "includes_any", value: ["SI_UNDERPAID"] }
+            - { fact: "scope.principal_place_of_performance", operator: "not_equals", value: "CN-GD-SZ" }
     - { fact: "forced.exit_status", operator: "equals", value: "STILL_EMPLOYED" }
 findings:
   classification_candidates: ["STATE_REASON_WHEN_LEAVING"]

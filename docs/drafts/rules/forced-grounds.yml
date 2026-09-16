@@ -22,9 +22,14 @@ legal_basis:
 conditions:
   all:
     - { fact: "operation.selected_shape", operator: "equals", value: "FORCED_RESIGNATION" }
-    - fact: "forced.grounds"
-      operator: "includes_any"
-      value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+    # 有效事由：欠工资、欠加班费、未缴、缺险种；社保基数不足只在深圳以外保留为候选（open-questions Q13）
+    - any:
+        - fact: "forced.grounds"
+          operator: "includes_any"
+          value: ["WAGES_UNPAID", "OVERTIME_UNPAID", "SI_NONE", "SI_MISSING_TYPES"]
+        - all:
+            - { fact: "forced.grounds", operator: "includes_any", value: ["SI_UNDERPAID"] }
+            - { fact: "scope.principal_place_of_performance", operator: "not_equals", value: "CN-GD-SZ" }
 findings:
   classification_candidates: ["FORCED_RESIGNATION_GROUND_CANDIDATE"]
 claim_guidance:
@@ -41,5 +46,5 @@ evidence:
     - { id: "WAGES_PAID_BEFORE_NOTICE", label: "公司在收到解除通知前已足额补发的记录" }
   at_risk_after_exit:
     - { id: "PAYROLL_SYSTEM", label: "工资系统中的应发明细" }
-tests: ["T30"]
+tests: ["T30", "T39"]
 last_reviewed_at: "2026-09-16"

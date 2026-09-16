@@ -36,7 +36,9 @@ export const DRAFT_FACT_VALUES: Readonly<Record<string, FactValueSpec>> = {
       "HIGH_TEMP_ALLOWANCE_UNPAID",
     ],
   },
-  "forced.arrears_age": { values: ["WITHIN_ONE_YEAR", "OVER_ONE_YEAR", "UNKNOWN"] },
+  "forced.arrears_age": {
+    values: ["WITHIN_ONE_YEAR", "OVER_ONE_YEAR_RAISED", "OVER_ONE_YEAR_NOT_RAISED", "UNKNOWN"],
+  },
   "forced.social_insurance_demand": {
     values: ["NOT_YET", "ORAL_ONLY", "WRITTEN_UNDER_ONE_MONTH", "WRITTEN_OVER_ONE_MONTH"],
   },

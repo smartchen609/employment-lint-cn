@@ -133,25 +133,47 @@ for (const file of appFiles) {
  * main.tsx 的草稿分支在线上构建中是死代码；这里验证它确实被删掉了。
  */
 function draftMarkers(): string[] {
-  const markers = new Set<string>();
-  const dir = join(ROOT, "docs", "drafts");
-  if (!existsSync(dir)) return [];
-  const walk = (d: string): string[] =>
-    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
-      e.isDirectory() ? walk(join(d, e.name)) : e.name.endsWith(".yml") ? [join(d, e.name)] : [],
-    );
-  for (const f of walk(dir)) {
-    const doc = parse(readFileSync(f, "utf8"), { version: "1.2" }) as Record<string, unknown>;
-    if (typeof doc["id"] === "string" && f.includes("/rules/")) markers.add(doc["id"]);
-    for (const t of (doc["templates"] as Array<{ title: string }> | undefined) ?? []) markers.add(t.title);
+  const walk = (d: string, ext: string): string[] =>
+    existsSync(d)
+      ? readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+          e.isDirectory() ? walk(join(d, e.name), ext) : e.name.endsWith(ext) ? [join(d, e.name)] : [],
+        )
+      : [];
+  const leaves = (node: unknown, out: string[]): void => {
+    if (typeof node === "string") out.push(node.trim());
+    else if (Array.isArray(node)) node.forEach((n) => leaves(n, out));
+    else if (node && typeof node === "object") Object.values(node).forEach((n) => leaves(n, out));
+  };
+
+  // 草稿规则、卡片、清单、用例里的全部字符串，加上草稿题目模块里的全部字符串字面量
+  const candidates: string[] = [];
+  for (const f of walk(join(ROOT, "docs", "drafts"), ".yml")) leaves(parse(readFileSync(f, "utf8"), { version: "1.2" }), candidates);
+  // 手册草稿章节：按标点切成片段（渲染成 HTML 后引号、粗体会变，整行比不上，片段比得上）
+  for (const f of walk(join(ROOT, "docs", "handbook", "drafts"), ".md")) {
+    for (const seg of readFileSync(f, "utf8").split(/[，。；：、？！“”"「」『』（）()\[\]*`|>\n#-]+/)) candidates.push(seg);
   }
-  const questions = join(ROOT, "src", "questions", "drafts");
-  if (existsSync(questions)) {
-    for (const f of readdirSync(questions)) {
-      const text = readFileSync(join(questions, f), "utf8");
-      for (const m of text.matchAll(/export const DRAFT_SHAPE = "([A-Z_]+)"/g)) markers.add(m[1]!);
-      for (const m of text.matchAll(/prompt: "([^"]+)"/g)) markers.add(m[1]!);
-    }
+  for (const f of walk(join(ROOT, "src", "questions", "drafts"), ".ts")) {
+    for (const m of readFileSync(f, "utf8").matchAll(/"([^"\\\n]+)"/g)) candidates.push(m[1]!);
+  }
+
+  // 线上内容里本来就有的字符串不算标记（草稿卡片多是从已发布章节、规格书文案里摘的）
+  const production = [
+    ...walk(join(ROOT, "rules"), ".yml"),
+    ...readdirSync(join(ROOT, "docs", "handbook"))
+      .filter((f) => /^\d{2}-.+\.md$/.test(f))
+      .map((f) => join(ROOT, "docs", "handbook", f)),
+    ...walk(join(ROOT, "src"), ".ts").filter((f) => !f.includes("/drafts/") && !f.includes(".drafts.") && !f.includes("/generated/")),
+    ...walk(join(ROOT, "src"), ".tsx"),
+  ]
+    .map((f) => readFileSync(f, "utf8"))
+    .join("\n")
+    .replace(/\s+/g, ""); // YAML 折行、Markdown 换行不同，比较时忽略空白
+
+  const markers = new Set<string>();
+  for (const c of candidates) {
+    // 太短或纯通用取值（UNKNOWN、true、CN-OTHER…）会误报，只取有辨识度的：含 6 个以上汉字，或草稿专用的大写标识
+    const distinctive = (c.match(/[\u4e00-\u9fff]/g)?.length ?? 0) >= 10 || /^[A-Z][A-Z0-9_-]{7,}$/.test(c);
+    if (distinctive && !production.includes(c.replace(/\s+/g, ""))) markers.add(c);
   }
   return [...markers];
 }

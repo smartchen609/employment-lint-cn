@@ -91,6 +91,7 @@ sources:
       - "第八十二条"
       - "第八十五条"
       - "第八十七条"
+    draft_pinpoint: ["第三十九条第（一）项", "第二十一条", "第二十六条", "第二十条", "第八十三条", "第八十五条第三项", "第十九条", "第四十七条第三款", "第四十二条", "第四十五条", "第四十六条第二项"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-04"
     verified_by: "apangchen"
@@ -166,6 +167,7 @@ sources:
       - "第四十七条"
       - "第四十八条"
       - "第五十条"
+    draft_pinpoint: ["第四十一条", "第四十九条", "第四十二条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-04"
     verified_by: "apangchen"
@@ -200,6 +202,7 @@ sources:
     url: "https://hrss.sz.gov.cn/gkmlpt/content/5/5529/post_5529623.html"
     pinpoint:
       - "第十八条第二款"
+    draft_pinpoint: ["第十五条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-04"
     verified_by: "apangchen"
@@ -278,6 +281,7 @@ sources:
       - "第四十一条"
       - "第四十四条"
       - "第五十条"
+    draft_pinpoint: ["第三十九条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -328,6 +332,7 @@ sources:
       - "第八十一条第二款"
       - "第九十二条"
       - "第九十四条"
+    draft_pinpoint: ["第一百〇六条", "第一百零一条", "第一百零三条", "第一百零二条", "第三十七条", "第三十六条", "第九十七条", "第二十六条", "第六十七条", "第六十八条", "第六十六条", "第六十四条", "第四十条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -397,6 +402,7 @@ sources:
       - "第十六条"
       - "第十七条"
       - "第六十二条"
+    draft_pinpoint: ["第三十七条", "第三十三条", "第三十五条", "第三十六条", "第三十四条", "第二十一条", "第二十三条", "第二十二条", "第二十五条", "第二十八条", "第二十六条", "第十九条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -425,6 +431,7 @@ sources:
     pinpoint:
       - "第六条"
       - "第七条"
+    draft_pinpoint: ["第二十七条", "第十五条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -478,6 +485,7 @@ sources:
       - "第二十七条"
       - "第二十八条"
       - "第二十九条"
+    draft_pinpoint: ["第三十条第二款", "第二十六条", "第二条", "第十三条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -498,6 +506,7 @@ sources:
     pinpoint:
       - "第八条"
       - "第九条"
+    draft_pinpoint: ["第七条", "第十九条", "第十八条", "第十六条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -520,6 +529,7 @@ sources:
       - "第十四条"
       - "第十五条"
       - "第三十三条"
+    draft_pinpoint: ["第一条", "第三十九条", "第三条", "第二十五条", "第二条", "第十六条", "第十条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -545,6 +555,7 @@ sources:
     pinpoint:
       - "第十三条"
       - "第十四条"
+    draft_pinpoint: ["第三条", "第二十九条", "第二十八条", "第二十六条", "第二十条", "第十九条"]
     page_opened_and_checked: true
     last_verified_at: "2026-09-09"
     verified_by: "apangchen"
@@ -631,7 +642,7 @@ sources:
     official: true
     url: "CORPUS"
     corpus_file: "广东省劳动保障监察条例(2019修正).txt"
-    pinpoint: ["第九条", "第二十三条", "第二十三条第（三）项", "第三十六条"]
+    pinpoint: ["第九条", "第二十三条", "第二十三条第（三）项", "第二十三条第（四）项", "第三十六条"]
     page_opened_and_checked: false
     last_verified_at: ""
     verified_by: ""
@@ -679,7 +690,7 @@ sources:
     official: true
     url: "CORPUS"
     corpus_file: "广东省工伤保险条例(2019修正).txt"
-    pinpoint: ["第九条", "第十条", "第十一条", "第十四条", "第十六条", "第二十条", "第二十五条", "第二十六条", "第三十一条", "第三十二条", "第三十三条"]
+    pinpoint: ["第九条", "第十条", "第十一条", "第十四条", "第十六条", "第二十条", "第二十五条", "第二十六条", "第二十八条", "第三十一条", "第三十二条", "第三十三条"]
     page_opened_and_checked: false
     last_verified_at: ""
     verified_by: ""
@@ -709,7 +720,7 @@ sources:
     official: true
     url: "CORPUS"
     corpus_file: "广东省高级人民法院、广东省劳动人事争议仲裁委员会关于印发《广东省高级人民法院、广东省劳动人事争议仲裁委员会关于劳动人事争议仲裁与诉讼衔接若干意见》的通知.txt"
-    pinpoint: ["第五条", "第七条"]
+    pinpoint: ["第五条", "第七条", "第九条", "第十条", "第三十条"]
     page_opened_and_checked: false
     last_verified_at: ""
     verified_by: ""
@@ -717,7 +728,8 @@ sources:
     note: >
       编号带 -LINKAGE 后缀，是为了不与曾被误用的旧编号 GD-COURT-2018-2 相混（旧编号错指 2012 年座谈会纪要，已更正）。
     verification_record: >
-      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 08、12。待维护人逐字确认并确认现行有效。
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 04、06、08、12。待维护人逐字确认并确认现行有效。
+      第三十项：「本意见下发之前的会议纪要、指导意见与本意见不一致的，按本意见处理」——影响 2012 年座谈会纪要、2008 年指导意见的适用，见 CONFIRM.md 第 I 节。
 
   - id: "GD-COURT-2002-21"
     publisher: "广东省高级人民法院"
