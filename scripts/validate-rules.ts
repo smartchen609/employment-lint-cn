@@ -14,12 +14,24 @@
  *   9. 未核验来源（page_opened_and_checked !== true）拦截
  *  10. 测试 fixture 结构合法、id 不重复；rules[].tests 指向的用例存在
  *
+ * ## "上线内容"与"草稿"
+ *
+ * 上线内容 = rules/ 下的规则 + handbook-map.yml 里 status: published 的章节正文。
+ * 草稿 = docs/handbook/drafts/ 的章节、docs/drafts/ 的规则与文案 —— 不构建、不部署。
+ *
+ * **不变式：任何上线内容都不得引用未经维护人核验的来源。**
+ * 草稿可以引用待核验来源，那正是它们等待维护人批量确认的原因（CLAUDE.md §1b）。
+ *
  * ## 两种模式
  *
- *   默认        —— 结构错误 + **被规则引用到的**未核验来源 → 退出码 1
- *   --strict    —— 另加：sources.yml 中**任何**未核验来源 → 退出码 1
- *                  `npm run build` 经 prebuild 走 strict，故未完成人工核验时
- *                  **构建必然失败，这是设计行为，不是 bug。**
+ *   默认        —— 结构错误 + 上线内容引用了未核验来源 → 退出码 1
+ *   --strict    —— 另加：规则 provision_effective 仍为 TODO_VERIFY → 退出码 1
+ *                  `npm run build` 经 prebuild 走 strict。
+ *
+ * 只被草稿引用、或尚无任何引用的未核验来源，两种模式都只警告。
+ * （2026-09-16 前，strict 对 sources.yml 里**任何**未核验来源都报错；
+ *  这使草稿无法与上线内容共存于主分支。改为按"是否被上线内容引用"判定后，
+ *  "未核验内容不上线"的承诺由更精确的检查守住，并有突变测试覆盖。）
  *
  * 程序不能检查的部分（round3 §8）：页面是不是对应法规、条文是不是最新版、
  * 链接内容有没有被错误理解。语义核验永远是人工责任。
@@ -141,7 +153,14 @@ for (const file of fixtureFiles) {
 const ruleFiles = walkYaml(join(ROOT, "rules"));
 const ruleIds = new Set<string>();
 const todoEffectiveDates: string[] = [];
+/** 被 rules/ 下（上线）规则引用的来源。 */
 const referencedSourceIds = new Set<string>();
+/** 被已发布手册章节正文引用的来源。 */
+const publishedSectionSourceIds = new Set<string>();
+/** 被草稿章节引用的来源。 */
+const draftOnlySourceIds = new Set<string>();
+const sourceUsers = new Map<string, string[]>();
+let draftSectionCount = 0;
 
 for (const file of ruleFiles) {
   let raw: unknown;
@@ -278,13 +297,28 @@ for (const [relPath, kind] of copyFiles) {
       for (const id of Object.keys(map.endpoints)) {
         if (!endpointIds.has(id)) err(relPath, `映射里的 ${id} 不是已登记的终点`);
       }
-      // 章节文件必须存在
+      // 章节文件必须存在：已发布的在 docs/handbook/，草稿在 docs/handbook/drafts/
       for (const sec of map.sections) {
-        const f = join(ROOT, "docs", "handbook", sec.file);
+        const dir = sec.status === "published" ? ["docs", "handbook"] : ["docs", "handbook", "drafts"];
+        const f = join(ROOT, ...dir, sec.file);
         try {
           statSync(f);
         } catch {
-          err(relPath, `章节 ${sec.id} 指向不存在的文件 docs/handbook/${sec.file}`);
+          err(relPath, `章节 ${sec.id}（${sec.status}）指向不存在的文件 ${dir.join("/")}/${sec.file}`);
+          continue;
+        }
+        const text = readFileSync(f, "utf8");
+        const ids = [...sourceById.keys()].filter((id) =>
+          new RegExp(`(?<![A-Z0-9-])${id.replace(/-/g, "\\-")}(?![A-Z0-9-])`).test(text),
+        );
+        if (sec.status === "published") {
+          for (const id of ids) {
+            publishedSectionSourceIds.add(id);
+            sourceUsers.set(id, [...(sourceUsers.get(id) ?? []), `手册 ${sec.id} 节`]);
+          }
+        } else {
+          draftSectionCount += 1;
+          for (const id of ids) draftOnlySourceIds.add(id);
         }
       }
     }
@@ -294,32 +328,27 @@ for (const [relPath, kind] of copyFiles) {
 }
 
 /* ------------------------------------------------------------------ */
-/* 9. 未核验来源                                                       */
+/* 9. 未核验来源：上线内容不得引用                                     */
 /* ------------------------------------------------------------------ */
 
 const unverified = (registry?.sources ?? []).filter((s) => !s.page_opened_and_checked);
-const unverifiedReferenced = unverified.filter((s) => referencedSourceIds.has(s.id));
+const liveReferenced = new Set<string>([...referencedSourceIds, ...publishedSectionSourceIds]);
 
-for (const s of unverifiedReferenced) {
-  err(
-    "sources.yml",
-    `来源 ${s.id}（${s.page_title}）已被规则引用，但 page_opened_and_checked 仍为 false。` +
-      `需维护人亲自打开官方原文页核对后手工置为 true。`,
-  );
-}
-
-if (STRICT) {
-  for (const s of unverified) {
-    if (referencedSourceIds.has(s.id)) continue;
+for (const s of unverified) {
+  if (liveReferenced.has(s.id)) {
+    const users = [
+      ...(referencedSourceIds.has(s.id) ? ["规则"] : []),
+      ...(sourceUsers.get(s.id) ?? []),
+    ].join("、");
     err(
       "sources.yml",
-      `[strict] 来源 ${s.id}（${s.page_title}）尚未人工核验，不得部署。`,
+      `来源 ${s.id}（${s.page_title}）被上线内容引用（${users}），但 page_opened_and_checked 仍为 false。` +
+        `需维护人核验后手工置为 true；或把引用它的内容移回草稿。`,
     );
-  }
-} else {
-  for (const s of unverified) {
-    if (referencedSourceIds.has(s.id)) continue;
-    warn("sources.yml", `来源 ${s.id} 尚未人工核验（尚无规则引用）`);
+  } else if (draftOnlySourceIds.has(s.id)) {
+    warn("sources.yml", `来源 ${s.id} 尚未核验，仅被草稿引用（不会上线）`);
+  } else {
+    warn("sources.yml", `来源 ${s.id} 尚未核验，目前没有任何内容引用`);
   }
 }
 
@@ -342,8 +371,9 @@ notices.push(
 );
 notices.push(
   `已人工核验来源 ${sourceById.size - unverified.length}/${sourceById.size}` +
-    (unverified.length ? `，待核验 ${unverified.map((s) => s.id).join("、")}` : ""),
+    (unverified.length ? `，待核验 ${unverified.length} 条（均未被上线内容引用时不阻断构建）` : ""),
 );
+notices.push(`上线内容引用的来源 ${liveReferenced.size} 条；草稿章节 ${draftSectionCount} 节`);
 notices.push(
   filledActualResults > 0
     ? `测试用例中已由维护人回填 actual_result 的有 ${filledActualResults} 条`

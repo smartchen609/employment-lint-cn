@@ -62,7 +62,8 @@ writeFileSync(
       classification: classification.templates,
       claimPaths: claimPaths.templates,
       evidence,
-      handbookMap,
+      // 前端包里只放已发布章节：草稿连标题都不进产物
+      handbookMap: { ...handbookMap, sections: handbookMap.sections.filter((x) => x.status === "published") },
     },
     null,
     2,
@@ -77,5 +78,5 @@ writeFileSync(
 console.log(
   `生成完成：规则 ${rules.length} 条，定性模板 ${classification.templates.length} 条，` +
     `主张模板 ${claimPaths.templates.length} 条，证据清单 ${evidence.checklists.length} 组，` +
-    `手册章节 ${handbookMap.sections.length} 节`,
+    `手册章节 ${handbookMap.sections.filter((x) => x.status === "published").length} 节已发布`,
 );

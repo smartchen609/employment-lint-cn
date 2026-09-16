@@ -6,40 +6,67 @@
 # 一个终点可以对应多节；顺序即显示顺序。
 # 手册文件名以 docs/handbook/ 下的实际文件为准，构建时校验存在性。
 
+#
+# status: published 的章节在 docs/handbook/，构建上线；
+# status: draft 的章节在 docs/handbook/drafts/，维护人确认前不构建、不上线，
+# 也不得被下面的 endpoints 引用。
+
 sections:
   - id: "01"
     file: "01-固定期限合同到期不续签.md"
     title: "固定期限合同到期不续签：二次固定期限与换主体"
+    summary: "签过两次、延长过、换过公司，算不算该签无固定期限"
+    status: "published"
   - id: "02"
     file: "02-公司单方解除并给N+1.md"
     title: "公司单方解除并给 N+1：程序与实体怎么查"
+    summary: "业务调整、AI 替岗、PIP 不胜任——公司的理由站不站得住"
+    status: "published"
   - id: "03"
     file: "03-被迫解除.md"
     title: "被迫解除：公司拖欠工资，我可以自己走并要经济补偿吗"
+    summary: "欠薪、没交社保，自己走还要经济补偿，先把程序走对"
+    status: "published"
   - id: "04"
     file: "04-未签书面劳动合同的双倍工资.md"
     title: "没签书面劳动合同：双倍工资差额"
+    summary: "从哪天算到哪天、按什么基数、为什么要趁早主张"
+    status: "published"
   - id: "05"
     file: "05-加班费.md"
     title: "加班费"
+    summary: "三档标准、谁来证明加没加班、\"工资里已含加班费\"怎么看"
+    status: "published"
   - id: "06"
     file: "06-仲裁程序.md"
     title: "仲裁程序：从申请到裁决"
+    summary: "时效、管辖、申请书、各环节法定期限"
+    status: "published"
   - id: "07"
     file: "07-证据.md"
     title: "证据：现在能取，以后取不到"
+    summary: "账号关闭前要保存什么，哪些东西不能拿"
+    status: "published"
   - id: "08"
     file: "08-协商解除与事实解除.md"
     title: "协商解除与事实解除：签字前、被\"请走\"时"
+    summary: "签协议之前、被关账号不让上班时，该怎么表态"
+    status: "published"
   - id: "09"
     file: "09-竞业限制.md"
     title: "竞业限制：签了竞业协议，离职后怎么办"
+    summary: "协议有没有效、公司不给钱怎么办、能不能去下家"
+    status: "published"
   - id: "10"
     file: "10-工伤.md"
     title: "工伤：什么算、怎么认定、谁来申请"
+    summary: "哪些情形算工伤，公司不申请时自己一年内去申请"
+    status: "published"
   - id: "11"
     file: "11-离职结算清单.md"
     title: "离职结算清单：律师例行会问、你可能没想到的"
+    summary: "年假、奖金折算、离职证明、时效——走之前过一遍"
+    status: "published"
 
 endpoints:
   # --- 到期路径 ---

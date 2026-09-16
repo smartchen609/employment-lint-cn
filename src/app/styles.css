@@ -202,6 +202,18 @@ footer {
   font-size: .85rem; color: var(--ink-soft);
 }
 
+/* --- 首页：手册目录与答题定位 --- */
+.jump { margin: .4rem 0 1rem; font-size: .92rem; }
+.chapter-list { list-style: none; padding: 0; margin: .8rem 0 1.5rem; }
+.chapter-list li { margin: .55rem 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.chapter-list a { display: block; padding: .75rem 1rem; color: var(--ink); text-decoration: none; min-height: 44px; }
+.chapter-list a:hover { border-color: var(--accent); }
+.chapter-list .num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent); margin-right: .45rem; }
+.chapter-list .title { font-weight: 600; }
+.chapter-list .sum { display: block; font-size: .88rem; color: var(--ink-soft); margin-top: .15rem; }
+.locate { border: 2px solid var(--accent); border-radius: var(--radius); padding: .4rem 1.1rem 1.1rem; margin: 1.8rem 0; background: var(--surface); scroll-margin-top: 1rem; }
+.locate h2 { margin-top: .8rem; }
+
 /* --- 手册链接 --- */
 .handbook-links { font-size: .9rem; margin-top: .8rem; }
 .handbook-links a { display: block; margin: .25rem 0 0 1em; }

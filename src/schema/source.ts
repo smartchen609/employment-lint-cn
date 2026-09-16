@@ -83,6 +83,18 @@ export const SourceRecord = z
     /** url 为 CORPUS 时必填：docs/law-corpus/ 下的文件名。 */
     corpus_file: z.string().optional(),
     /**
+     * 文本取自汇编（url: CORPUS）或非官方镜像时，另行检索到的发布机关官方原文页。
+     * 只是给读者的"去哪里查原文"的指引；手册引文仍以 url/corpus_file 为准。
+     */
+    official_url: z.string().url().optional(),
+    /**
+     * official_url 是否经维护人确认。**AI 不得改为 true。**
+     * 为 false 时，公开的来源页不显示 official_url —— 未确认的链接不上线。
+     */
+    official_url_checked: z.boolean().optional(),
+    /** AI 检索 official_url 时的比对记录：抽了哪一条、与汇编文本是否逐字一致。 */
+    official_url_record: z.string().optional(),
+    /**
      * 人工核验记录：核了什么、看到了什么。
      * page_opened_and_checked 只是一个布尔值，说明不了核验到什么程度；
      * 这里记录实际看到的条文与日期，让第三方能复核这次核验本身。
@@ -132,6 +144,20 @@ export const SourceRecord = z
         code: z.ZodIssueCode.custom,
         path: ["insecure_url_reason"],
         message: "使用 http（非 https）的来源必须写明 insecure_url_reason",
+      });
+    }
+    if (s.official_url && s.official_url_checked === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["official_url_checked"],
+        message: "填写 official_url 时必须同时写明 official_url_checked（未经维护人确认填 false）",
+      });
+    }
+    if (s.official_url_checked && !s.official_url) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["official_url"],
+        message: "official_url_checked 为 true 但没有 official_url",
       });
     }
     if (s.status === "forbidden" && !s.forbidden_reason) {

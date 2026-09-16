@@ -125,8 +125,18 @@ export const HandbookSection = z
     id: z.string().regex(/^\d{2}$/),
     file: z.string().regex(/^\d{2}-.+\.md$/),
     title: z.string().min(1),
+    /** 首页卡片上的一句话简介。 */
+    summary: z.string().min(1).max(60).optional(),
+    /**
+     * published：已经维护人确认，构建并上线；文件在 docs/handbook/。
+     * draft：待维护人确认，**不构建、不上线**；文件在 docs/handbook/drafts/。
+     * 这是「维护人批量确认前不部署」（CLAUDE.md §1b.6）的机械保证。
+     */
+    status: z.enum(["published", "draft"]).default("published"),
   })
   .strict();
+
+export type HandbookSection = z.infer<typeof HandbookSection>;
 
 export const HandbookMapFile = z
   .object({
@@ -135,18 +145,31 @@ export const HandbookMapFile = z
   })
   .strict()
   .superRefine((m, ctx) => {
-    const ids = new Set(m.sections.map((s) => s.id));
+    const byId = new Map(m.sections.map((s) => [s.id, s]));
     for (const [ep, secs] of Object.entries(m.endpoints)) {
       for (const sec of secs) {
-        if (!ids.has(sec)) {
+        const s = byId.get(sec);
+        if (!s) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ["endpoints", ep],
             message: `终点 ${ep} 指向不存在的手册章节 ${sec}`,
           });
+        } else if (s.status !== "published") {
+          // 线上工具的结果页不得链到一个不会被构建出来的草稿页
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["endpoints", ep],
+            message: `终点 ${ep} 指向草稿章节 ${sec}；草稿确认发布前不得被工具引用`,
+          });
         }
       }
     }
   });
+
+/** 只取已发布章节。构建、首页、结果页一律经过这里。 */
+export function publishedSections(map: HandbookMapFile): HandbookSection[] {
+  return map.sections.filter((s) => s.status === "published");
+}
 
 export type HandbookMapFile = z.infer<typeof HandbookMapFile>;

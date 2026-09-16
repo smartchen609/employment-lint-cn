@@ -30,6 +30,13 @@ export const ALL_TEMPLATES: EndpointTemplate[] = [...copy.classification, ...cop
 export const EVIDENCE = copy.evidence;
 export const HANDBOOK = copy.handbookMap;
 
+/**
+ * 首页目录只列已发布章节。
+ * build-content 已经只把已发布章节写进 copy.json（草稿连标题都不进前端包），
+ * 这里再过滤一次是双保险。
+ */
+export const PUBLISHED_SECTIONS = HANDBOOK.sections.filter((s) => (s.status ?? "published") === "published");
+
 /** 某终点对应的手册章节（按映射顺序）。 */
 export function handbookSectionsFor(endpointId: string): HandbookMapFile["sections"] {
   const ids = HANDBOOK.endpoints[endpointId] ?? [];
