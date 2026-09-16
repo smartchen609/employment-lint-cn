@@ -533,3 +533,200 @@ sources:
     verification_record: >
       2026-09-09 文本取自 docs/law-corpus/，维护人确认。引入 docs/handbook/11。
 
+
+  # --- 手册草稿引用 · 待维护人核验（取自维护人汇编）-----------------------
+  # 以下来源只被 docs/handbook/drafts/ 引用，尚未上线。
+  # page_opened_and_checked 一律 false（CLAUDE.md §L3）；标题、文号、修正年份照汇编文件文首抄录。
+
+  - id: "CN-FEMALE-EMPLOYEE-REG-2012"
+    publisher: "中华人民共和国国务院"
+    authority_level: "national-statute"
+    page_title: "女职工劳动保护特别规定（国务院令第619号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "女职工劳动保护特别规定.txt"
+    pinpoint: ["第五条", "第六条", "第七条", "第八条", "第九条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 14。待维护人逐字确认并确认现行有效。
+
+  - id: "CN-SOCIAL-INSURANCE-LAW-2018"
+    publisher: "全国人民代表大会常务委员会"
+    authority_level: "national-statute"
+    page_title: "中华人民共和国社会保险法（2018修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "中华人民共和国社会保险法(2018修正).txt"
+    pinpoint: ["第四条", "第五十三条", "第五十六条", "第五十八条", "第六十条", "第六十二条", "第六十三条", "第八十三条第三款", "第八十六条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      草稿 14 标注【待维护人确认现行有效】：汇编为 2018 年修正版，之后是否另有修正未核。
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 14、16。待维护人逐字确认并确认现行有效。
+
+  - id: "CN-WAGE-TOTAL-COMPOSITION-1990"
+    publisher: "国家统计局"
+    authority_level: "national-statute"
+    page_title: "关于工资总额组成的规定（国家统计局令第1号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "国家统计局关于工资总额组成的规定.txt"
+    pinpoint: ["第四条", "第十一条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      部门规章，本注册表没有单列这一层级，暂归 national-statute，待维护人决定是否新增层级。
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 15。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-WAGE-PAYMENT-REG-2016"
+    publisher: "广东省人民代表大会常务委员会"
+    authority_level: "provincial-regulation"
+    page_title: "广东省工资支付条例（2016修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省工资支付条例(2016修正).txt"
+    pinpoint: ["第八条", "第十九条", "第二十二条", "第二十三条", "第三十九条", "第六十二条第一项"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 05、08、14、15。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-LABOR-SECURITY-INSPECTION-REG-2019"
+    publisher: "广东省人民代表大会常务委员会"
+    authority_level: "provincial-regulation"
+    page_title: "广东省劳动保障监察条例（2019修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省劳动保障监察条例(2019修正).txt"
+    pinpoint: ["第九条", "第二十三条", "第二十三条第（三）项", "第三十六条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 13、16。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-POPULATION-FAMILY-PLANNING-2019"
+    publisher: "广东省人民代表大会常务委员会"
+    authority_level: "provincial-regulation"
+    page_title: "广东省人口与计划生育条例（2019修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省人口与计划生育条例(2019修正).txt"
+    pinpoint: ["第三十条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      草稿 14 标注【待维护人确认现行有效】：第三十条的奖励假、陪产假天数取自 2019 年修正版，
+      天数条款是最容易被后续修法调整的部分，汇编是否为最新版本未核。
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 14。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-UNEMPLOYMENT-INSURANCE-REG-2013"
+    publisher: "广东省人民代表大会常务委员会"
+    authority_level: "provincial-regulation"
+    page_title: "广东省失业保险条例（2013修订）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省失业保险条例(2013修订).txt"
+    pinpoint: ["第十五条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 16。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-WORK-INJURY-REG-2019"
+    publisher: "广东省人民代表大会常务委员会"
+    authority_level: "provincial-regulation"
+    page_title: "广东省工伤保险条例（2019修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省工伤保险条例(2019修正).txt"
+    pinpoint: ["第九条", "第十条", "第十一条", "第十四条", "第十六条", "第二十条", "第二十五条", "第二十六条", "第三十一条", "第三十二条", "第三十三条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 10、12。待维护人逐字确认并确认现行有效。
+
+  - id: "SZ-TECH-SECRET-REG-2019"
+    publisher: "深圳市人民代表大会常务委员会"
+    authority_level: "special-economic-zone-legislation"
+    page_title: "深圳经济特区企业技术秘密保护条例（2019修正）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "深圳经济特区企业技术秘密保护条例(2019修正).txt"
+    pinpoint: ["第十九条", "第二十一条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 09。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-COURT-2018-2-LINKAGE"
+    publisher: "广东省高级人民法院、广东省劳动人事争议仲裁委员会"
+    authority_level: "local-court-guidance"
+    page_title: "关于劳动人事争议仲裁与诉讼衔接若干意见（粤高法发〔2018〕2号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省高级人民法院、广东省劳动人事争议仲裁委员会关于印发《广东省高级人民法院、广东省劳动人事争议仲裁委员会关于劳动人事争议仲裁与诉讼衔接若干意见》的通知.txt"
+    pinpoint: ["第五条", "第七条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      编号带 -LINKAGE 后缀，是为了不与曾被误用的旧编号 GD-COURT-2018-2 相混（旧编号错指 2012 年座谈会纪要，已更正）。
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 08、12。待维护人逐字确认并确认现行有效。
+
+  - id: "GD-COURT-2002-21"
+    publisher: "广东省高级人民法院"
+    authority_level: "local-court-guidance"
+    page_title: "关于审理劳动争议案件若干问题的指导意见（粤高法发[2002]21号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "广东省高级人民法院关于印发《广东省高级人民法院关于审理劳动争议案件若干问题的指导意见》的通知.txt"
+    pinpoint: ["第十六条"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      2002 年文件，草稿 12 标注【待维护人确认现行有效】。
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 12。待维护人确认是否仍在适用。
+
+  - id: "DG-COURT-2019"
+    publisher: "东莞市中级人民法院、东莞市劳动人事争议仲裁委员会"
+    authority_level: "local-court-guidance"
+    page_title: "劳动争议裁审衔接工作座谈会议纪要（东中法﹝2019﹞73号）"
+    official: true
+    url: "CORPUS"
+    corpus_file: "东莞市中级人民法院、东莞市劳动人事争议仲裁委员会关于印发《劳动争议裁审衔接工作谈会议纪要》的通知.txt"
+    pinpoint: ["第3项", "第5项", "第9项", "第10项", "第11项", "第13项", "第17项", "第23项", "第24项", "第28项"]
+    page_opened_and_checked: false
+    last_verified_at: ""
+    verified_by: ""
+    status: "active"
+    note: >
+      纪要正文按 1.–31. 编号，pinpoint 统一写「第N项」。东莞口径，不当然适用于深圳。
+    verification_record: >
+      2026-09-16 AI 取自 docs/law-corpus/，引入草稿 05、08、12、14、15。待维护人逐字确认并确认现行有效。

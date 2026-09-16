@@ -327,6 +327,30 @@ for (const [relPath, kind] of copyFiles) {
   }
 }
 
+/*
+ * 草稿里引用的来源：docs/handbook/drafts/ 下全部文件（含已发布章节的修订稿，它们不在映射里）
+ * 与 docs/drafts/ 下的草稿规则、文案。只用于把「仅被草稿引用」与「没人引用」区分开。
+ */
+{
+  const ids = [...sourceById.keys()];
+  const scan = (text: string) => {
+    for (const id of ids) {
+      if (new RegExp(`(?<![A-Z0-9-])${id.replace(/-/g, "\\-")}(?![A-Z0-9-])`).test(text)) draftOnlySourceIds.add(id);
+    }
+  };
+  const walk = (dir: string, ext: string): string[] => {
+    try {
+      return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? walk(join(dir, e.name), ext) : e.name.endsWith(ext) ? [join(dir, e.name)] : [],
+      );
+    } catch {
+      return [];
+    }
+  };
+  for (const f of walk(join(ROOT, "docs", "handbook", "drafts"), ".md")) scan(readFileSync(f, "utf8"));
+  for (const f of walk(join(ROOT, "docs", "drafts"), ".yml")) scan(readFileSync(f, "utf8"));
+}
+
 /* ------------------------------------------------------------------ */
 /* 9. 未核验来源：上线内容不得引用                                     */
 /* ------------------------------------------------------------------ */
