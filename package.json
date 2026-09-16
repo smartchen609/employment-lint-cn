@@ -19,15 +19,17 @@
     "build:content": "tsx scripts/build-content.ts",
     "audit:bundle": "tsx scripts/audit-bundle.ts",
     "test:mutation": "tsx scripts/mutation-test.ts",
-    "check:full": "npm run check && npm run test:mutation && npm run build && npm run audit:bundle",
+    "check:full": "npm run check && npm run test:mutation && npm run build && npm run audit:bundle && npm run test:e2e",
     "build:handbook": "tsx scripts/build-handbook.ts",
-    "pretypecheck": "npm run build:content"
+    "pretypecheck": "npm run build:content",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/markdown-it": "^14.2.0",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.18",

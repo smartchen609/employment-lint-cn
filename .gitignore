@@ -18,3 +18,7 @@ src/generated/
 
 # 示例导出（本地生成，不进版本库）
 sample-case-export.md
+
+# Playwright
+test-results/
+playwright-report/

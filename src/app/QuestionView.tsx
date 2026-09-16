@@ -108,6 +108,7 @@ export function QuestionView({
                 <button
                   type="button"
                   role="radio"
+                  data-value={o.value}
                   aria-checked={selected}
                   tabIndex={roving}
                   className={selected ? "option selected" : "option"}
@@ -141,6 +142,7 @@ export function QuestionView({
                 key={o.value}
                 type="button"
                 role="checkbox"
+                data-value={o.value}
                 aria-checked={selected}
                 className={selected ? "option selected" : "option"}
                 onClick={() =>
