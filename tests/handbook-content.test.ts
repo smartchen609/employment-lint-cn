@@ -105,3 +105,29 @@ describe("维护人确认内容的锚点", () => {
     }
   }
 });
+
+describe("来源文号与汇编文件一致", () => {
+  const registry = parse(readFileSync(join(ROOT, "sources.yml"), "utf8"), { version: "1.2" }) as {
+    sources: Array<{ id: string; url: string; page_title: string; corpus_file?: string }>;
+  };
+  const corpus = join(ROOT, "docs/law-corpus");
+  const docNo = /[〔[]\d{4}[〕\]]\d+号/;
+
+  it("取自汇编的来源，标题里写的文号必须出现在汇编文件文首", () => {
+    let checked = 0;
+    for (const s of registry.sources) {
+      if (s.url !== "CORPUS" || !s.corpus_file) continue;
+      const m = s.page_title.match(docNo);
+      if (!m) continue;
+      const head = readFileSync(join(corpus, s.corpus_file), "utf8").slice(0, 1500).replace(/\[/g, "〔").replace(/\]/g, "〕");
+      const want = m[0].replace(/\[/g, "〔").replace(/\]/g, "〕");
+      expect(head.includes(want), `${s.id} 标题文号 ${m[0]} 不在 ${s.corpus_file} 文首`).toBe(true);
+      checked++;
+    }
+    expect(checked).toBeGreaterThan(0);
+  });
+
+  it("GD-COURT-2018-2 这个编号曾错指 2012 年纪要，不得再被使用（避免旧引用静默指向另一份文件）", () => {
+    expect(registry.sources.some((s) => s.id === "GD-COURT-2018-2")).toBe(false);
+  });
+});

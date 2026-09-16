@@ -233,7 +233,7 @@ describe("sources.yml 实文件", () => {
     "CN-ANNUAL-LEAVE-REG-2008",
     "GD-COURT-2008-13",
     "GD-COURT-2017-147",
-    "GD-COURT-2018-2",
+    "GD-COURT-2012-284",
     "SZ-WAGE-PAYMENT-REG-2019",
   ]);
 
